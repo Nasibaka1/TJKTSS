@@ -507,7 +507,8 @@
     import { 
         getAuth, 
         GoogleAuthProvider, 
-        signInWithPopup, 
+        signInWithRedirect, 
+        getRedirectResult, 
         signOut, 
         onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -521,7 +522,7 @@
         updateDoc
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Updated Firebase Config for Vercel Deployment & TJKTsuruhsuruh Project
+    // Firebase Config pointing to default TJKTsuruhsuruh domain
     const firebaseConfig = {
         apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
         authDomain: "tjktsuruhsuruh.firebaseapp.com",
@@ -548,6 +549,12 @@
     window.jobsList = [];
     window.transactionsList = [];
     window.authorizedEmployees = [];
+
+    // Catch Redirect Result after returning from Google Sign-In
+    getRedirectResult(auth).catch((error) => {
+        console.error("Redirect Login Error:", error);
+        alert("Google Sign-In Error: " + error.message);
+    });
 
     // Real-Time Cloud Firestore Sync: Jobs (Marketplace & Custom)
     onSnapshot(collection(db, "joki"), (snapshot) => {
@@ -595,9 +602,10 @@
         }
     });
 
+    // Login function using full page redirect
     window.loginWithGoogle = async function() {
         try {
-            await signInWithPopup(auth, googleProvider);
+            await signInWithRedirect(auth, googleProvider);
         } catch (error) {
             console.error("Auth Error:", error);
             alert("Google Sign-In Error: " + error.message);
