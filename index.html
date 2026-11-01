@@ -62,6 +62,19 @@
 
         .sys-info span { color: #ffffff; }
 
+        .user-badge {
+            color: #00ffcc;
+            font-weight: bold;
+            border: 1px dashed #00ffcc;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+
+        .user-badge:hover {
+            background-color: #00ffcc;
+            color: #000;
+        }
+
         .stats-bar {
             display: flex;
             gap: 20px;
@@ -280,7 +293,7 @@
     |_|\____/|_|\_\  |_|     |_|  |_/_/    \_\  |_|  \_\_|\_\______|  |_|   
         </pre>
         <div class="sys-info">
-            <div>USER: <span id="sys-user">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
+            <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Click to change username">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
             <div>
                 <button onclick="logoutSession()" style="font-size: 10px; padding: 2px 6px;">[X] LOGOUT</button>
             </div>
@@ -317,6 +330,21 @@
         </div>
         <div class="log-box" id="log-box">
             <div class="log-entry">[SYS] TJKT Marketplace Engine Initialized.</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Edit Username -->
+<div class="modal-overlay" id="username-modal">
+    <div class="modal-box">
+        <div class="modal-title">UPDATE USER DISPLAY NAME</div>
+        <div class="modal-field">
+            <label>ENTER NEW USERNAME</label>
+            <input type="text" id="new-username-input" placeholder="e.g., Turner">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button onclick="closeModal('username-modal')">CANCEL</button>
+            <button onclick="saveCustomUsername()">SAVE USERNAME</button>
         </div>
     </div>
 </div>
@@ -441,7 +469,6 @@
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS TO PAY ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
             
-            <!-- Local Repository Image Link -->
             <img src="qris.jpg" class="qris-img-render" alt="QRIS Kienziee Store">
             
             <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
@@ -454,8 +481,8 @@
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
 
             <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
-                <p style="font-size: 11px; color: #aaa;">NUMBER: <span style="color: #fff; font-weight: bold; font-size: 13px;">08977246853</span></p>
-                <p style="font-size: 11px; color: #aaa; margin-top: 4px;">NAME: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
+                <p style="font-size: 11px; color: #aaa;">NUMBER: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 4px;">NAME: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
             </div>
             <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;">[COPY NUMBER]</button>
         </div>
@@ -513,14 +540,17 @@
     // Live Firebase Auth Listener
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            window.currentUser = user.displayName || user.email.split('@')[0];
             window.currentUserEmail = user.email.toLowerCase().trim();
+            
+            // Check for saved custom username first, fallback to Google display name or email prefix
+            const customUsername = localStorage.getItem('custom_username_' + window.currentUserEmail);
+            window.currentUser = customUsername || user.displayName || user.email.split('@')[0];
 
             document.getElementById('auth-modal').style.display = 'none';
             determineUserRole();
             window.updateUserInterface();
             window.renderGrid();
-            addLog(`[AUTH] Logged in via Google as '${window.currentUser}' (${window.currentUserEmail}).`);
+            addLog(`[AUTH] Logged in as '${window.currentUser}' (${window.currentUserEmail}).`);
         } else {
             document.getElementById('auth-modal').style.display = 'flex';
             window.currentUser = null;
@@ -551,6 +581,29 @@
             window.userRole = 'CUSTOMER';
         }
     }
+
+    /* Custom Username Functions */
+    window.openUsernameModal = function() {
+        document.getElementById('new-username-input').value = window.currentUser || '';
+        document.getElementById('username-modal').style.display = 'flex';
+    };
+
+    window.saveCustomUsername = function() {
+        const input = document.getElementById('new-username-input').value.trim();
+        if (!input) {
+            alert('Username cannot be empty!');
+            return;
+        }
+
+        window.currentUser = input;
+        if (window.currentUserEmail) {
+            localStorage.setItem('custom_username_' + window.currentUserEmail, input);
+        }
+
+        window.updateUserInterface();
+        window.closeModal('username-modal');
+        addLog(`[PROFILE] Display name updated to '${window.currentUser}'.`);
+    };
 
     /* Price Parser (10rb, 20,000, 15k) */
     window.parseAmountToNumber = function(amountStr) {
