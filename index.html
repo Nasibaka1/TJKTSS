@@ -25,21 +25,15 @@
             pointer-events: none; z-index: 0; opacity: 0.6;
         }
 
-        /* Minigame Overlay Screen */
-        #minigame-screen {
+        /* Fullscreen Animated Background Layer for /tetris and /snake */
+        #game-bg-layer {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.92);
-            z-index: 50;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 0;
             display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        #minigame-canvas {
-            border: 2px solid #00ffcc;
-            background: #050505;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            opacity: 0.25;
         }
 
         .terminal {
@@ -308,14 +302,8 @@
 
 <canvas id="bg-canvas"></canvas>
 
-<!-- Minigame Overlay / Background Viewer -->
-<div id="minigame-screen">
-    <div style="margin-bottom: 10px; display: flex; gap: 15px; align-items: center;">
-        <span id="minigame-title" style="color: #00ffcc; font-weight: bold; font-size: 14px;">[ TETRIS MODE ]</span>
-        <button onclick="stopMinigame()" style="border-color: #ff5555; color: #ff5555; padding: 4px 12px;">[X] KELUAR / KEMBALI</button>
-    </div>
-    <canvas id="minigame-canvas" width="300" height="450"></canvas>
-</div>
+<!-- Fullscreen Background Animation Canvas -->
+<canvas id="game-bg-layer"></canvas>
 
 <!-- Google Authentication Overlay -->
 <div class="modal-overlay" id="auth-modal" style="display: flex;">
@@ -372,11 +360,11 @@
     <div class="cli-section">
         <div class="cli-prompt-line">
             <span id="cli-user-prompt">guest@tjkt:~#</span>
-            <input type="text" id="cli-input" placeholder="Ketik perintah (cth: '/tetris', '/snake', 'help')" onkeydown="handleCliKeyDown(event)">
+            <input type="text" id="cli-input" placeholder="Ketik perintah (cth: '/tetris', '/snake', '/bg off', 'help')" onkeydown="handleCliKeyDown(event)">
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi. Ketik '/tetris' atau '/snake' untuk minigame.</div>
+            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi. Ketik '/tetris' atau '/snake' untuk animasi background.</div>
         </div>
     </div>
 </div>
@@ -417,7 +405,7 @@
     </div>
 </div>
 
-<!-- Modal: Post Joki (Employee) -->
+<!-- Modal: Post Joki -->
 <div class="modal-overlay" id="post-modal">
     <div class="modal-box">
         <div class="modal-title" id="m-title-post">BUAT LAYANAN JOKI</div>
@@ -434,7 +422,7 @@
             <textarea id="post-desc" rows="3" placeholder="Termasuk file PKT + laporan screenshot..."></textarea>
         </div>
         <div class="modal-field">
-            <label id="m-label-img">LAMPIRKAN GAMBAR / PREVIEW (AUTO-COMPRESSED)</label>
+            <label id="m-label-img">LAMPIRKAN GAMBAR / PREVIEW</label>
             <input type="file" id="post-img" accept="image/*">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
@@ -444,7 +432,7 @@
     </div>
 </div>
 
-<!-- Modal: Custom Request (Customer) -->
+<!-- Modal: Custom Request -->
 <div class="modal-overlay" id="custom-modal">
     <div class="modal-box">
         <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM & PEMBAYARAN</div>
@@ -453,7 +441,7 @@
             <input type="text" id="custom-title" placeholder="cth., Konfigurasi Debian 12 BIND9 DNS">
         </div>
         <div class="modal-field">
-            <label id="m-label-cust-budget">TAWARAN BUDGET / HARGA (cth: 20rb, 20,000)</label>
+            <label id="m-label-cust-budget">TAWARAN BUDGET / HARGA</label>
             <input type="text" id="custom-budget" placeholder="20rb atau 20,000" oninput="calculateCustomCheckout()">
         </div>
         <div class="modal-field">
@@ -462,7 +450,7 @@
         </div>
         <div class="modal-field">
             <label id="m-label-cust-desc">DETAIL / INSTRUKSI TUGAS</label>
-            <textarea id="custom-desc" rows="2" placeholder="Konfigurasi domain tjkt.smkn7.sch.id pada IP 192.168.10.1..."></textarea>
+            <textarea id="custom-desc" rows="2" placeholder="Konfigurasi domain..."></textarea>
         </div>
         <div class="modal-field">
             <label>NOMOR TELEPON / WHATSAPP</label>
@@ -483,14 +471,14 @@
             <label>METODE PEMBAYARAN</label>
             <select id="custom-pay-method" onchange="toggleCustomPaymentInstructions()">
                 <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
-                <option value="EWALLET">Transfer Langsung E-Wallet (GoPay / DANA)</option>
+                <option value="EWALLET">Transfer Langsung E-Wallet</option>
             </select>
         </div>
 
         <div id="custom-qris-display" class="qris-box">
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="custom-qris-amount">0 Rp</p>
-            <img src="qris.jpg" class="qris-img-render" alt="QRIS Kienziee Store">
+            <img src="qris.jpg" class="qris-img-render" alt="QRIS">
             <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
             <p style="font-size: 10px; color: #aaa;">NMID: ID1026546274972</p>
         </div>
@@ -506,13 +494,13 @@
         </div>
 
         <div class="modal-field" style="margin-top: 10px;">
-            <label id="m-label-cust-img">LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (WAJIB)</label>
+            <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (WAJIB)</label>
             <input type="file" id="custom-img" accept="image/*">
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('custom-modal')" id="m-btn-cancel3">BATAL</button>
-            <button onclick="submitCustomRequestWithPayment()" id="m-btn-submit-req">KIRIM & BAYAR</button>
+            <button onclick="closeModal('custom-modal')">BATAL</button>
+            <button onclick="submitCustomRequestWithPayment()">KIRIM & BAYAR</button>
         </div>
     </div>
 </div>
@@ -520,10 +508,10 @@
 <!-- Modal: Image Full-Size Viewer -->
 <div class="modal-overlay" id="img-viewer-modal" onclick="closeModal('img-viewer-modal')">
     <div class="modal-box" style="max-width: 700px; text-align: center; background: rgba(0,0,0,0.95);" onclick="event.stopPropagation()">
-        <div class="modal-title" id="m-title-prev">[ PREVIEW LAMPIRAN ]</div>
+        <div class="modal-title">[ PREVIEW LAMPIRAN ]</div>
         <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 70vh; border: 1px solid #444; margin: 10px 0;">
         <div style="text-align: right;">
-            <button onclick="closeModal('img-viewer-modal')" id="m-btn-close2">TUTUP</button>
+            <button onclick="closeModal('img-viewer-modal')">TUTUP</button>
         </div>
     </div>
 </div>
@@ -531,7 +519,7 @@
 <!-- Modal: Checkout / Order Payment -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
-        <div class="modal-title" id="m-title-checkout">CHECKOUT PESANAN & PEMBAYARAN</div>
+        <div class="modal-title">CHECKOUT PESANAN & PEMBAYARAN</div>
         <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px;"></p>
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 13px; margin-bottom: 12px;"></p>
 
@@ -542,11 +530,11 @@
 
         <div class="modal-field">
             <label>LINK ATAU CATATAN FILE TUGAS</label>
-            <input type="text" id="order-task-link" placeholder="cth., Link Google Drive / file pendukung">
+            <input type="text" id="order-task-link" placeholder="cth., Link Google Drive">
         </div>
 
         <div class="modal-field" id="pay-type-container">
-            <label id="m-label-payterm">KETENTUAN PEMBAYARAN</label>
+            <label>KETENTUAN PEMBAYARAN</label>
             <select id="pay-type" onchange="calculateCheckout()">
                 <option value="DP50">Down Payment (DP) 50%</option>
                 <option value="FULL">Bayar Penuh (100%)</option>
@@ -554,39 +542,39 @@
         </div>
 
         <div class="modal-field">
-            <label id="m-label-paymethod">METODE PEMBAYARAN</label>
+            <label>METODE PEMBAYARAN</label>
             <select id="pay-method" onchange="togglePaymentInstructions()">
                 <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
-                <option value="EWALLET">Transfer Langsung E-Wallet (GoPay / DANA)</option>
+                <option value="EWALLET">Transfer Langsung E-Wallet</option>
             </select>
         </div>
 
         <div id="qris-display" class="qris-box">
-            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-scan-qris">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
-            <img src="qris.jpg" class="qris-img-render" alt="QRIS Kienziee Store">
+            <img src="qris.jpg" class="qris-img-render" alt="QRIS">
             <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
             <p style="font-size: 10px; color: #aaa;">NMID: ID1026546274972</p>
         </div>
 
         <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
-            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-ewallet-title">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
             <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
-                <p style="font-size: 11px; color: #aaa;" id="txt-ewallet-num">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
-                <p style="font-size: 11px; color: #aaa; margin-top: 4px;" id="txt-ewallet-name">ATAS NAMA: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
+                <p style="font-size: 11px; color: #aaa;">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 4px;">ATAS NAMA: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
             </div>
-            <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;" id="btn-copy-num">[SALIN NOMOR]</button>
+            <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;">[SALIN NOMOR]</button>
         </div>
 
         <div class="modal-field" style="margin-top: 12px;">
-            <label id="m-label-proof">LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (WAJIB)</label>
+            <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (WAJIB)</label>
             <input type="file" id="pay-proof-img" accept="image/*">
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('checkout-modal')" id="m-btn-cancel4">BATAL</button>
-            <button onclick="confirmOrder()" id="m-btn-confirm">KONFIRMASI PESANAN</button>
+            <button onclick="closeModal('checkout-modal')">BATAL</button>
+            <button onclick="confirmOrder()">KONFIRMASI PESANAN</button>
         </div>
     </div>
 </div>
@@ -641,9 +629,9 @@
     window.transactionsList = [];
     window.authorizedEmployees = [];
 
-    // Minigame Loop Variables
-    let minigameAnimId = null;
-    let minigameType = null;
+    // Background Animation Loop Variables
+    let bgGameAnimId = null;
+    window.activeBgGame = null; // 'tetris', 'snake', or null
 
     const translations = {
         id: {
@@ -661,7 +649,7 @@
             manageEmp: "+ KELOLA PEGAWAI",
             postJoki: "+ POST JOKI",
             reqCustom: "+ AJUKAN TUGAS KUSTOM",
-            cliPlaceholder: "Ketik perintah (cth: '/tetris', '/snake', 'help')",
+            cliPlaceholder: "Ketik perintah (cth: '/tetris', '/snake', '/bg off', 'help')",
             cliExec: "EKSEKUSI",
             sysInit: "[SYS] Mesin TJKTSS Berhasil Diinisialisasi.",
             noTrans: "[ TIDAK ADA TRANSAKSI DITEMUKAN ]",
@@ -683,7 +671,7 @@
             manageEmp: "+ MANAGE EMPLOYEES",
             postJoki: "+ POST A JOKI",
             reqCustom: "+ SUBMIT CUSTOM ASSIGNMENT",
-            cliPlaceholder: "Type command (e.g., '/tetris', '/snake', 'help')",
+            cliPlaceholder: "Type command (e.g., '/tetris', '/snake', '/bg off', 'help')",
             cliExec: "EXEC",
             sysInit: "[SYS] TJKTSS Engine Initialized.",
             noTrans: "[ NO TRANSACTIONS FOUND ]",
@@ -722,12 +710,12 @@
     onSnapshot(collection(db, "joki"), (snapshot) => {
         window.jobsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.renderGrid();
-    }, (error) => { console.error("Jobs Sync Error:", error); });
+    });
 
     onSnapshot(collection(db, "transactions"), (snapshot) => {
         window.transactionsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.renderGrid();
-    }, (error) => { console.error("Transactions Sync Error:", error); });
+    });
 
     onSnapshot(collection(db, "settings"), (snapshot) => {
         const empDoc = snapshot.docs.find(d => d.id === 'employees');
@@ -870,21 +858,21 @@
     window.deleteJoki = async function(jobId) {
         if (confirm('Are you sure you want to delete this listing?')) {
             await deleteDoc(doc(db, "joki", jobId));
-            addLog(`[DELETE] Deleted listing '${jobId}' from Cloud Firestore.`);
+            addLog(`[DELETE] Deleted listing '${jobId}'.`);
         }
     };
 
     window.deleteTransaction = async function(txId) {
-        if (confirm('Are you sure you want to delete this order transaction record?')) {
+        if (confirm('Are you sure you want to delete this transaction?')) {
             await deleteDoc(doc(db, "transactions", txId));
-            addLog(`[DELETE] Transaction '${txId}' deleted from Cloud Firestore.`);
+            addLog(`[DELETE] Transaction '${txId}' deleted.`);
         }
     };
 
     window.confirmRemainingPaymentStaff = async function(txId) {
-        if (confirm('Konfirmasi pelunasan pesanan ini? Status akan diubah menjadi LUNAS (PAID_FULL).')) {
+        if (confirm('Konfirmasi pelunasan pesanan ini?')) {
             await updateDoc(doc(db, "transactions", txId), { status: 'PAID_FULL' });
-            addLog(`[STAFF] Pelunasan untuk transaksi '${txId}' telah dikonfirmasi.`);
+            addLog(`[STAFF] Pelunasan transaksi '${txId}' dikonfirmasi.`);
         }
     };
 
@@ -892,12 +880,12 @@
         const tx = window.transactionsList.find(t => t.id === txId);
         if (!tx) return;
         if ((Date.now() - (tx.createdAt || 0)) / (1000 * 60) > CUSTOMER_CANCEL_WINDOW_MINUTES) {
-            alert('Cancellation window expired (15 minutes limit exceeded).');
+            alert('Batas waktu pembatalan (15 menit) telah lewat.');
             return;
         }
-        if (confirm('Cancel this transaction?')) {
+        if (confirm('Batalkan transaksi ini?')) {
             await deleteDoc(doc(db, "transactions", txId));
-            addLog(`[CANCEL] Order '${txId}' cancelled by customer.`);
+            addLog(`[CANCEL] Transaksi '${txId}' dibatalkan.`);
         }
     };
 
@@ -940,8 +928,6 @@
                     <div>
                         <div class="card-meta">
                             <span>BUYER: ${escapeHtml(tx.customerName)}</span>
-                            ${tx.phone ? '<span>TELP/WA: ' + escapeHtml(tx.phone) + '</span>' : ''}
-                            ${tx.taskLink ? '<span>FILE/LINK: ' + escapeHtml(tx.taskLink) + '</span>' : ''}
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
@@ -1056,7 +1042,7 @@
     window.submitPost = function() {
         const title = document.getElementById('post-title').value.trim();
         const price = window.parseAmountToNumber(document.getElementById('post-price').value);
-        if (!title || !price) { alert('Valid Title and Price required!'); return; }
+        if (!title || !price) { alert('Title and Price required!'); return; }
         
         const fileInput = document.getElementById('post-img');
         const process = async (imgStr) => {
@@ -1088,7 +1074,7 @@
         const phone = document.getElementById('custom-phone').value.trim();
         const fileInput = document.getElementById('custom-img');
         if (!title || !budget) { alert('Title and Budget required!'); return; }
-        if (!phone) { alert('Phone number required!'); return; }
+        if (!phone) { alert('Phone required!'); return; }
         if (!fileInput.files[0]) { alert('Payment proof required!'); return; }
 
         const reader = new FileReader();
@@ -1109,7 +1095,7 @@
 
                 window.closeModal('custom-modal');
                 window.switchTab('ORDERS');
-                addLog(`[CUSTOM] Request & Payment submitted for '${title}'.`);
+                addLog(`[CUSTOM] Request submitted.`);
             };
             img.src = e.target.result;
         };
@@ -1208,7 +1194,7 @@
         reader.readAsDataURL(proofInput.files[0]);
     };
 
-    // --- TERMINAL COMMANDS FOR /tetris and /snake ---
+    // --- TERMINAL COMMANDS FOR BACKGROUND /tetris and /snake ---
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
     window.executeCliCommand = function() {
         const input = document.getElementById('cli-input');
@@ -1218,13 +1204,16 @@
         input.value = '';
 
         if (cmd === '/tetris') {
-            startMinigame('tetris');
-            addLog(`[MINIGAME] Tetris background loop activated.`);
+            startBgAnimation('tetris');
+            addLog(`[BG] Tetris background animation activated.`);
         } else if (cmd === '/snake') {
-            startMinigame('snake');
-            addLog(`[MINIGAME] Snake background loop activated.`);
+            startBgAnimation('snake');
+            addLog(`[BG] Snake background animation activated.`);
+        } else if (cmd === '/bg off' || cmd === '/bgstop') {
+            stopBgAnimation();
+            addLog(`[BG] Background animation disabled.`);
         } else if (cmd === 'help') {
-            addLog(`[HELP] Commands: /tetris, /snake, role, clear`);
+            addLog(`[HELP] Commands: /tetris, /snake, /bg off, role, clear`);
         } else if (cmd === 'role') {
             window.toggleRole();
         } else if (cmd === 'clear') {
@@ -1234,102 +1223,111 @@
         }
     };
 
-    function startMinigame(type) {
-        minigameType = type;
-        document.getElementById('minigame-screen').style.display = 'flex';
-        document.getElementById('minigame-title').innerText = type === 'tetris' ? '[ TETRIS BACKGROUND LOOP ]' : '[ SNAKE BACKGROUND LOOP ]';
-        
-        const canvas = document.getElementById('minigame-canvas');
+    function startBgAnimation(type) {
+        window.activeBgGame = type;
+        const canvas = document.getElementById('game-bg-layer');
+        canvas.style.display = 'block';
         const ctx = canvas.getContext('2d');
-        
-        if (minigameAnimId) cancelAnimationFrame(minigameAnimId);
+
+        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
 
         if (type === 'tetris') {
-            runTetrisLoop(ctx, canvas);
+            runBgTetrisLoop(ctx, canvas);
         } else {
-            runSnakeLoop(ctx, canvas);
+            runBgSnakeLoop(ctx, canvas);
         }
     }
 
-    window.stopMinigame = function() {
-        document.getElementById('minigame-screen').style.display = 'none';
-        if (minigameAnimId) cancelAnimationFrame(minigameAnimId);
-        minigameAnimId = null;
-        addLog(`[MINIGAME] Background game closed.`);
+    window.stopBgAnimation = function() {
+        window.activeBgGame = null;
+        const canvas = document.getElementById('game-bg-layer');
+        canvas.style.display = 'none';
+        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
+        bgGameAnimId = null;
     };
 
-    // Tetris Loop Generator
-    function runTetrisLoop(ctx, canvas) {
-        let blocks = [];
-        for(let i=0; i<15; i++) {
-            blocks.push({ x: Math.floor(Math.random()*10)*30, y: Math.random()*-450, size: 30, speed: Math.random()*2+1, color: '#00ffcc' });
-        }
+    // Background Tetris Loop
+    function runBgTetrisLoop(ctx, canvas) {
+        let blocks = Array.from({length: 25}, () => ({
+            x: Math.floor(Math.random() * (canvas.width / 30)) * 30,
+            y: Math.random() * -canvas.height,
+            size: 28,
+            speed: Math.random() * 1.5 + 0.8,
+            color: '#00ffcc'
+        }));
+
         function loop() {
-            ctx.fillStyle = '#050505';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Grid lines
-            ctx.strokeStyle = '#112222';
-            for(let x=0; x<canvas.width; x+=30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
-            for(let y=0; y<canvas.height; y+=30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+            if (window.activeBgGame !== 'tetris') return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             blocks.forEach(b => {
                 b.y += b.speed;
-                if(b.y > canvas.height) { b.y = -30; b.x = Math.floor(Math.random()*10)*30; }
+                if (b.y > canvas.height) {
+                    b.y = -30;
+                    b.x = Math.floor(Math.random() * (canvas.width / 30)) * 30;
+                }
                 ctx.fillStyle = b.color;
-                ctx.fillRect(b.x+2, b.y+2, b.size-4, b.size-4);
+                ctx.fillRect(b.x, b.y, b.size, b.size);
             });
-            minigameAnimId = requestAnimationFrame(loop);
+            bgGameAnimId = requestAnimationFrame(loop);
         }
         loop();
     }
 
-    // Snake Loop Generator
-    function runSnakeLoop(ctx, canvas) {
-        let snake = [{x: 150, y: 150}, {x: 140, y: 150}, {x: 130, y: 150}];
-        let dx = 10, dy = 0;
-        let food = {x: 200, y: 200};
-        let frameCount = 0;
+    // Background Snake Loop
+    function runBgSnakeLoop(ctx, canvas) {
+        let snakes = [
+            { snake: [{x:100, y:100}, {x:90, y:100}, {x:80, y:100}], dx: 10, dy: 0, food: {x: 300, y: 300}, color: '#00ffcc' },
+            { snake: [{x:400, y:200}, {x:390, y:200}, {x:380, y:200}], dx: 0, dy: 10, food: {x: 200, y: 400}, color: '#00aa88' },
+            { snake: [{x:200, y:500}, {x:200, y:510}, {x:200, y:520}], dx: -10, dy: 0, food: {x: 500, y: 100}, color: '#55ffcc' }
+        ];
+        let frame = 0;
 
         function loop() {
-            frameCount++;
-            ctx.fillStyle = '#050505';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if (window.activeBgGame !== 'snake') return;
+            frame++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Food (Apple)
-            ctx.fillStyle = '#ff5555';
-            ctx.fillRect(food.x, food.y, 10, 10);
+            snakes.forEach(s => {
+                // Food
+                ctx.fillStyle = '#ff5555';
+                ctx.fillRect(s.food.x, s.food.y, 8, 8);
 
-            if (frameCount % 8 === 0) {
-                let head = {x: snake[0].x + dx, y: snake[0].y + dy};
-                if (head.x >= canvas.width) head.x = 0;
-                if (head.x < 0) head.x = canvas.width - 10;
-                if (head.y >= canvas.height) head.y = 0;
-                if (head.y < 0) head.y = canvas.height - 10;
+                if (frame % 12 === 0) {
+                    let head = {x: s.snake[0].x + s.dx, y: s.snake[0].y + s.dy};
+                    if (head.x >= canvas.width) head.x = 0;
+                    if (head.x < 0) head.x = canvas.width - 10;
+                    if (head.y >= canvas.height) head.y = 0;
+                    if (head.y < 0) head.y = canvas.height - 10;
 
-                snake.unshift(head);
+                    s.snake.unshift(head);
 
-                if (Math.abs(head.x - food.x) < 5 && Math.abs(head.y - food.y) < 5) {
-                    food = { x: Math.floor(Math.random()*(canvas.width/10))*10, y: Math.floor(Math.random()*(canvas.height/10))*10 };
-                } else {
-                    snake.pop();
+                    if (Math.abs(head.x - s.food.x) < 8 && Math.abs(head.y - s.food.y) < 8) {
+                        s.food = { x: Math.floor(Math.random()*(canvas.width/20))*20, y: Math.floor(Math.random()*(canvas.height/20))*20 };
+                    } else {
+                        s.snake.pop();
+                    }
+
+                    if (Math.random() < 0.15) {
+                        let dirs = [{dx:10,dy:0}, {dx:-10,dy:0}, {dx:0,dy:10}, {dx:0,dy:-10}];
+                        let d = dirs[Math.floor(Math.random()*dirs.length)];
+                        s.dx = d.dx; s.dy = d.dy;
+                    }
                 }
 
-                // AI direction change
-                if (Math.random() < 0.1) {
-                    let dirs = [{dx:10,dy:0}, {dx:-10,dy:0}, {dx:0,dy:10}, {dx:0,dy:-10}];
-                    let d = dirs[Math.floor(Math.random()*dirs.length)];
-                    dx = d.dx; dy = d.dy;
-                }
-            }
-
-            // Draw Snake
-            snake.forEach((part, index) => {
-                ctx.fillStyle = index === 0 ? '#00ffcc' : '#00aa88';
-                ctx.fillRect(part.x, part.y, 9, 9);
+                s.snake.forEach((p, idx) => {
+                    ctx.fillStyle = idx === 0 ? s.color : '#006655';
+                    ctx.fillRect(p.x, p.y, 8, 8);
+                });
             });
 
-            minigameAnimId = requestAnimationFrame(loop);
+            bgGameAnimId = requestAnimationFrame(loop);
         }
         loop();
     }
@@ -1345,7 +1343,7 @@
     function formatRupiah(num) { return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num) + " Rp"; }
     function escapeHtml(text) { return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-    // Background Particle Canvas
+    // Default Particle Canvas
     function initParticles() {
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
