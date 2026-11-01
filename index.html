@@ -349,6 +349,10 @@
             <label>DESCRIPTION & INCLUSIONS</label>
             <textarea id="post-desc" rows="3" placeholder="Includes PKT file + screenshot report..."></textarea>
         </div>
+        <div class="modal-field">
+            <label>ATTACH IMAGE / SERVICE PREVIEW (AUTO-COMPRESSED)</label>
+            <input type="file" id="post-img" accept="image/*">
+        </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
             <button onclick="closeModal('post-modal')">CANCEL</button>
             <button onclick="submitPost()">PUBLISH JOKI</button>
@@ -721,31 +725,78 @@
     window.openCustomRequestModal = function() { document.getElementById('custom-modal').style.display = 'flex'; };
     window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
+    /* Submit Service Feed Post with Client-Side HTML Canvas Image Compression */
     window.submitPost = function() {
         const title = document.getElementById('post-title').value.trim();
         const price = window.parseAmountToNumber(document.getElementById('post-price').value);
         const desc = document.getElementById('post-desc').value.trim();
+        const fileInput = document.getElementById('post-img');
 
         if (!title || !price) { alert('Valid Title and Price required!'); return; }
 
-        window.jobsList.unshift({
-            id: 'job-' + Date.now(),
-            title: title,
-            price: price,
-            description: desc,
-            type: 'marketplace',
-            status: 'open',
-            authorName: window.currentUser,
-            requestedAt: window.getCurrentFormattedTimestamp()
-        });
+        const processPost = (imageDataStr = null) => {
+            window.jobsList.unshift({
+                id: 'job-' + Date.now(),
+                title: title,
+                price: price,
+                description: desc,
+                image: imageDataStr,
+                type: 'marketplace',
+                status: 'open',
+                authorName: window.currentUser,
+                requestedAt: window.getCurrentFormattedTimestamp()
+            });
 
-        window.saveToStorage();
-        window.closeModal('post-modal');
-        document.getElementById('post-title').value = '';
-        document.getElementById('post-price').value = '';
-        document.getElementById('post-desc').value = '';
-        window.renderGrid();
-        addLog(`[MARKETPLACE] Published service '${title}' (${formatRupiah(price)}).`);
+            window.saveToStorage();
+            window.closeModal('post-modal');
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-price').value = '';
+            document.getElementById('post-desc').value = '';
+            fileInput.value = '';
+            window.renderGrid();
+            addLog(`[MARKETPLACE] Published service '${title}' (${formatRupiah(price)}).`);
+        };
+
+        if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    processPost(compressedBase64);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            processPost(null);
+        }
     };
 
     /* Submit Custom Request with Client-Side HTML Canvas Image Compression */
