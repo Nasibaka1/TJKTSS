@@ -832,7 +832,11 @@
                         ? `<button onclick="acceptCustomJob('${job.id}')">ACCEPT JOB</button>`
                         : `<span style="color:#888; font-size:11px;">[TAKEN BY ${escapeHtml(job.assignedTo || 'STAFF')}]</span>`;
                 } else {
-                    actionBtn = `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
+                    if (job.status === 'in_progress') {
+                        actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc;">PAY NOW (DP/FULL)</button>`;
+                    } else {
+                        actionBtn = `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
+                    }
                 }
             }
 
