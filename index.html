@@ -511,12 +511,22 @@
         signOut, 
         onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+        getFirestore, 
+        collection, 
+        doc, 
+        setDoc, 
+        onSnapshot, 
+        deleteDoc,
+        updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // Pre-configured for TJKTsuruhsuruh Project
     const firebaseConfig = {
         apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
-        authDomain: "tjktssv2.firebaseapp.com",
-        projectId: "tjktssv2",
-        storageBucket: "tjktssv2.firebasestorage.app",
+        authDomain: "tjktsuruhsuruh.firebaseapp.com",
+        projectId: "tjktsuruhsuruh",
+        storageBucket: "tjktsuruhsuruh.firebasestorage.app",
         messagingSenderId: "842333117452",
         appId: "1:842333117452:web:ea45034d64f0e03895e229",
         measurementId: "G-07HX39S99Y"
@@ -524,6 +534,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
     const googleProvider = new GoogleAuthProvider();
 
     const ADMIN_EMAIL = 'muhammadfadhilrandaputra@gmail.com';
@@ -534,9 +545,35 @@
     window.userRole = 'CUSTOMER';
     window.currentTab = 'FEED';
 
-    window.authorizedEmployees = JSON.parse(localStorage.getItem('offline_employees')) || [];
-    window.jobsList = JSON.parse(localStorage.getItem('offline_jobs')) || [];
-    window.transactionsList = JSON.parse(localStorage.getItem('offline_txs')) || [];
+    window.jobsList = [];
+    window.transactionsList = [];
+    window.authorizedEmployees = [];
+
+    // Real-Time Cloud Firestore Sync: Jobs (Marketplace & Custom)
+    onSnapshot(collection(db, "joki"), (snapshot) => {
+        window.jobsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        window.renderGrid();
+    }, (error) => {
+        console.error("Firestore Jobs Sync Error:", error);
+    });
+
+    // Real-Time Cloud Firestore Sync: Transactions
+    onSnapshot(collection(db, "transactions"), (snapshot) => {
+        window.transactionsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        window.renderGrid();
+    }, (error) => {
+        console.error("Firestore Transactions Sync Error:", error);
+    });
+
+    // Real-Time Cloud Firestore Sync: Authorized Employees
+    onSnapshot(collection(db, "settings"), (snapshot) => {
+        const empDoc = snapshot.docs.find(d => d.id === 'employees');
+        if (empDoc) {
+            window.authorizedEmployees = empDoc.data().list || [];
+        }
+        determineUserRole();
+        window.updateUserInterface();
+    });
 
     // Live Firebase Auth Listener
     onAuthStateChanged(auth, (user) => {
@@ -624,12 +661,6 @@
         return now.toLocaleDateString('en-US', options) + ' WITA';
     };
 
-    window.saveToStorage = function() {
-        localStorage.setItem('offline_jobs', JSON.stringify(window.jobsList));
-        localStorage.setItem('offline_txs', JSON.stringify(window.transactionsList));
-        localStorage.setItem('offline_employees', JSON.stringify(window.authorizedEmployees));
-    };
-
     window.updateUserInterface = function() {
         document.getElementById('sys-user').innerText = `${window.currentUser || 'guest'}@tjkt`;
         document.getElementById('cli-user-prompt').innerText = `${window.currentUser || 'guest'}@tjkt:~#`;
@@ -672,22 +703,22 @@
         });
     };
 
-    window.addEmployeeEmail = function() {
+    window.addEmployeeEmail = async function() {
         const input = document.getElementById('new-employee-email');
         const email = input.value.toLowerCase().trim();
         if (!email || !email.includes('@')) { alert('Please enter a valid email address!'); return; }
         if (!window.authorizedEmployees.includes(email)) {
             window.authorizedEmployees.push(email);
-            window.saveToStorage();
+            await setDoc(doc(db, "settings", "employees"), { list: window.authorizedEmployees });
             window.renderEmployeeList();
             input.value = '';
             addLog(`[ADMIN] Authorized employee account: '${email}'.`);
         }
     };
 
-    window.removeEmployeeEmail = function(email) {
+    window.removeEmployeeEmail = async function(email) {
         window.authorizedEmployees = window.authorizedEmployees.filter(e => e !== email);
-        window.saveToStorage();
+        await setDoc(doc(db, "settings", "employees"), { list: window.authorizedEmployees });
         window.renderEmployeeList();
         addLog(`[ADMIN] Revoked employee access for: '${email}'.`);
     };
@@ -700,27 +731,22 @@
         window.renderGrid();
     };
 
-    window.deleteJoki = function(jobId) {
+    window.deleteJoki = async function(jobId) {
         if (confirm('Are you sure you want to delete this joki posting?')) {
-            const job = window.jobsList.find(j => j.id === jobId);
-            window.jobsList = window.jobsList.filter(j => j.id !== jobId);
-            window.saveToStorage();
-            window.renderGrid();
-            addLog(`[DELETE] Deleted joki '${job ? job.title : jobId}'.`);
+            await deleteDoc(doc(db, "joki", jobId));
+            addLog(`[DELETE] Deleted joki '${jobId}' from Cloud Firestore.`);
         }
     };
 
     /* Transaction Deletion & Cancellation */
-    window.deleteTransaction = function(txId) {
+    window.deleteTransaction = async function(txId) {
         if (confirm('Are you sure you want to delete this order transaction record?')) {
-            window.transactionsList = window.transactionsList.filter(tx => tx.id !== txId);
-            window.saveToStorage();
-            window.renderGrid();
-            addLog(`[DELETE] Transaction '${txId}' deleted.`);
+            await deleteDoc(doc(db, "transactions", txId));
+            addLog(`[DELETE] Transaction '${txId}' deleted from Cloud Firestore.`);
         }
     };
 
-    window.cancelTransactionCustomer = function(txId) {
+    window.cancelTransactionCustomer = async function(txId) {
         const tx = window.transactionsList.find(t => t.id === txId);
         if (!tx) return;
 
@@ -734,9 +760,7 @@
         }
 
         if (confirm('Cancel this transaction? This action cannot be undone.')) {
-            window.transactionsList = window.transactionsList.filter(t => t.id !== txId);
-            window.saveToStorage();
-            window.renderGrid();
+            await deleteDoc(doc(db, "transactions", txId));
             addLog(`[CANCEL] Order '${txId}' cancelled by customer.`);
         }
     };
@@ -877,9 +901,10 @@
 
         if (!title || !price) { alert('Valid Title and Price required!'); return; }
 
-        const processPost = (imageDataStr = null) => {
-            window.jobsList.unshift({
-                id: 'job-' + Date.now(),
+        const processPost = async (imageDataStr = null) => {
+            const jobId = 'job-' + Date.now();
+            const newJob = {
+                id: jobId,
                 title: title,
                 price: price,
                 description: desc,
@@ -888,16 +913,15 @@
                 status: 'open',
                 authorName: window.currentUser,
                 requestedAt: window.getCurrentFormattedTimestamp()
-            });
+            };
 
-            window.saveToStorage();
+            await setDoc(doc(db, "joki", jobId), newJob);
             window.closeModal('post-modal');
             document.getElementById('post-title').value = '';
             document.getElementById('post-price').value = '';
             document.getElementById('post-desc').value = '';
             fileInput.value = '';
-            window.renderGrid();
-            addLog(`[MARKETPLACE] Published service '${title}' (${formatRupiah(price)}).`);
+            addLog(`[MARKETPLACE] Published service '${title}' (${formatRupiah(price)}) to Firestore.`);
         };
 
         if (fileInput.files && fileInput.files[0]) {
@@ -934,9 +958,10 @@
 
         if (!title || !budget) { alert('Valid Title and Budget required!'); return; }
 
-        const processRequest = (imageDataStr = null) => {
-            window.jobsList.unshift({
-                id: 'job-' + Date.now(),
+        const processRequest = async (imageDataStr = null) => {
+            const jobId = 'job-' + Date.now();
+            const newJob = {
+                id: jobId,
                 title: title,
                 price: budget,
                 deadline: deadline,
@@ -946,17 +971,16 @@
                 status: 'open',
                 authorName: window.currentUser,
                 requestedAt: window.getCurrentFormattedTimestamp()
-            });
+            };
 
-            window.saveToStorage();
+            await setDoc(doc(db, "joki", jobId), newJob);
             window.closeModal('custom-modal');
             document.getElementById('custom-title').value = '';
             document.getElementById('custom-budget').value = '';
             document.getElementById('custom-deadline').value = '';
             document.getElementById('custom-desc').value = '';
             fileInput.value = '';
-            window.renderGrid();
-            addLog(`[CUSTOM] Submitted custom request '${title}' (${formatRupiah(budget)}).`);
+            addLog(`[CUSTOM] Submitted custom request '${title}' (${formatRupiah(budget)}) to Firestore.`);
         };
 
         if (fileInput.files && fileInput.files[0]) {
@@ -983,14 +1007,14 @@
         }
     };
 
-    window.acceptCustomJob = function(jobId) {
+    window.acceptCustomJob = async function(jobId) {
         const job = window.jobsList.find(j => j.id === jobId);
         if (job) {
-            job.status = 'in_progress';
-            job.assignedTo = window.currentUser;
-            window.saveToStorage();
-            window.renderGrid();
-            addLog(`[ACCEPT] You accepted job '${job.title}'.`);
+            await updateDoc(doc(db, "joki", jobId), {
+                status: 'in_progress',
+                assignedTo: window.currentUser
+            });
+            addLog(`[ACCEPT] You accepted job '${job.title}' on Firestore.`);
         }
     };
 
@@ -1034,9 +1058,10 @@
 
         if (!selectedCheckoutJob) return;
 
-        const processTx = (proofData = null) => {
-            window.transactionsList.unshift({
-                id: 'tx-' + Math.floor(Math.random() * 9000 + 1000),
+        const processTx = async (proofData = null) => {
+            const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
+            const newTx = {
+                id: txId,
                 jobId: selectedCheckoutJob.id,
                 jobTitle: selectedCheckoutJob.title,
                 customerName: window.currentUser,
@@ -1048,13 +1073,13 @@
                 status: 'PENDING_VERIFICATION',
                 createdAt: Date.now(),
                 requestedAt: window.getCurrentFormattedTimestamp()
-            });
+            };
 
-            window.saveToStorage();
+            await setDoc(doc(db, "transactions", txId), newTx);
             window.closeModal('checkout-modal');
             if (proofInput) proofInput.value = '';
             window.switchTab('ORDERS');
-            addLog(`[ORDER] Order placed for '${selectedCheckoutJob.title}' via ${payMethod} (${payType}).`);
+            addLog(`[ORDER] Order placed for '${selectedCheckoutJob.title}' via ${payMethod} (${payType}) on Firestore.`);
         };
 
         if (proofInput && proofInput.files && proofInput.files[0]) {
