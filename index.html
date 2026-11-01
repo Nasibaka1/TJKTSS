@@ -527,6 +527,7 @@
     const googleProvider = new GoogleAuthProvider();
 
     const ADMIN_EMAIL = 'muhammadfadhilrandaputra@gmail.com';
+    const CUSTOMER_CANCEL_WINDOW_MINUTES = 15;
 
     window.currentUser = null;
     window.currentUserEmail = null;
@@ -542,7 +543,6 @@
         if (user) {
             window.currentUserEmail = user.email.toLowerCase().trim();
             
-            // Check for saved custom username first, fallback to Google display name or email prefix
             const customUsername = localStorage.getItem('custom_username_' + window.currentUserEmail);
             window.currentUser = customUsername || user.displayName || user.email.split('@')[0];
 
@@ -710,6 +710,37 @@
         }
     };
 
+    /* Transaction Deletion & Cancellation */
+    window.deleteTransaction = function(txId) {
+        if (confirm('Are you sure you want to delete this order transaction record?')) {
+            window.transactionsList = window.transactionsList.filter(tx => tx.id !== txId);
+            window.saveToStorage();
+            window.renderGrid();
+            addLog(`[DELETE] Transaction '${txId}' deleted.`);
+        }
+    };
+
+    window.cancelTransactionCustomer = function(txId) {
+        const tx = window.transactionsList.find(t => t.id === txId);
+        if (!tx) return;
+
+        const txTime = tx.createdAt || 0;
+        const now = Date.now();
+        const minutesPassed = (now - txTime) / (1000 * 60);
+
+        if (minutesPassed > CUSTOMER_CANCEL_WINDOW_MINUTES) {
+            alert('Cancellation window expired (15 minutes limit exceeded). Please contact staff directly.');
+            return;
+        }
+
+        if (confirm('Cancel this transaction? This action cannot be undone.')) {
+            window.transactionsList = window.transactionsList.filter(t => t.id !== txId);
+            window.saveToStorage();
+            window.renderGrid();
+            addLog(`[CANCEL] Order '${txId}' cancelled by customer.`);
+        }
+    };
+
     window.viewFullImage = function(imgData) {
         document.getElementById('img-viewer-src').src = imgData;
         document.getElementById('img-viewer-modal').style.display = 'flex';
@@ -740,6 +771,22 @@
                     ? `<img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Click to view payment proof">` 
                     : '';
 
+                let actionControlHtml = '';
+
+                if (isStaff) {
+                    actionControlHtml = `<button class="btn-del" onclick="deleteTransaction('${tx.id}')">DEL TX</button>`;
+                } else {
+                    const txTime = tx.createdAt || 0;
+                    const minutesPassed = (Date.now() - txTime) / (1000 * 60);
+                    const remainingMin = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - minutesPassed);
+
+                    if (remainingMin > 0) {
+                        actionControlHtml = `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL ORDER (${remainingMin}m left)</button>`;
+                    } else {
+                        actionControlHtml = `<span style="color:#666; font-size:11px;">[CANCEL LOCKED]</span>`;
+                    }
+                }
+
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
@@ -747,10 +794,15 @@
                         <p class="card-desc">Method: ${tx.paymentMethod} | Status: <span style="color:#00ffcc">${tx.status}</span></p>
                         ${proofHtml}
                     </div>
-                    <div class="card-meta">
-                        <span>BUYER: ${escapeHtml(tx.customerName)}</span>
-                        <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
-                        <span>TX ID: ${tx.id}</span>
+                    <div>
+                        <div class="card-meta">
+                            <span>BUYER: ${escapeHtml(tx.customerName)}</span>
+                            <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
+                            <span>TX ID: ${tx.id}</span>
+                        </div>
+                        <div style="margin-top: 10px; text-align: right;">
+                            ${actionControlHtml}
+                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -990,6 +1042,7 @@
                 amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price,
                 proofImage: proofData,
                 status: 'PENDING_VERIFICATION',
+                createdAt: Date.now(),
                 requestedAt: window.getCurrentFormattedTimestamp()
             });
 
