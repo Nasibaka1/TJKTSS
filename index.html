@@ -462,17 +462,17 @@
     </div>
 </div>
 
-<!-- Modal: Custom Request (Customer) -->
+<!-- Modal: Custom Request (Customer) - Dilengkapi Opsi Pembayaran -->
 <div class="modal-overlay" id="custom-modal">
     <div class="modal-box">
-        <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM</div>
+        <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM & PEMBAYARAN</div>
         <div class="modal-field">
             <label id="m-label-cust-title">JUDUL TUGAS</label>
             <input type="text" id="custom-title" placeholder="cth., Konfigurasi Debian 12 BIND9 DNS">
         </div>
         <div class="modal-field">
-            <label id="m-label-cust-budget">TAWARAN BUDGET (cth: 20rb, 20,000)</label>
-            <input type="text" id="custom-budget" placeholder="20rb atau 20,000">
+            <label id="m-label-cust-budget">TAWARAN BUDGET / HARGA (cth: 20rb, 20,000)</label>
+            <input type="text" id="custom-budget" placeholder="20rb atau 20,000" oninput="calculateCustomCheckout()">
         </div>
         <div class="modal-field">
             <label id="m-label-cust-deadline">TENGGAK WAKTU (DEADLINE)</label>
@@ -480,19 +480,59 @@
         </div>
         <div class="modal-field">
             <label id="m-label-cust-desc">DETAIL / INSTRUKSI TUGAS</label>
-            <textarea id="custom-desc" rows="3" placeholder="Konfigurasi domain tjkt.smkn7.sch.id pada IP 192.168.10.1..."></textarea>
+            <textarea id="custom-desc" rows="2" placeholder="Konfigurasi domain tjkt.smkn7.sch.id pada IP 192.168.10.1..."></textarea>
         </div>
         <div class="modal-field">
-            <label>LINK / FILE TUGAS (Opsional, cth: Link Google Drive / Deskripsi File)</label>
-            <input type="text" id="custom-file-link" placeholder="https://drive.google.com/... atau catatan file">
+            <label>NOMOR TELEPON / WHATSAPP</label>
+            <input type="text" id="custom-phone" placeholder="cth., 081234567890">
         </div>
         <div class="modal-field">
-            <label id="m-label-cust-img">LAMPIRKAN GAMBAR / SCREENSHOT</label>
+            <label>LINK / FILE TUGAS (Opsional)</label>
+            <input type="text" id="custom-file-link" placeholder="https://drive.google.com/...">
+        </div>
+        <div class="modal-field">
+            <label>KETENTUAN PEMBAYARAN</label>
+            <select id="custom-pay-type" onchange="calculateCustomCheckout()">
+                <option value="DP50">Down Payment (DP) 50%</option>
+                <option value="FULL">Bayar Penuh (100%)</option>
+            </select>
+        </div>
+        <div class="modal-field">
+            <label>METODE PEMBAYARAN</label>
+            <select id="custom-pay-method" onchange="toggleCustomPaymentInstructions()">
+                <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
+                <option value="EWALLET">Transfer Langsung E-Wallet (GoPay / DANA)</option>
+            </select>
+        </div>
+
+        <!-- Embedded QRIS Display untuk Custom Request -->
+        <div id="custom-qris-display" class="qris-box">
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
+            <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="custom-qris-amount">0 Rp</p>
+            <img src="qris.jpg" class="qris-img-render" alt="QRIS Kienziee Store">
+            <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
+            <p style="font-size: 10px; color: #aaa;">NMID: ID1026546274972</p>
+        </div>
+
+        <!-- E-Wallet Display untuk Custom Request -->
+        <div id="custom-ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
+            <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="custom-ewallet-amount">0 Rp</p>
+            <div style="background: #000; border: 1px solid #444; padding: 8px; margin: 8px 0; text-align: left;">
+                <p style="font-size: 11px; color: #aaa;">NOMOR: <span style="color: #fff; font-weight: bold;">08977246853</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 2px;">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
+            </div>
+            <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;">[SALIN NOMOR]</button>
+        </div>
+
+        <div class="modal-field" style="margin-top: 10px;">
+            <label id="m-label-cust-img">LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (WAJIB)</label>
             <input type="file" id="custom-img" accept="image/*">
         </div>
-        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
             <button onclick="closeModal('custom-modal')" id="m-btn-cancel3">BATAL</button>
-            <button onclick="submitCustomRequest()" id="m-btn-submit-req">KIRIM PERMINTAAN</button>
+            <button onclick="submitCustomRequestWithPayment()" id="m-btn-submit-req">KIRIM & BAYAR</button>
         </div>
     </div>
 </div>
@@ -508,7 +548,7 @@
     </div>
 </div>
 
-<!-- Modal: Checkout / Order Payment -->
+<!-- Modal: Checkout / Order Payment (untuk Feed Layanan) -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
         <div class="modal-title" id="m-title-checkout">CHECKOUT PESANAN & PEMBAYARAN</div>
@@ -516,7 +556,7 @@
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 13px; margin-bottom: 12px;"></p>
 
         <div class="modal-field">
-            <label>NOMOR TELEPON / WHATSAPP (UNTUK KOMUNIKASI KENDALA)</label>
+            <label>NOMOR TELEPON / WHATSAPP</label>
             <input type="text" id="order-phone" placeholder="cth., 081234567890">
         </div>
 
@@ -545,9 +585,7 @@
         <div id="qris-display" class="qris-box">
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-scan-qris">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
-            
             <img src="qris.jpg" class="qris-img-render" alt="QRIS Kienziee Store">
-            
             <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
             <p style="font-size: 10px; color: #aaa;">NMID: ID1026546274972</p>
         </div>
@@ -556,10 +594,9 @@
         <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-ewallet-title">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
-
             <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
-                <p style="font-size: 11px; color: #aaa;" id="txt-ewallet-num">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
-                <p style="font-size: 11px; color: #aaa; margin-top: 4px;" id="txt-ewallet-name">ATAS NAMA: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
+                <p style="font-size: 11px; color: #aaa;" id="txt-ewallet-num">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">08977246853</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 4px;" id="txt-ewallet-name">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
             </div>
             <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;" id="btn-copy-num">[SALIN NOMOR]</button>
         </div>
@@ -1070,15 +1107,13 @@
                         ? `<button onclick="acceptCustomJob('${job.id}')">ACCEPT JOB</button>`
                         : `<span style="color:#888; font-size:11px;">[TAKEN BY ${escapeHtml(job.assignedTo || 'STAFF')}]</span>`;
                 } else {
-                    if (job.status === 'in_progress') {
-                        actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc;">PAY NOW (DP/FULL)</button>`;
-                    } else {
-                        actionBtn = `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
-                    }
+                    actionBtn = `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
                 }
             }
 
             let imageHtml = job.image ? `<img src="${job.image}" class="card-img-preview" onclick="viewFullImage('${job.image}')">` : '';
+            let phoneInfo = job.phone ? `<span>TELP / WA: ${escapeHtml(job.phone)}</span>` : '';
+            let taskLinkInfo = job.taskLink ? `<span>FILE/LINK: ${escapeHtml(job.taskLink)}</span>` : '';
 
             card.innerHTML = `
                 <div>
@@ -1090,6 +1125,8 @@
                 <div>
                     <div class="card-meta">
                         <span>BY: ${escapeHtml(job.authorName)}</span>
+                        ${phoneInfo}
+                        ${taskLinkInfo}
                         <span>REQUESTED: ${escapeHtml(job.requestedAt || 'N/A')}</span>
                         ${job.deadline ? '<span>DEADLINE: ' + escapeHtml(job.deadline) + '</span>' : ''}
                     </div>
@@ -1104,8 +1141,35 @@
     };
 
     window.openPostModal = function() { document.getElementById('post-modal').style.display = 'flex'; };
-    window.openCustomRequestModal = function() { document.getElementById('custom-modal').style.display = 'flex'; };
+    window.openCustomRequestModal = function() { 
+        document.getElementById('custom-title').value = '';
+        document.getElementById('custom-budget').value = '';
+        document.getElementById('custom-deadline').value = '';
+        document.getElementById('custom-desc').value = '';
+        document.getElementById('custom-phone').value = '';
+        document.getElementById('custom-file-link').value = '';
+        document.getElementById('custom-qris-amount').innerText = '0 Rp';
+        document.getElementById('custom-ewallet-amount').innerText = '0 Rp';
+        document.getElementById('custom-modal').style.display = 'flex'; 
+    };
     window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
+
+    window.calculateCustomCheckout = function() {
+        const budgetStr = document.getElementById('custom-budget').value;
+        const total = window.parseAmountToNumber(budgetStr);
+        const payType = document.getElementById('custom-pay-type').value;
+        const finalAmt = payType === 'DP50' ? total * 0.5 : total;
+        const formatted = formatRupiah(finalAmt);
+
+        document.getElementById('custom-qris-amount').innerText = formatted;
+        document.getElementById('custom-ewallet-amount').innerText = formatted;
+    };
+
+    window.toggleCustomPaymentInstructions = function() {
+        const method = document.getElementById('custom-pay-method').value;
+        document.getElementById('custom-qris-display').style.display = method === 'QRIS' ? 'block' : 'none';
+        document.getElementById('custom-ewallet-display').style.display = method === 'EWALLET' ? 'block' : 'none';
+    };
 
     window.submitPost = function() {
         const title = document.getElementById('post-title').value.trim();
@@ -1162,17 +1226,22 @@
         }
     };
 
-    window.submitCustomRequest = function() {
+    window.submitCustomRequestWithPayment = function() {
         const title = document.getElementById('custom-title').value.trim();
         const budget = window.parseAmountToNumber(document.getElementById('custom-budget').value);
         const deadline = document.getElementById('custom-deadline').value.trim();
         const desc = document.getElementById('custom-desc').value.trim();
+        const phone = document.getElementById('custom-phone').value.trim();
         const taskLink = document.getElementById('custom-file-link').value.trim();
+        const payType = document.getElementById('custom-pay-type').value;
+        const payMethod = document.getElementById('custom-pay-method').value;
         const fileInput = document.getElementById('custom-img');
 
         if (!title || !budget) { alert('Valid Title and Budget required!'); return; }
+        if (!phone) { alert('Harap isi nomor telepon/WhatsApp!'); return; }
+        if (!fileInput.files || !fileInput.files[0]) { alert('Harap lampirkan bukti pembayaran!'); return; }
 
-        const processRequest = async (imageDataStr = null) => {
+        const processRequestWithPay = async (imageDataStr = null, proofData = null) => {
             const jobId = 'job-' + Date.now();
             const newJob = {
                 id: jobId,
@@ -1180,47 +1249,60 @@
                 price: budget,
                 deadline: deadline,
                 description: desc,
+                phone: phone,
                 taskLink: taskLink,
                 image: imageDataStr,
                 type: 'custom_request',
-                status: 'open',
+                status: 'in_progress',
                 authorName: window.currentUser,
                 requestedAt: window.getCurrentFormattedTimestamp()
             };
 
+            const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
+            const newTx = {
+                id: txId,
+                jobId: jobId,
+                jobTitle: title,
+                customerName: window.currentUser,
+                phone: phone,
+                taskLink: taskLink,
+                totalPrice: budget,
+                paymentType: payType,
+                paymentMethod: payMethod,
+                amountPaid: payType === 'DP50' ? budget * 0.5 : budget,
+                proofImage: proofData,
+                proofImageRemaining: null,
+                status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION',
+                createdAt: Date.now(),
+                requestedAt: window.getCurrentFormattedTimestamp()
+            };
+
             await setDoc(doc(db, "joki", jobId), newJob);
+            await setDoc(doc(db, "transactions", txId), newTx);
+
             window.closeModal('custom-modal');
-            document.getElementById('custom-title').value = '';
-            document.getElementById('custom-budget').value = '';
-            document.getElementById('custom-deadline').value = '';
-            document.getElementById('custom-desc').value = '';
-            document.getElementById('custom-file-link').value = '';
-            fileInput.value = '';
-            addLog(`[CUSTOM] Submitted custom request '${title}' (${formatRupiah(budget)}) to Firestore.`);
+            window.switchTab('ORDERS');
+            addLog(`[CUSTOM] Submitted request & paid for '${title}' (${formatRupiah(budget)}) on Firestore.`);
         };
 
-        if (fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
-                    let width = img.width; let height = img.height;
-                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
-                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                    canvas.width = width; canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    processRequest(canvas.toDataURL('image/jpeg', 0.7));
-                };
-                img.src = e.target.result;
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
+                let width = img.width; let height = img.height;
+                if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
+                else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+                canvas.width = width; canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                processRequestWithPay(null, canvas.toDataURL('image/jpeg', 0.7));
             };
-            reader.readAsDataURL(file);
-        } else {
-            processRequest(null);
-        }
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     };
 
     window.acceptCustomJob = async function(jobId) {
