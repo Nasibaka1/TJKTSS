@@ -376,6 +376,7 @@
             <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
             <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUEST KUSTOM</button>
             <button id="tab-orders" onclick="switchTab('ORDERS')">[3] TRANSAKSI SAYA</button>
+            <button id="tab-all-orders" onclick="switchTab('ALL_ORDERS')" style="display:none; border-color: #00ffcc; color: #00ffcc;">[4] SEMUA TRANSAKSI (STAFF)</button>
             <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none; border-color: #00ffcc; color: #00ffcc;">+ KELOLA PEGAWAI</button>
             <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
             <button id="btn-action-request" onclick="openCustomRequestModal()">+ AJUKAN TUGAS KUSTOM</button>
@@ -605,13 +606,12 @@
     window.currentUserEmail = null;
     window.userRole = 'CUSTOMER';
     window.currentTab = 'FEED';
-    window.currentLang = 'id'; // Default Bahasa Indonesia
+    window.currentLang = 'id';
 
     window.jobsList = [];
     window.transactionsList = [];
     window.authorizedEmployees = [];
 
-    // Kamus Terjemahan (ID & EN)
     const translations = {
         id: {
             authTitle: "[ AUTENTIKASI DIPERLUKAN ]",
@@ -624,6 +624,7 @@
             tabFeed: "[1] FEED LAYANAN",
             tabCustom: "[2] REQUEST KUSTOM",
             tabOrders: "[3] TRANSAKSI SAYA",
+            tabAllOrders: "[4] SEMUA TRANSAKSI (STAFF)",
             manageEmp: "+ KELOLA PEGAWAI",
             postJoki: "+ POST JOKI",
             reqCustom: "+ AJUKAN TUGAS KUSTOM",
@@ -645,6 +646,7 @@
             tabFeed: "[1] SERVICE FEED",
             tabCustom: "[2] CUSTOM REQUESTS",
             tabOrders: "[3] MY TRANSACTIONS",
+            tabAllOrders: "[4] ALL TRANSACTIONS (STAFF)",
             manageEmp: "+ MANAGE EMPLOYEES",
             postJoki: "+ POST A JOKI",
             reqCustom: "+ SUBMIT CUSTOM ASSIGNMENT",
@@ -676,6 +678,7 @@
         document.getElementById('tab-feed').innerText = t.tabFeed;
         document.getElementById('tab-custom').innerText = t.tabCustom;
         document.getElementById('tab-orders').innerText = t.tabOrders;
+        document.getElementById('tab-all-orders').innerText = t.tabAllOrders;
         document.getElementById('btn-action-manage-emp').innerText = t.manageEmp;
         document.getElementById('btn-action-post').innerText = t.postJoki;
         document.getElementById('btn-action-request').innerText = t.reqCustom;
@@ -683,7 +686,6 @@
         document.getElementById('exec-btn').innerText = t.cliExec;
     }
 
-    // Real-Time Cloud Firestore Sync: Jobs
     onSnapshot(collection(db, "joki"), (snapshot) => {
         window.jobsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.renderGrid();
@@ -691,7 +693,6 @@
         console.error("Firestore Jobs Sync Error:", error);
     });
 
-    // Real-Time Cloud Firestore Sync: Transactions
     onSnapshot(collection(db, "transactions"), (snapshot) => {
         window.transactionsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.renderGrid();
@@ -699,7 +700,6 @@
         console.error("Firestore Transactions Sync Error:", error);
     });
 
-    // Real-Time Cloud Firestore Sync: Authorized Employees
     onSnapshot(collection(db, "settings"), (snapshot) => {
         const empDoc = snapshot.docs.find(d => d.id === 'employees');
         if (empDoc) {
@@ -793,6 +793,7 @@
         const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
         document.getElementById('btn-action-post').style.display = isStaff ? 'inline-block' : 'none';
         document.getElementById('btn-action-manage-emp').style.display = window.userRole === 'ADMIN' ? 'inline-block' : 'none';
+        document.getElementById('tab-all-orders').style.display = isStaff ? 'inline-block' : 'none';
         document.getElementById('btn-action-request').style.display = 'inline-block';
     };
 
@@ -850,6 +851,8 @@
         document.getElementById('tab-feed').classList.toggle('active', tab === 'FEED');
         document.getElementById('tab-custom').classList.toggle('active', tab === 'CUSTOM');
         document.getElementById('tab-orders').classList.toggle('active', tab === 'ORDERS');
+        const tabAll = document.getElementById('tab-all-orders');
+        if (tabAll) tabAll.classList.toggle('active', tab === 'ALL_ORDERS');
         window.renderGrid();
     };
 
@@ -867,7 +870,6 @@
         }
     };
 
-    // Staff confirmation to verify & approve remaining payment (pelunasan)
     window.confirmRemainingPaymentStaff = async function(txId) {
         if (confirm('Konfirmasi pelunasan pesanan ini? Status akan diubah menjadi LUNAS (PAID_FULL).')) {
             await updateDoc(doc(db, "transactions", txId), {
@@ -912,10 +914,52 @@
         document.getElementById('stat-custom').innerText = customRequests.length;
         document.getElementById('stat-orders').innerText = window.transactionsList.length;
 
+        // Tab: Semua Transaksi (Khusus Staff)
+        if (window.currentTab === 'ALL_ORDERS' && isStaff) {
+            if (window.transactionsList.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${translations[window.currentLang].noTrans}</div>`;
+                return;
+            }
+            window.transactionsList.forEach(tx => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                let proofHtml = tx.proofImage 
+                    ? `<img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Click to view payment proof">` 
+                    : '';
+
+                let staffConfirmBtn = '';
+                if (tx.status === 'PENDING_REMAINING_APPROVAL') {
+                    staffConfirmBtn = `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
+                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${tx.paymentType})</div>
+                        <p class="card-desc">Method: ${tx.paymentMethod} | Status: <span style="color:#00ffcc">${tx.status}</span></p>
+                        ${proofHtml}
+                    </div>
+                    <div>
+                        <div class="card-meta">
+                            <span>BUYER: ${escapeHtml(tx.customerName)}</span>
+                            <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
+                            <span>TX ID: ${tx.id}</span>
+                        </div>
+                        <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+                            ${staffConfirmBtn}
+                            <button class="btn-del" onclick="deleteTransaction('${tx.id}')">DEL TX</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            return;
+        }
+
+        // Tab: Transaksi Saya (Hanya menampilkan transaksi milik user sendiri)
         if (window.currentTab === 'ORDERS') {
-            const userTransactions = isStaff 
-                ? window.transactionsList 
-                : window.transactionsList.filter(t => t.customerName === window.currentUser);
+            const userTransactions = window.transactionsList.filter(t => t.customerName === window.currentUser);
 
             if (userTransactions.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${translations[window.currentLang].noTrans}</div>`;
@@ -929,34 +973,22 @@
                     ? `<img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Click to view payment proof">` 
                     : '';
 
-                let actionControlHtml = '';
                 let payRemainingBtn = '';
-                let staffConfirmBtn = '';
-
-                // Customer can pay remaining if it was DP50 and not yet fully paid
-                if (!isStaff && tx.paymentType === 'DP50' && tx.status !== 'PAID_FULL' && tx.status !== 'PENDING_REMAINING_APPROVAL' && tx.customerName === window.currentUser) {
+                if (tx.paymentType === 'DP50' && tx.status !== 'PAID_FULL' && tx.status !== 'PENDING_REMAINING_APPROVAL') {
                     payRemainingBtn = `<button onclick="openRemainingCheckout('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">BAYAR PELUNASAN 50%</button>`;
-                } else if (!isStaff && tx.status === 'PENDING_REMAINING_APPROVAL') {
+                } else if (tx.status === 'PENDING_REMAINING_APPROVAL') {
                     payRemainingBtn = `<span style="color:#00ffcc; font-size:11px; margin-right:6px;">[MENUNGGU KONFIRMASI STAFF]</span>`;
                 }
 
-                // Staff can confirm remaining payment if status is PENDING_REMAINING_APPROVAL
-                if (isStaff && tx.status === 'PENDING_REMAINING_APPROVAL') {
-                    staffConfirmBtn = `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>`;
-                }
+                let actionControlHtml = '';
+                const txTime = tx.createdAt || 0;
+                const minutesPassed = (Date.now() - txTime) / (1000 * 60);
+                const remainingMin = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - minutesPassed);
 
-                if (isStaff) {
-                    actionControlHtml = `<button class="btn-del" onclick="deleteTransaction('${tx.id}')">DEL TX</button>`;
-                } else if (tx.customerName === window.currentUser) {
-                    const txTime = tx.createdAt || 0;
-                    const minutesPassed = (Date.now() - txTime) / (1000 * 60);
-                    const remainingMin = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - minutesPassed);
-
-                    if (remainingMin > 0) {
-                        actionControlHtml = `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL (${remainingMin}m)</button>`;
-                    } else {
-                        actionControlHtml = `<span style="color:#666; font-size:11px;">[LOCKED]</span>`;
-                    }
+                if (remainingMin > 0) {
+                    actionControlHtml = `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL (${remainingMin}m)</button>`;
+                } else {
+                    actionControlHtml = `<span style="color:#666; font-size:11px;">[LOCKED]</span>`;
                 }
 
                 card.innerHTML = `
@@ -974,7 +1006,6 @@
                         </div>
                         <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
                             ${payRemainingBtn}
-                            ${staffConfirmBtn}
                             ${actionControlHtml}
                         </div>
                     </div>
