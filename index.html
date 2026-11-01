@@ -1322,6 +1322,17 @@
     window.openCheckoutModal = function(jobId) {
         selectedCheckoutJob = window.jobsList.find(j => j.id === jobId);
         if (!selectedCheckoutJob) return;
+
+        // Pengecekan: Cegah user memesan layanan yang sama jika sudah ada transaksinya
+        const alreadyOrdered = window.transactionsList.some(
+            t => t.customerName === window.currentUser && t.jobId === jobId
+        );
+
+        if (alreadyOrdered) {
+            alert('Kamu sudah pernah memesan layanan ini! Cek tab [3] Transaksi Saya.');
+            return;
+        }
+
         activeRemainingTxId = null;
         document.getElementById('checkout-item-title').innerText = selectedCheckoutJob.title;
         document.getElementById('pay-type-container').style.display = 'block';
@@ -1383,7 +1394,6 @@
 
         if (!selectedCheckoutJob) return;
 
-        // Validasi wajib upload bukti pembayaran
         if (!proofInput.files || !proofInput.files[0]) {
             alert('Harap lampirkan bukti screenshot pembayaran terlebih dahulu!');
             return;
