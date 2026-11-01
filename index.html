@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJKT JOKI MARKETPLACE [OFFLINE TEST]</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace, monospace;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 0; opacity: 0.6;
+        }
+
+        .terminal {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            border-bottom: 1px dashed #ffffff;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        pre.ascii-title {
+            font-size: 11px;
+            line-height: 1.1;
+            color: #ffffff;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+
+        .sys-info {
+            font-size: 13px;
+            color: #888888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sys-info span { color: #ffffff; }
+
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            border: 1px solid #ffffff;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.7);
+            align-items: center;
+        }
+
+        .role-badge {
+            color: #00ffcc;
+            font-weight: bold;
+            border: 1px solid #00ffcc;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        button {
+            background-color: #000000;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            padding: 4px 10px;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        button:hover, button.active {
+            background-color: #ffffff;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        button.btn-del {
+            border-color: #ff5555;
+            color: #ff5555;
+            margin-left: 6px;
+        }
+
+        button.btn-del:hover {
+            background-color: #ff5555;
+            color: #000000;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: 1px solid #444;
+            background: rgba(10, 10, 10, 0.85);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .card:hover { border-color: #fff; }
+
+        .card-title { font-size: 14px; font-weight: bold; color: #fff; }
+        .card-price { color: #00ffcc; font-weight: bold; font-size: 13px; }
+        .card-desc { font-size: 12px; color: #aaa; }
+        .card-meta { font-size: 11px; color: #666; display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
+
+        .card-img-preview {
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            border: 1px solid #333;
+            margin-top: 6px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .card-img-preview:hover {
+            transform: scale(1.02);
+            border-color: #00ffcc;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-box {
+            background: #000;
+            border: 1px solid #fff;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #fff;
+            padding-bottom: 6px;
+        }
+
+        .modal-field { margin-bottom: 12px; }
+        .modal-field label { display: block; font-size: 11px; color: #aaa; margin-bottom: 4px; }
+        .modal-field input, .modal-field select, .modal-field textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 6px;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .employee-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #333;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .qris-box {
+            text-align: center;
+            border: 1px dashed #00ffcc;
+            padding: 15px;
+            margin: 10px 0;
+            background: #051510;
+        }
+
+        .cli-section {
+            border: 1px solid #ffffff;
+            padding: 12px;
+            margin-top: auto;
+            background-color: rgba(0, 0, 0, 0.85);
+        }
+
+        .cli-prompt-line { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+        .cli-prompt-line input {
+            flex-grow: 1; background: transparent; border: none; color: #ffffff;
+            font-family: inherit; font-size: 13px; outline: none;
+        }
+
+        .log-box {
+            margin-top: 10px; padding-top: 8px; border-top: 1px dashed #444444;
+            max-height: 80px; overflow-y: auto; font-size: 12px; color: #aaaaaa;
+        }
+
+        .auth-watermark {
+            position: fixed; bottom: 15px; right: 20px;
+            font-size: 11px; color: #444; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- Mock Offline Login Overlay -->
+<div class="modal-overlay" id="auth-modal" style="display: flex;">
+    <div class="modal-box" style="text-align: center;">
+        <div class="modal-title">[ OFFLINE TEST MODE: AUTHENTICATION ]</div>
+        <p style="font-size: 11px; color: #888; margin-bottom: 16px;">SELECT A TEST GOOGLE ACCOUNT TO SIGN IN</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button onclick="mockLogin('muhammadfadhilrandaputra@gmail.com', 'Fadhil Admin')" style="border-color: #00ffcc; color: #00ffcc;">[G] LOGIN AS ADMIN (fadhilrandaputra)</button>
+            <button onclick="mockLogin('turner@gmail.com', 'Turner Staff')">[G] LOGIN AS STAFF (turner@gmail.com)</button>
+            <button onclick="mockLogin('customer@gmail.com', 'Regular Customer')">[G] LOGIN AS CUSTOMER (customer@gmail.com)</button>
+        </div>
+    </div>
+</div>
+
+<div class="terminal">
+    <header>
+        <pre class="ascii-title">
+  _______   _ _  _________    __  __            _____  _  ________ _______ 
+ |__   __| | | |/ /__   __|  |  \/  |  /\      |  __ \| |/ /  ____|__   __|
+    | |    | | ' /   | |     | \  / | /  \     | |__) | ' /| |__     | |   
+    | |_   | |  <    | |     | |\/| |/ /\ \    |  _  /|  < |  __|    | |   
+    | | |__| | . \   | |     | |  | / ____ \   | | \ \| . \| |____   | |   
+    |_|\____/|_|\_\  |_|     |_|  |_/_/    \_\  |_|  \_\_|\_\______|  |_|   
+        </pre>
+        <div class="sys-info">
+            <div>USER: <span id="sys-user">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
+            <div>
+                <button onclick="resetData()" style="font-size: 10px; padding: 2px 6px;">[R] RESET DATA</button>
+                <button onclick="logoutSession()" style="font-size: 10px; padding: 2px 6px;">[X] LOGOUT</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div>ACTIVE LISTINGS: <span id="stat-active">0</span></div>
+        <div>OPEN CUSTOM REQUESTS: <span id="stat-custom">0</span></div>
+        <div>TOTAL ORDERS: <span id="stat-orders">0</span></div>
+        <div>ROLE: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
+    </div>
+
+    <div class="controls">
+        <div class="btn-group">
+            <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] SERVICE FEED</button>
+            <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] CUSTOM REQUESTS</button>
+            <button id="tab-orders" onclick="switchTab('ORDERS')">[3] MY TRANSACTIONS</button>
+            <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none; border-color: #00ffcc; color: #00ffcc;">+ MANAGE EMPLOYEES</button>
+            <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST A JOKI</button>
+            <button id="btn-action-request" onclick="openCustomRequestModal()">+ SUBMIT CUSTOM ASSIGNMENT</button>
+        </div>
+    </div>
+
+    <!-- Container for Listings / Feed / Orders -->
+    <div id="feed-grid" class="grid-container">
+        <!-- Cards rendered dynamically -->
+    </div>
+
+    <div class="cli-section">
+        <div class="cli-prompt-line">
+            <span id="cli-user-prompt">guest@tjkt:~#</span>
+            <input type="text" id="cli-input" placeholder="Type command (e.g., 'help' or 'role')" onkeydown="handleCliKeyDown(event)">
+            <button onclick="executeCliCommand()">EXEC</button>
+        </div>
+        <div class="log-box" id="log-box">
+            <div class="log-entry">[SYS] Offline LocalStorage Engine Initialized.</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Admin Manage Employees -->
+<div class="modal-overlay" id="employee-modal">
+    <div class="modal-box">
+        <div class="modal-title">[ ADMIN ] AUTHORIZE EMPLOYEE GOOGLE ACCOUNTS</div>
+        <div class="modal-field">
+            <label>ADD GOOGLE EMAIL ADDRESS</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="email" id="new-employee-email" placeholder="e.g., employee@gmail.com">
+                <button onclick="addEmployeeEmail()">AUTHORIZE</button>
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <label style="font-size: 11px; color: #aaa; display: block; margin-bottom: 6px;">AUTHORIZED STAFF MEMBERS:</label>
+            <div id="employee-list-container">
+                <!-- Dynamic Employee Email List -->
+            </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+            <button onclick="closeModal('employee-modal')">CLOSE</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Post Joki (Employee) -->
+<div class="modal-overlay" id="post-modal">
+    <div class="modal-box">
+        <div class="modal-title">POST AVAILABLE JOKI SERVICE</div>
+        <div class="modal-field">
+            <label>TITLE</label>
+            <input type="text" id="post-title" placeholder="e.g., Packet Tracer Inter-VLAN Routing">
+        </div>
+        <div class="modal-field">
+            <label>PRICE (e.g., 15000, 15rb, 15k, 15,000)</label>
+            <input type="text" id="post-price" placeholder="15rb or 15,000">
+        </div>
+        <div class="modal-field">
+            <label>DESCRIPTION & INCLUSIONS</label>
+            <textarea id="post-desc" rows="3" placeholder="Includes PKT file + screenshot report..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button onclick="closeModal('post-modal')">CANCEL</button>
+            <button onclick="submitPost()">PUBLISH JOKI</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Custom Request (Customer) -->
+<div class="modal-overlay" id="custom-modal">
+    <div class="modal-box">
+        <div class="modal-title">SUBMIT CUSTOM ASSIGNMENT REQUEST</div>
+        <div class="modal-field">
+            <label>ASSIGNMENT TITLE</label>
+            <input type="text" id="custom-title" placeholder="e.g., Debian 12 BIND9 DNS Config">
+        </div>
+        <div class="modal-field">
+            <label>YOUR BUDGET OFFER (e.g., 20rb, 20,000, 20k)</label>
+            <input type="text" id="custom-budget" placeholder="20rb or 20,000">
+        </div>
+        <div class="modal-field">
+            <label>DEADLINE</label>
+            <input type="text" id="custom-deadline" placeholder="Tomorrow, 17:00 WITA">
+        </div>
+        <div class="modal-field">
+            <label>ASSIGNMENT DETAILS / INSTRUCTIONS</label>
+            <textarea id="custom-desc" rows="3" placeholder="Configure domain tjkt.smkn7.sch.id on IP 192.168.10.1..."></textarea>
+        </div>
+        <div class="modal-field">
+            <label>ATTACH IMAGE / ASSIGNMENT SCREENSHOT (OPTIONAL)</label>
+            <input type="file" id="custom-img" accept="image/*">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button onclick="closeModal('custom-modal')">CANCEL</button>
+            <button onclick="submitCustomRequest()">SUBMIT REQUEST</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Image Full-Size Viewer -->
+<div class="modal-overlay" id="img-viewer-modal" onclick="closeModal('img-viewer-modal')">
+    <div class="modal-box" style="max-width: 700px; text-align: center; background: rgba(0,0,0,0.95);" onclick="event.stopPropagation()">
+        <div class="modal-title">[ ATTACHMENT PREVIEW ]</div>
+        <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 70vh; border: 1px solid #444; margin: 10px 0;">
+        <div style="text-align: right;">
+            <button onclick="closeModal('img-viewer-modal')">CLOSE</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Checkout / Order Payment -->
+<div class="modal-overlay" id="checkout-modal">
+    <div class="modal-box">
+        <div class="modal-title">ORDER & PAYMENT CHECKOUT</div>
+        <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px;"></p>
+        <p id="checkout-item-price" style="color: #00ffcc; font-size: 13px; margin-bottom: 12px;"></p>
+
+        <div class="modal-field">
+            <label>PAYMENT TYPE</label>
+            <select id="pay-type" onchange="calculateCheckout()">
+                <option value="DP50">50% Down Payment (DP)</option>
+                <option value="FULL">Full Payment (100%)</option>
+            </select>
+        </div>
+
+        <div class="modal-field">
+            <label>PAYMENT METHOD</label>
+            <select id="pay-method" onchange="togglePaymentInstructions()">
+                <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
+                <option value="CASH">Cash On Meeting</option>
+            </select>
+        </div>
+
+        <div id="qris-display" class="qris-box">
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ MOCK QRIS SCANNER ]</p>
+            <p style="font-size: 18px; font-weight: bold; margin: 8px 0;" id="qris-amount">0 Rp</p>
+            <p style="font-size: 10px; color: #aaa;">Simulated Payment to TJKT SURUH-SURUH</p>
+        </div>
+
+        <div id="cash-display" class="qris-box" style="display: none; border-color: #ffffff; background: #111;">
+            <p style="font-size: 11px; color: #fff; font-weight: bold;">[ CASH PAYMENT ]</p>
+            <p style="font-size: 11px; color: #aaa; margin-top: 5px;">Hand over cash directly to assigned employee upon meeting.</p>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button onclick="closeModal('checkout-modal')">CANCEL</button>
+            <button onclick="confirmOrder()">CONFIRM ORDER</button>
+        </div>
+    </div>
+</div>
+
+<div class="auth-watermark">made by @Turner</div>
+
+<script>
+    const ADMIN_EMAIL = 'muhammadfadhilrandaputra@gmail.com';
+
+    function parseAmountToNumber(amountStr) {
+        if (!amountStr) return 0;
+        let cleaned = String(amountStr).toLowerCase().trim();
+        let isThousands = cleaned.includes('rb') || cleaned.includes('k');
+        let numStr = cleaned.replace(/[^0-9.]/g, '');
+        if ((numStr.match(/\./g) || []).length > 1) {
+            numStr = numStr.replace(/\./g, '');
+        }
+        let num = parseFloat(numStr) || 0;
+        if (isThousands) {
+            return num * 1000;
+        }
+        return num;
+    }
+
+    function getCurrentFormattedTimestamp() {
+        const now = new Date();
+        const options = { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false
+        };
+        return now.toLocaleDateString('en-US', options) + ' WITA';
+    }
+
+    // Default Seed Data
+    const defaultJobs = [
+        {
+            id: 'job-101',
+            title: 'Cisco Packet Tracer VTP & ACL Config',
+            price: 15000,
+            description: 'Complete VTP Domain + Access List setup with PKT source file and documentation.',
+            type: 'marketplace',
+            status: 'open',
+            authorName: 'Turner',
+            requestedAt: 'Nov 1, 2026, 10:15 WITA'
+        },
+        {
+            id: 'job-102',
+            title: 'Debian 12 Apache Virtual Host Setup',
+            price: 10000,
+            description: 'Apache2 multi-site setup with custom root index directory.',
+            type: 'marketplace',
+            status: 'open',
+            authorName: 'fadhil',
+            requestedAt: 'Nov 1, 2026, 11:30 WITA'
+        },
+        {
+            id: 'job-103',
+            title: 'BIND9 Master & Slave DNS Server',
+            price: 20000,
+            deadline: 'Tomorrow 18:00 WITA',
+            description: 'Custom domain zone setup for smkn7.sch.id on IP 192.168.10.1.',
+            type: 'custom_request',
+            status: 'open',
+            authorName: 'Dede',
+            requestedAt: 'Nov 1, 2026, 12:45 WITA'
+        }
+    ];
+
+    let currentUser = localStorage.getItem('offline_user') || null;
+    let currentUserEmail = localStorage.getItem('offline_user_email') || null;
+    let userRole = 'CUSTOMER';
+    let currentTab = 'FEED';
+
+    let authorizedEmployees = JSON.parse(localStorage.getItem('offline_employees')) || ['turner@gmail.com', 'fadhil@gmail.com'];
+    let jobsList = JSON.parse(localStorage.getItem('offline_jobs')) || [...defaultJobs];
+    let transactionsList = JSON.parse(localStorage.getItem('offline_txs')) || [];
+
+    window.onload = function() {
+        initParticles();
+        if (currentUserEmail) {
+            document.getElementById('auth-modal').style.display = 'none';
+            determineUserRole();
+            updateUserInterface();
+            renderGrid();
+            addLog(`[AUTH] Restored session as '${currentUser}' (${currentUserEmail}).`);
+        } else {
+            document.getElementById('auth-modal').style.display = 'flex';
+        }
+    };
+
+    function mockLogin(email, username) {
+        currentUserEmail = email.toLowerCase().trim();
+        currentUser = username;
+
+        localStorage.setItem('offline_user', username);
+        localStorage.setItem('offline_user_email', currentUserEmail);
+
+        document.getElementById('auth-modal').style.display = 'none';
+        determineUserRole();
+        updateUserInterface();
+        renderGrid();
+        addLog(`[AUTH] Authenticated as '${currentUser}' (${currentUserEmail}).`);
+    }
+
+    function determineUserRole() {
+        if (currentUserEmail === ADMIN_EMAIL.toLowerCase()) {
+            userRole = 'ADMIN';
+        } else if (authorizedEmployees.includes(currentUserEmail)) {
+            userRole = 'EMPLOYEE';
+        } else {
+            userRole = 'CUSTOMER';
+        }
+    }
+
+    function logoutSession() {
+        localStorage.removeItem('offline_user');
+        localStorage.removeItem('offline_user_email');
+        location.reload();
+    }
+
+    function resetData() {
+        if (confirm('Reset offline database to default sample data?')) {
+            localStorage.removeItem('offline_jobs');
+            localStorage.removeItem('offline_txs');
+            localStorage.removeItem('offline_employees');
+            jobsList = [...defaultJobs];
+            transactionsList = [];
+            authorizedEmployees = ['turner@gmail.com', 'fadhil@gmail.com'];
+            saveToStorage();
+            renderGrid();
+            addLog(`[RESET] Restored original test dataset.`);
+        }
+    }
+
+    function saveToStorage() {
+        localStorage.setItem('offline_jobs', JSON.stringify(jobsList));
+        localStorage.setItem('offline_txs', JSON.stringify(transactionsList));
+        localStorage.setItem('offline_employees', JSON.stringify(authorizedEmployees));
+    }
+
+    function updateUserInterface() {
+        document.getElementById('sys-user').innerText = `${currentUser}@tjkt`;
+        document.getElementById('cli-user-prompt').innerText = `${currentUser}@tjkt:~#`;
+        document.getElementById('sys-role').innerText = userRole;
+        document.getElementById('stat-role-text').innerText = userRole;
+
+        const isStaff = userRole === 'ADMIN' || userRole === 'EMPLOYEE';
+        document.getElementById('btn-action-post').style.display = isStaff ? 'inline-block' : 'none';
+        document.getElementById('btn-action-manage-emp').style.display = userRole === 'ADMIN' ? 'inline-block' : 'none';
+        document.getElementById('btn-action-request').style.display = 'inline-block';
+    }
+
+    function toggleRole() {
+        if (userRole === 'ADMIN') {
+            userRole = 'EMPLOYEE';
+        } else if (userRole === 'EMPLOYEE') {
+            userRole = 'CUSTOMER';
+        } else {
+            determineUserRole();
+        }
+        updateUserInterface();
+        addLog(`[ROLE] Switched active mode view to ${userRole}.`);
+        renderGrid();
+    }
+
+    /* Admin Employee Management */
+    function openEmployeeManageModal() {
+        renderEmployeeList();
+        document.getElementById('employee-modal').style.display = 'flex';
+    }
+
+    function renderEmployeeList() {
+        const container = document.getElementById('employee-list-container');
+        container.innerHTML = '';
+
+        if (authorizedEmployees.length === 0) {
+            container.innerHTML = `<div style="color: #666; font-size: 11px;">No employees added yet.</div>`;
+            return;
+        }
+
+        authorizedEmployees.forEach((email) => {
+            const div = document.createElement('div');
+            div.className = 'employee-list-item';
+            div.innerHTML = `
+                <span>${escapeHtml(email)}</span>
+                <button class="btn-del" onclick="removeEmployeeEmail('${email}')">REVOKE</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function addEmployeeEmail() {
+        const input = document.getElementById('new-employee-email');
+        const email = input.value.toLowerCase().trim();
+
+        if (!email || !email.includes('@')) {
+            alert('Please enter a valid Google email address!');
+            return;
+        }
+
+        if (!authorizedEmployees.includes(email)) {
+            authorizedEmployees.push(email);
+            saveToStorage();
+            renderEmployeeList();
+            input.value = '';
+            addLog(`[ADMIN] Authorized employee account: '${email}'.`);
+        } else {
+            alert('Email is already authorized!');
+        }
+    }
+
+    function removeEmployeeEmail(email) {
+        authorizedEmployees = authorizedEmployees.filter(e => e !== email);
+        saveToStorage();
+        renderEmployeeList();
+        addLog(`[ADMIN] Revoked employee access for: '${email}'.`);
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.getElementById('tab-feed').classList.toggle('active', tab === 'FEED');
+        document.getElementById('tab-custom').classList.toggle('active', tab === 'CUSTOM');
+        document.getElementById('tab-orders').classList.toggle('active', tab === 'ORDERS');
+        renderGrid();
+    }
+
+    function deleteJoki(jobId) {
+        if (confirm('Are you sure you want to delete this joki posting?')) {
+            const job = jobsList.find(j => j.id === jobId);
+            jobsList = jobsList.filter(j => j.id !== jobId);
+            saveToStorage();
+            renderGrid();
+            addLog(`[DELETE] Deleted joki '${job ? job.title : jobId}'.`);
+        }
+    }
+
+    function viewFullImage(imgData) {
+        document.getElementById('img-viewer-src').src = imgData;
+        document.getElementById('img-viewer-modal').style.display = 'flex';
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('feed-grid');
+        grid.innerHTML = '';
+
+        const isStaff = userRole === 'ADMIN' || userRole === 'EMPLOYEE';
+        const activeServices = jobsList.filter(j => j.type === 'marketplace');
+        const customRequests = jobsList.filter(j => j.type === 'custom_request');
+
+        document.getElementById('stat-active').innerText = activeServices.length;
+        document.getElementById('stat-custom').innerText = customRequests.length;
+        document.getElementById('stat-orders').innerText = transactionsList.length;
+
+        if (currentTab === 'ORDERS') {
+            if (transactionsList.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO TRANSACTIONS FOUND ]</div>`;
+                return;
+            }
+
+            transactionsList.forEach(tx => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div>
+                        <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
+                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${tx.paymentType})</div>
+                        <p class="card-desc">Method: ${tx.paymentMethod} | Status: <span style="color:#00ffcc">${tx.status}</span></p>
+                    </div>
+                    <div class="card-meta">
+                        <span>BUYER: ${escapeHtml(tx.customerName)}</span>
+                        <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
+                        <span>TX ID: ${tx.id}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            return;
+        }
+
+        const targetList = currentTab === 'FEED' ? activeServices : customRequests;
+
+        if (targetList.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO ${currentTab} LISTINGS FOUND ]</div>`;
+            return;
+        }
+
+        targetList.forEach((job) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            let actionBtn = '';
+            let deleteBtn = isStaff ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
+
+            if (currentTab === 'FEED') {
+                actionBtn = `<button onclick="openCheckoutModal('${job.id}')">ORDER JOKI</button>`;
+            } else {
+                if (isStaff) {
+                    actionBtn = job.status === 'open' 
+                        ? `<button onclick="acceptCustomJob('${job.id}')">ACCEPT JOB</button>`
+                        : `<span style="color:#888; font-size:11px;">[TAKEN BY ${escapeHtml(job.assignedTo || 'STAFF')}]</span>`;
+                } else {
+                    actionBtn = `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
+                }
+            }
+
+            let imageHtml = job.image 
+                ? `<img src="${job.image}" class="card-img-preview" onclick="viewFullImage('${job.image}')" title="Click to view full image">` 
+                : '';
+
+            card.innerHTML = `
+                <div>
+                    <div class="card-title">${escapeHtml(job.title)}</div>
+                    <div class="card-price">${formatRupiah(job.price)}</div>
+                    <p class="card-desc">${escapeHtml(job.description || '')}</p>
+                    ${imageHtml}
+                </div>
+                <div>
+                    <div class="card-meta">
+                        <span>BY: ${escapeHtml(job.authorName)}</span>
+                        <span>REQUESTED: ${escapeHtml(job.requestedAt || 'N/A')}</span>
+                        ${job.deadline ? '<span>DEADLINE: ' + escapeHtml(job.deadline) + '</span>' : ''}
+                    </div>
+                    <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center;">
+                        ${actionBtn}
+                        ${deleteBtn}
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    /* Modal Controls */
+    function openPostModal() { document.getElementById('post-modal').style.display = 'flex'; }
+    function openCustomRequestModal() { document.getElementById('custom-modal').style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function submitPost() {
+        const title = document.getElementById('post-title').value.trim();
+        const priceInput = document.getElementById('post-price').value;
+        const price = parseAmountToNumber(priceInput);
+        const desc = document.getElementById('post-desc').value.trim();
+
+        if (!title || !price) { alert('Valid Title and Price are required!'); return; }
+
+        jobsList.unshift({
+            id: 'job-' + Date.now(),
+            title: title,
+            price: price,
+            description: desc,
+            type: 'marketplace',
+            status: 'open',
+            authorName: currentUser,
+            requestedAt: getCurrentFormattedTimestamp()
+        });
+
+        saveToStorage();
+        closeModal('post-modal');
+        document.getElementById('post-title').value = '';
+        document.getElementById('post-price').value = '';
+        document.getElementById('post-desc').value = '';
+        renderGrid();
+        addLog(`[MARKETPLACE] Published service '${title}' (${formatRupiah(price)}).`);
+    }
+
+    function submitCustomRequest() {
+        const title = document.getElementById('custom-title').value.trim();
+        const budgetInput = document.getElementById('custom-budget').value;
+        const budget = parseAmountToNumber(budgetInput);
+        const deadline = document.getElementById('custom-deadline').value.trim();
+        const desc = document.getElementById('custom-desc').value.trim();
+        const fileInput = document.getElementById('custom-img');
+
+        if (!title || !budget) { alert('Valid Title and Budget offer are required!'); return; }
+
+        const processRequest = (imageDataStr = null) => {
+            jobsList.unshift({
+                id: 'job-' + Date.now(),
+                title: title,
+                price: budget,
+                deadline: deadline,
+                description: desc,
+                image: imageDataStr,
+                type: 'custom_request',
+                status: 'open',
+                authorName: currentUser,
+                requestedAt: getCurrentFormattedTimestamp()
+            });
+
+            saveToStorage();
+            closeModal('custom-modal');
+            document.getElementById('custom-title').value = '';
+            document.getElementById('custom-budget').value = '';
+            document.getElementById('custom-deadline').value = '';
+            document.getElementById('custom-desc').value = '';
+            fileInput.value = '';
+            renderGrid();
+            addLog(`[CUSTOM] Submitted custom request '${title}' (${formatRupiah(budget)}).`);
+        };
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processRequest(e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            processRequest(null);
+        }
+    }
+
+    function acceptCustomJob(jobId) {
+        const job = jobsList.find(j => j.id === jobId);
+        if (job) {
+            job.status = 'in_progress';
+            job.assignedTo = currentUser;
+            saveToStorage();
+            renderGrid();
+            addLog(`[ACCEPT] You accepted job '${job.title}'.`);
+        }
+    }
+
+    /* Checkout & Payment */
+    let selectedCheckoutJob = null;
+
+    function openCheckoutModal(jobId) {
+        selectedCheckoutJob = jobsList.find(j => j.id === jobId);
+        if (!selectedCheckoutJob) return;
+
+        document.getElementById('checkout-item-title').innerText = selectedCheckoutJob.title;
+        calculateCheckout();
+        document.getElementById('checkout-modal').style.display = 'flex';
+    }
+
+    function calculateCheckout() {
+        if (!selectedCheckoutJob) return;
+        const payType = document.getElementById('pay-type').value;
+        const total = selectedCheckoutJob.price;
+        const finalAmt = payType === 'DP50' ? total * 0.5 : total;
+
+        document.getElementById('checkout-item-price').innerText = `TOTAL DUE NOW: ${formatRupiah(finalAmt)} ${payType === 'DP50' ? '(50% DP)' : '(FULL)'}`;
+        document.getElementById('qris-amount').innerText = formatRupiah(finalAmt);
+    }
+
+    function togglePaymentInstructions() {
+        const method = document.getElementById('pay-method').value;
+        document.getElementById('qris-display').style.display = method === 'QRIS' ? 'block' : 'none';
+        document.getElementById('cash-display').style.display = method === 'CASH' ? 'block' : 'none';
+    }
+
+    function confirmOrder() {
+        const payType = document.getElementById('pay-type').value;
+        const payMethod = document.getElementById('pay-method').value;
+
+        transactionsList.unshift({
+            id: 'tx-' + Math.floor(Math.random() * 9000 + 1000),
+            jobId: selectedCheckoutJob.id,
+            jobTitle: selectedCheckoutJob.title,
+            customerName: currentUser,
+            totalPrice: selectedCheckoutJob.price,
+            paymentType: payType,
+            paymentMethod: payMethod,
+            amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price,
+            status: payMethod === 'QRIS' ? 'PAID_VERIFIED' : 'PENDING_CASH',
+            requestedAt: getCurrentFormattedTimestamp()
+        });
+
+        saveToStorage();
+        closeModal('checkout-modal');
+        switchTab('ORDERS');
+        addLog(`[ORDER] Order placed for '${selectedCheckoutJob.title}' (${payType}).`);
+    }
+
+    function handleCliKeyDown(e) { if (e.key === 'Enter') executeCliCommand(); }
+    function executeCliCommand() {
+        const input = document.getElementById('cli-input');
+        const cmd = input.value.trim();
+        if (!cmd) return;
+        addLog(`${currentUser}@tjkt:~# ${cmd}`);
+        input.value = '';
+
+        if (cmd.toLowerCase() === 'help') {
+            addLog(`[HELP] Commands: role, reset, clear`);
+        } else if (cmd.toLowerCase() === 'role') {
+            toggleRole();
+        } else if (cmd.toLowerCase() === 'reset') {
+            resetData();
+        } else if (cmd.toLowerCase() === 'clear') {
+            document.getElementById('log-box').innerHTML = '';
+        } else {
+            addLog(`[ERROR] Command not recognized.`);
+        }
+    }
+
+    function addLog(msg) {
+        const logBox = document.getElementById('log-box');
+        const div = document.createElement('div');
+        div.className = 'log-entry'; div.innerText = msg;
+        logBox.appendChild(div);
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function formatRupiah(number) {
+        return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(number) + " Rp";
+    }
+
+    function escapeHtml(text) {
+        return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function initParticles() {
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+        const particles = [];
+        for (let i = 0; i < 45; i++) {
+            particles.push({
+                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 + 0.2
+            });
+        }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; ctx.fill();
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+</script>
+
+</body>
+</html>
