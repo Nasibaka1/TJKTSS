@@ -2,31 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TJKT JOKI MARKETPLACE</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        :root {
-            --bg-color: #000000;
-            --text-color: #ffffff;
-            --accent-cyan: #00ffcc;
-            --danger-red: #ff5555;
-            --border-dim: #444444;
-            --card-bg: rgba(10, 10, 10, 0.85);
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #000000;
+            color: #ffffff;
             font-family: 'Courier New', Courier, monospace, monospace;
-            padding: 12px;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
         }
 
         #bg-canvas {
@@ -53,25 +42,23 @@
             margin-bottom: 16px;
         }
 
-        .ascii-container {
-            width: 100%;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            margin-bottom: 10px;
-        }
-
-        .ascii-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        pre.ascii-title {
+        /* ASCII Art Responsive Handling */
+        pre.ascii-title-desktop {
+            display: block;
             font-size: 11px;
             line-height: 1.1;
             color: #ffffff;
-            white-space: pre;
-            display: inline-block;
-            min-width: max-content;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+
+        pre.ascii-title-mobile {
+            display: none;
+            font-size: 8px;
+            line-height: 1.1;
+            color: #ffffff;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
         }
 
         .sys-info {
@@ -87,40 +74,36 @@
         .sys-info span { color: #ffffff; }
 
         .user-badge {
-            color: var(--accent-cyan);
+            color: #00ffcc;
             font-weight: bold;
-            border: 1px dashed var(--accent-cyan);
-            padding: 4px 8px;
+            border: 1px dashed #00ffcc;
+            padding: 2px 6px;
             cursor: pointer;
-            display: inline-block;
-            word-break: break-all;
         }
 
         .user-badge:hover {
-            background-color: var(--accent-cyan);
+            background-color: #00ffcc;
             color: #000;
         }
 
         .stats-bar {
             display: flex;
-            gap: 14px;
+            gap: 20px;
             border: 1px solid #ffffff;
-            padding: 10px 12px;
+            padding: 8px 12px;
             margin-bottom: 16px;
-            font-size: 12px;
+            font-size: 13px;
             flex-wrap: wrap;
             background: rgba(0, 0, 0, 0.7);
             align-items: center;
-            justify-content: space-between;
         }
 
         .role-badge {
-            color: var(--accent-cyan);
+            color: #00ffcc;
             font-weight: bold;
-            border: 1px solid var(--accent-cyan);
-            padding: 4px 8px;
+            border: 1px solid #00ffcc;
+            padding: 2px 6px;
             cursor: pointer;
-            display: inline-block;
         }
 
         .controls {
@@ -132,28 +115,18 @@
             flex-wrap: wrap;
         }
 
-        .btn-group { 
-            display: flex; 
-            gap: 8px; 
-            flex-wrap: wrap; 
-            width: 100%;
-        }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
 
         button {
             background-color: #000000;
             color: #ffffff;
             border: 1px solid #ffffff;
-            padding: 8px 12px;
-            min-height: 40px;
+            padding: 6px 12px;
             font-family: inherit;
             font-size: 12px;
             cursor: pointer;
             text-transform: uppercase;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.15s ease, color 0.15s ease;
-            touch-action: manipulation;
+            min-height: 38px;
         }
 
         button:hover, button.active {
@@ -163,12 +136,13 @@
         }
 
         button.btn-del {
-            border-color: var(--danger-red);
-            color: var(--danger-red);
+            border-color: #ff5555;
+            color: #ff5555;
+            margin-left: 6px;
         }
 
         button.btn-del:hover {
-            background-color: var(--danger-red);
+            background-color: #ff5555;
             color: #000000;
         }
 
@@ -180,26 +154,25 @@
         }
 
         .card {
-            border: 1px solid var(--border-dim);
-            background: var(--card-bg);
+            border: 1px solid #444;
+            background: rgba(10, 10, 10, 0.85);
             padding: 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 12px;
-            word-wrap: break-word;
+            gap: 10px;
         }
 
         .card:hover { border-color: #fff; }
 
-        .card-title { font-size: 14px; font-weight: bold; color: #fff; line-height: 1.3; }
-        .card-price { color: var(--accent-cyan); font-weight: bold; font-size: 13px; }
-        .card-desc { font-size: 12px; color: #aaa; line-height: 1.4; white-space: pre-line; }
-        .card-meta { font-size: 11px; color: #666; display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+        .card-title { font-size: 14px; font-weight: bold; color: #fff; }
+        .card-price { color: #00ffcc; font-weight: bold; font-size: 13px; }
+        .card-desc { font-size: 12px; color: #aaa; }
+        .card-meta { font-size: 11px; color: #666; display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
 
         .card-img-preview {
             width: 100%;
-            max-height: 180px;
+            max-height: 140px;
             object-fit: cover;
             border: 1px solid #333;
             margin-top: 6px;
@@ -208,31 +181,30 @@
         }
 
         .card-img-preview:hover {
-            transform: scale(1.01);
-            border-color: var(--accent-cyan);
+            transform: scale(1.02);
+            border-color: #00ffcc;
         }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.88);
+            background: rgba(0, 0, 0, 0.85);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            padding: 12px;
+            padding: 15px;
         }
 
         .modal-box {
             background: #000;
             border: 1px solid #fff;
-            padding: 16px;
+            padding: 20px;
             width: 100%;
             max-width: 500px;
             position: relative;
-            max-height: 88vh;
+            max-height: 90vh;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
 
         .modal-title {
@@ -244,22 +216,16 @@
         }
 
         .modal-field { margin-bottom: 12px; }
-        .modal-field label { display: block; font-size: 11px; color: #aaa; margin-bottom: 6px; }
-        
+        .modal-field label { display: block; font-size: 11px; color: #aaa; margin-bottom: 4px; }
         .modal-field input, .modal-field select, .modal-field textarea {
             width: 100%;
             background: #000;
             border: 1px solid #444;
             color: #fff;
-            padding: 10px;
+            padding: 8px;
             font-family: inherit;
             font-size: 13px;
             outline: none;
-            border-radius: 0;
-        }
-
-        .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus {
-            border-color: var(--accent-cyan);
         }
 
         .employee-list-item {
@@ -267,24 +233,23 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid #333;
-            padding: 8px 10px;
+            padding: 6px 10px;
             margin-bottom: 6px;
             font-size: 12px;
-            gap: 8px;
         }
 
         .qris-box {
             text-align: center;
-            border: 1px dashed var(--accent-cyan);
-            padding: 12px;
+            border: 1px dashed #00ffcc;
+            padding: 15px;
             margin: 10px 0;
             background: #051510;
         }
 
         .qris-img-render {
-            max-width: 200px;
+            max-width: 210px;
             width: 100%;
-            border: 2px solid var(--accent-cyan);
+            border: 2px solid #00ffcc;
             margin: 8px 0;
             background: #fff;
             padding: 4px;
@@ -297,125 +262,67 @@
             background-color: rgba(0, 0, 0, 0.85);
         }
 
-        .cli-prompt-line { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            font-size: 13px; 
-            flex-wrap: wrap;
-        }
-
+        .cli-prompt-line { display: flex; align-items: center; gap: 8px; font-size: 13px; }
         .cli-prompt-line input {
-            flex-grow: 1; 
-            min-width: 140px;
-            background: transparent; 
-            border: none; 
-            color: #ffffff;
-            font-family: inherit; 
-            font-size: 13px; 
-            outline: none;
-            padding: 6px 0;
+            flex-grow: 1; background: transparent; border: none; color: #ffffff;
+            font-family: inherit; font-size: 13px; outline: none;
         }
 
         .log-box {
-            margin-top: 10px; 
-            padding-top: 8px; 
-            border-top: 1px dashed #444444;
-            max-height: 100px; 
-            overflow-y: auto; 
-            font-size: 11px; 
-            color: #aaaaaa;
-            line-height: 1.4;
+            margin-top: 10px; padding-top: 8px; border-top: 1px dashed #444444;
+            max-height: 80px; overflow-y: auto; font-size: 12px; color: #aaaaaa;
         }
 
         .auth-watermark {
-            position: fixed; bottom: 10px; right: 12px;
-            font-size: 10px; color: #555; pointer-events: none; z-index: 2;
+            position: fixed; bottom: 10px; right: 15px;
+            font-size: 11px; color: #444; pointer-events: none;
         }
 
-        /* Responsive Breakpoints & Mobile Optimization */
-        @media (max-width: 768px) {
-            body { padding: 8px; }
-            
+        /* MOBILE RESPONSIVE MEDIA QUERY (<= 768px) */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            pre.ascii-title-desktop {
+                display: none;
+            }
+            pre.ascii-title-mobile {
+                display: block;
+            }
             .sys-info {
+                font-size: 11px;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 8px;
+                gap: 6px;
             }
-
-            .sys-info > div {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
             .stats-bar {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
                 font-size: 11px;
                 padding: 8px;
             }
-
-            .btn-group {
-                overflow-x: auto;
-                white-space: nowrap;
-                flex-wrap: nowrap;
-                padding-bottom: 6px;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .btn-group button {
-                flex-shrink: 0;
-                min-height: 44px;
-                padding: 6px 12px;
-            }
-
-            .grid-container {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .modal-box {
-                padding: 14px;
-                max-width: 95vw;
-            }
-
-            .cli-prompt-line button {
+            .controls .btn-group {
+                display: flex;
+                flex-direction: column;
                 width: 100%;
-                margin-top: 4px;
             }
-
-            button {
+            .controls .btn-group button {
                 width: 100%;
-                min-height: 44px;
-            }
-
-            .btn-group button {
-                width: auto;
-            }
-
-            .card-meta {
-                font-size: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            pre.ascii-title {
-                font-size: 8px;
-            }
-
-            .stats-bar {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-title {
+                text-align: center;
+                padding: 10px;
                 font-size: 13px;
             }
-
-            .modal-field input, .modal-field select, .modal-field textarea {
-                font-size: 14px; /* Prevents auto-zoom in iOS Safari */
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            .cli-prompt-line {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .cli-prompt-line button {
+                width: 100%;
+                padding: 8px;
             }
         }
     </style>
@@ -430,7 +337,7 @@
         <div class="modal-title">[ AUTHENTICATION REQUIRED ]</div>
         <p style="font-size: 11px; color: #888; margin-bottom: 20px;">SIGN IN WITH GOOGLE TO ACCESS TJKT MARKETPLACE</p>
         
-        <button onclick="loginWithGoogle()" style="border-color: var(--accent-cyan); color: var(--accent-cyan); padding: 12px 20px; font-size: 13px; width: 100%;">
+        <button onclick="loginWithGoogle()" style="border-color: #00ffcc; color: #00ffcc; padding: 12px 24px; font-size: 13px; width: 100%;">
             [G] SIGN IN WITH GOOGLE
         </button>
     </div>
@@ -438,40 +345,45 @@
 
 <div class="terminal">
     <header>
-        <div class="ascii-container">
-            <pre style="font-family:'Courier New',Courier,monospace;font-size:12px;line-height:1.17;white-space:pre;background-color:#000;color:#fff;padding:8px;margin:0;"><span style="color:#AAAAAA"> </span><span style="color:#5555FF">______</span><span style="color:#00AAAA">_</span><span style="color:#AAAAAA">_</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA">   </span><span style="color:#00AAAA">_</span><span style="color:#AAAAAA">_</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA">    </span><span style="color:#5555FF">__</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA">   </span><span style="color:#5555FF">_</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA">     </span><span style="color:#5555FF">______</span><span style="color:#00AAAA">_</span><span style="color:#AAAAAA">_</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA">       </span><span style="color:#5555FF">___</span><span style="color:#00AAAA">_</span><span style="color:#AAAAAA">_</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA">     </span><span style="color:#5555FF">___</span><span style="color:#00AAAA">_</span><span style="color:#AAAAAA">_</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA">   </span>
-<span style="color:#555555">/</span><span style="color:#5555FF">\__</span><span style="color:#AAAAAA">    </span><span style="color:#5555FF">__</span><span style="color:#FFFFFF">\</span><span style="color:#AAAAAA"> </span><span style="color:#555555">/</span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">.</span><span style="color:#FFFFFF">\</span><span style="color:#AAAAAA">  </span><span style="color:#555555">/</span><span style="color:#5555FF">\</span><span style="color:#AAAAAA">  \</span><span style="color:#5555FF">_</span><span style="color:#555555">/</span><span style="color:#5555FF">&gt;</span><span style="color:#AAAAAA"> </span><span style="color:#FFFFFF">\</span><span style="color:#AAAAAA">   </span><span style="color:#555555">/</span><span style="color:#5555FF">\__</span><span style="color:#AAAAAA">    </span><span style="color:#5555FF">__</span><span style="color:#FFFFFF">\</span><span style="color:#AAAAAA">     </span><span style="color:#5555FF">/</span><span style="color:#AAAAAA">  </span><span style="color:#5555FF">____</span><span style="color:#FFFFFF">&gt;</span><span style="color:#AAAAAA">   </span><span style="color:#5555FF">/</span><span style="color:#AAAAAA">  </span><span style="color:#5555FF">____</span><span style="color:#FFFFFF">&gt;</span><span style="color:#AAAAAA">  </span>
-<span style="color:#555555">\/__/</span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">,</span><span style="color:#00AAAA">\</span><span style="color:#555555">_/</span><span style="color:#AAAAAA"> </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">\</span><span style="color:#AAAAAA">\ </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">.</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">__</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">&lt;</span><span style="color:#AAAAAA">_  </span><span style="color:#555555">\/__/</span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">,</span><span style="color:#00AAAA">\</span><span style="color:#555555">_/</span><span style="color:#AAAAAA">    </span><span style="color:#555555">/</span><span style="color:#5555FF">\_____</span><span style="color:#AAAAAA"> </span><span style="color:#00AAAA">\</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA"> </span><span style="color:#555555">/</span><span style="color:#5555FF">\_____</span><span style="color:#AAAAAA"> </span><span style="color:#00AAAA">\</span><span style="color:#FFFFFF">_</span><span style="color:#AAAAAA"> </span>
-<span style="color:#AAAAAA">    </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">\</span><span style="color:#AAAAAA">\  </span><span style="color:#5555FF">_</span><span style="color:#555555">\</span><span style="color:#5555FF">_&gt;</span><span style="color:#AAAAAA">  </span><span style="color:#00AAAA">\</span><span style="color:#AAAAAA"> </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">\</span><span style="color:#00AAAA">\</span><span style="color:#555555">/</span><span style="color:#5555FF">\</span><span style="color:#AAAAAA">  </span><span style="color:#00AAAA">\</span><span style="color:#AAAAAA">     </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">\</span><span style="color:#AAAAAA">\     </span><span style="color:#555555">\/____/</span><span style="color:#5555FF">&gt;</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">,</span><span style="color:#AAAAAA">\</span><span style="color:#555555">\/____/</span><span style="color:#5555FF">&gt;</span><span style="color:#AAAAAA"> </span><span style="color:#0000AA">,</span><span style="color:#AAAAAA">\</span>
-<span style="color:#AAAAAA">     </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\__</span><span style="color:#00AAAA">\</span><span style="color:#555555">/</span><span style="color:#5555FF">\_____/</span><span style="color:#AAAAAA">  </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\__\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\__\</span><span style="color:#AAAAAA">     </span><span style="color:#555555">\</span><span style="color:#AAAAAA"> </span><span style="color:#5555FF">\__</span><span style="color:#00AAAA">\</span><span style="color:#AAAAAA">      </span><span style="color:#555555">/</span><span style="color:#5555FF">\______</span><span style="color:#00AAAA">/</span><span style="color:#AAAAAA">  </span><span style="color:#555555">/</span><span style="color:#5555FF">\______</span><span style="color:#00AAAA">/</span>
-<span style="color:#AAAAAA">      </span><span style="color:#555555">\/__/\/____/</span><span style="color:#AAAAAA">    </span><span style="color:#555555">\/__/\/__/</span><span style="color:#AAAAAA">      </span><span style="color:#555555">\/__/</span><span style="color:#AAAAAA">      </span><span style="color:#555555">\/_____/</span><span style="color:#AAAAAA">   </span><span style="color:#555555">\/_____/</span><span style="color:#AAAAAA"> </span></pre>
-        </div>
+        <!-- Desktop ASCII Art (Classic Long Version) -->
+        <pre class="ascii-title-desktop">
+  _______   _ _  _________    __  __            _____  _  ________ _______ 
+ |__   __| | | |/ /__   __|  |  \/  |  /\      |  __ \| |/ /  ____|__   __|
+    | |    | | ' /   | |     | \  / | /  \     | |__) | ' /| |__     | |   
+    | |_   | |  <    | |     | |\/| |/ /\ \    |  _  /|  < |  __|    | |   
+    | | |__| | . \   | |     | |  | / ____ \   | | \ \| . \| |____   | |   
+    |_|\____/|_|\_\  |_|     |_|  |_/_/    \_\  |_|  \_\_|\_\______|  |_|   
+        </pre>
+        <!-- Mobile ASCII Art (Compact Short Version) -->
+        <pre class="ascii-title-mobile">
+  _______ ____   ____ 
+ |__   __|  _ \ / ___|
+    | |  | |_) | (mand 
+    | |  |  _ < \___ \
+    | |  | |_) | ___) |
+    |_|  |____/ |____/ 
+        </pre>
         <div class="sys-info">
+            <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Click to change username">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
             <div>
-                <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Click to change username">guest@tjkt</span></div>
-                <div>ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
-            </div>
-            <div style="margin-top: 6px;">
-                <button onclick="logoutSession()" style="font-size: 10px; padding: 4px 8px; min-height: 32px; width: auto;">[X] LOGOUT</button>
+                <button onclick="logoutSession()" style="font-size: 10px; padding: 4px 8px;">[X] LOGOUT</button>
             </div>
         </div>
     </header>
 
     <div class="stats-bar">
-        <div>LISTINGS: <span id="stat-active" style="color: #fff;">0</span></div>
-        <div>CUSTOM REQS: <span id="stat-custom" style="color: #fff;">0</span></div>
-        <div>ORDERS: <span id="stat-orders" style="color: #fff;">0</span></div>
-        <div>VIEW: <span id="stat-role-text" style="color: var(--accent-cyan);">CUSTOMER</span></div>
+        <div>ACTIVE LISTINGS: <span id="stat-active">0</span></div>
+        <div>OPEN CUSTOM REQUESTS: <span id="stat-custom">0</span></div>
+        <div>TOTAL ORDERS: <span id="stat-orders">0</span></div>
+        <div>ROLE: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
     </div>
 
     <div class="controls">
-        <div class="btn-group">
-            <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED</button>
-            <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUESTS</button>
-            <button id="tab-orders" onclick="switchTab('ORDERS')">[3] TRANSACTIONS</button>
-        </div>
-        <div style="width: 100%; display: flex; gap: 8px; flex-direction: column; margin-top: 8px;">
-            <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none; border-color: var(--accent-cyan); color: var(--accent-cyan);">+ MANAGE EMPLOYEES</button>
+        <div class="btn-group" style="width: 100%;">
+            <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] SERVICE FEED</button>
+            <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] CUSTOM REQUESTS</button>
+            <button id="tab-orders" onclick="switchTab('ORDERS')">[3] MY TRANSACTIONS</button>
+            <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none; border-color: #00ffcc; color: #00ffcc;">+ MANAGE EMPLOYEES</button>
             <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST A JOKI</button>
             <button id="btn-action-request" onclick="openCustomRequestModal()">+ SUBMIT CUSTOM ASSIGNMENT</button>
         </div>
@@ -484,8 +396,8 @@
     <div class="cli-section">
         <div class="cli-prompt-line">
             <span id="cli-user-prompt">guest@tjkt:~#</span>
-            <input type="text" id="cli-input" placeholder="Type command ('help', 'role')" onkeydown="handleCliKeyDown(event)">
-            <button onclick="executeCliCommand()" style="width: auto; padding: 6px 16px;">EXEC</button>
+            <input type="text" id="cli-input" placeholder="Type command (e.g., 'help' or 'role')" onkeydown="handleCliKeyDown(event)">
+            <button onclick="executeCliCommand()">EXEC</button>
         </div>
         <div class="log-box" id="log-box">
             <div class="log-entry">[SYS] TJKT Marketplace Engine Initialized.</div>
@@ -501,9 +413,9 @@
             <label>ENTER NEW USERNAME</label>
             <input type="text" id="new-username-input" placeholder="e.g., Turner">
         </div>
-        <div style="display: flex; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('username-modal')" style="flex: 1;">CANCEL</button>
-            <button onclick="saveCustomUsername()" style="flex: 1;">SAVE</button>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button onclick="closeModal('username-modal')">CANCEL</button>
+            <button onclick="saveCustomUsername()">SAVE USERNAME</button>
         </div>
     </div>
 </div>
@@ -511,11 +423,11 @@
 <!-- Modal: Admin Manage Employees -->
 <div class="modal-overlay" id="employee-modal">
     <div class="modal-box">
-        <div class="modal-title">[ ADMIN ] AUTHORIZE EMPLOYEES</div>
+        <div class="modal-title">[ ADMIN ] AUTHORIZE EMPLOYEE GOOGLE ACCOUNTS</div>
         <div class="modal-field">
             <label>ADD GOOGLE EMAIL ADDRESS</label>
-            <div style="display: flex; gap: 8px; flex-direction: column;">
-                <input type="email" id="new-employee-email" placeholder="e.g., employee@gmail.com">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <input type="email" id="new-employee-email" placeholder="e.g., employee@gmail.com" style="flex: 1; min-width: 200px;">
                 <button onclick="addEmployeeEmail()">AUTHORIZE</button>
             </div>
         </div>
@@ -525,8 +437,8 @@
                 <!-- Dynamic Employee Email List -->
             </div>
         </div>
-        <div style="display: flex; margin-top: 15px;">
-            <button onclick="closeModal('employee-modal')" style="width: 100%;">CLOSE</button>
+        <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+            <button onclick="closeModal('employee-modal')">CLOSE</button>
         </div>
     </div>
 </div>
@@ -540,7 +452,7 @@
             <input type="text" id="post-title" placeholder="e.g., Packet Tracer Inter-VLAN Routing">
         </div>
         <div class="modal-field">
-            <label>PRICE (e.g., 15000, 15rb, 15k)</label>
+            <label>PRICE (e.g., 15000, 15rb, 15k, 15,000)</label>
             <input type="text" id="post-price" placeholder="15rb or 15,000">
         </div>
         <div class="modal-field">
@@ -548,12 +460,12 @@
             <textarea id="post-desc" rows="3" placeholder="Includes PKT file + screenshot report..."></textarea>
         </div>
         <div class="modal-field">
-            <label>ATTACH IMAGE / PREVIEW</label>
+            <label>ATTACH IMAGE / SERVICE PREVIEW (AUTO-COMPRESSED)</label>
             <input type="file" id="post-img" accept="image/*">
         </div>
-        <div style="display: flex; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('post-modal')" style="flex: 1;">CANCEL</button>
-            <button onclick="submitPost()" style="flex: 1;">PUBLISH</button>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button onclick="closeModal('post-modal')">CANCEL</button>
+            <button onclick="submitPost()">PUBLISH JOKI</button>
         </div>
     </div>
 </div>
@@ -561,13 +473,13 @@
 <!-- Modal: Custom Request (Customer) -->
 <div class="modal-overlay" id="custom-modal">
     <div class="modal-box">
-        <div class="modal-title">SUBMIT CUSTOM ASSIGNMENT</div>
+        <div class="modal-title">SUBMIT CUSTOM ASSIGNMENT REQUEST</div>
         <div class="modal-field">
             <label>ASSIGNMENT TITLE</label>
             <input type="text" id="custom-title" placeholder="e.g., Debian 12 BIND9 DNS Config">
         </div>
         <div class="modal-field">
-            <label>YOUR BUDGET OFFER (e.g., 20rb, 20,000)</label>
+            <label>YOUR BUDGET OFFER (e.g., 20rb, 20,000, 20k)</label>
             <input type="text" id="custom-budget" placeholder="20rb or 20,000">
         </div>
         <div class="modal-field">
@@ -576,15 +488,15 @@
         </div>
         <div class="modal-field">
             <label>ASSIGNMENT DETAILS / INSTRUCTIONS</label>
-            <textarea id="custom-desc" rows="3" placeholder="Configure domain tjkt.smkn7.sch.id..."></textarea>
+            <textarea id="custom-desc" rows="3" placeholder="Configure domain tjkt.smkn7.sch.id on IP 192.168.10.1..."></textarea>
         </div>
         <div class="modal-field">
-            <label>ATTACH SCREENSHOT / FILE PREVIEW</label>
+            <label>ATTACH IMAGE / ASSIGNMENT SCREENSHOT (AUTO-COMPRESSED)</label>
             <input type="file" id="custom-img" accept="image/*">
         </div>
-        <div style="display: flex; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('custom-modal')" style="flex: 1;">CANCEL</button>
-            <button onclick="submitCustomRequest()" style="flex: 1;">SUBMIT</button>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button onclick="closeModal('custom-modal')">CANCEL</button>
+            <button onclick="submitCustomRequest()">SUBMIT REQUEST</button>
         </div>
     </div>
 </div>
@@ -593,9 +505,9 @@
 <div class="modal-overlay" id="img-viewer-modal" onclick="closeModal('img-viewer-modal')">
     <div class="modal-box" style="max-width: 700px; text-align: center; background: rgba(0,0,0,0.95);" onclick="event.stopPropagation()">
         <div class="modal-title">[ ATTACHMENT PREVIEW ]</div>
-        <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 65vh; border: 1px solid #444; margin: 10px 0;">
+        <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 70vh; border: 1px solid #444; margin: 10px 0;">
         <div style="text-align: right;">
-            <button onclick="closeModal('img-viewer-modal')" style="width: 100%;">CLOSE</button>
+            <button onclick="closeModal('img-viewer-modal')">CLOSE</button>
         </div>
     </div>
 </div>
@@ -604,8 +516,8 @@
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
         <div class="modal-title">ORDER & PAYMENT CHECKOUT</div>
-        <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px; word-break: break-all;"></p>
-        <p id="checkout-item-price" style="color: var(--accent-cyan); font-size: 13px; margin-bottom: 12px;"></p>
+        <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px;"></p>
+        <p id="checkout-item-price" style="color: #00ffcc; font-size: 13px; margin-bottom: 12px;"></p>
 
         <div class="modal-field">
             <label>PAYMENT TERMS</label>
@@ -625,7 +537,7 @@
 
         <!-- Embedded QRIS Display -->
         <div id="qris-display" class="qris-box">
-            <p style="font-size: 11px; color: var(--accent-cyan); font-weight: bold;">[ SCAN QRIS TO PAY ]</p>
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS TO PAY ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
             
             <img src="qris.jpg" class="qris-img-render" alt="QRIS Kienziee Store">
@@ -635,15 +547,15 @@
         </div>
 
         <!-- E-Wallet Direct Transfer Display -->
-        <div id="ewallet-display" class="qris-box" style="display: none; border-color: var(--accent-cyan);">
-            <p style="font-size: 11px; color: var(--accent-cyan); font-weight: bold;">[ GOPAY / DANA DIRECT TRANSFER ]</p>
+        <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ GOPAY / DANA DIRECT TRANSFER ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
 
             <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
                 <p style="font-size: 11px; color: #aaa;">NUMBER: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
-                <p style="font-size: 11px; color: #aaa; margin-top: 4px;">NAME: <span style="color: var(--accent-cyan);">DWI ANGGARA PRASETYA</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 4px;">NAME: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
             </div>
-            <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 4px 8px; width: 100%;">[COPY NUMBER]</button>
+            <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;">[COPY NUMBER]</button>
         </div>
 
         <div class="modal-field" style="margin-top: 12px;">
@@ -651,9 +563,9 @@
             <input type="file" id="pay-proof-img" accept="image/*">
         </div>
 
-        <div style="display: flex; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('checkout-modal')" style="flex: 1;">CANCEL</button>
-            <button onclick="confirmOrder()" style="flex: 1;">CONFIRM ORDER</button>
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button onclick="closeModal('checkout-modal')">CANCEL</button>
+            <button onclick="confirmOrder()">CONFIRM ORDER</button>
         </div>
     </div>
 </div>
@@ -680,7 +592,7 @@
         updateDoc
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Firebase Config pointing to default TJKTSSV2 auth domain
+    // Firebase Config pointing to tjktssv2
     const firebaseConfig = {
         apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
         authDomain: "tjktssv2.firebaseapp.com",
@@ -754,7 +666,7 @@
         }
     });
 
-    // Login function using signInWithPopup
+    // Login function using popup
     window.loginWithGoogle = async function() {
         try {
             await signInWithPopup(auth, googleProvider);
@@ -858,7 +770,7 @@
         window.authorizedEmployees.forEach((email) => {
             const div = document.createElement('div');
             div.className = 'employee-list-item';
-            div.innerHTML = `<span style="word-break: break-all;">${escapeHtml(email)}</span><button class="btn-del" onclick="removeEmployeeEmail('${email}')" style="min-height: 32px; padding: 4px 8px;">REVOKE</button>`;
+            div.innerHTML = `<span>${escapeHtml(email)}</span><button class="btn-del" onclick="removeEmployeeEmail('${email}')">REVOKE</button>`;
             container.appendChild(div);
         });
     };
@@ -944,7 +856,7 @@
 
         if (window.currentTab === 'ORDERS') {
             if (window.transactionsList.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 30px;">[ NO TRANSACTIONS FOUND ]</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO TRANSACTIONS FOUND ]</div>`;
                 return;
             }
             window.transactionsList.forEach(tx => {
@@ -975,7 +887,7 @@
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
                         <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${tx.paymentType})</div>
-                        <p class="card-desc">Method: ${tx.paymentMethod}<br>Status: <span style="color:var(--accent-cyan)">${tx.status}</span></p>
+                        <p class="card-desc">Method: ${tx.paymentMethod} | Status: <span style="color:#00ffcc">${tx.status}</span></p>
                         ${proofHtml}
                     </div>
                     <div>
@@ -997,7 +909,7 @@
         const targetList = window.currentTab === 'FEED' ? activeServices : customRequests;
 
         if (targetList.length === 0) {
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 30px;">[ NO ${window.currentTab} LISTINGS FOUND ]</div>`;
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO ${window.currentTab} LISTINGS FOUND ]</div>`;
             return;
         }
 
@@ -1006,7 +918,7 @@
             card.className = 'card';
 
             let actionBtn = '';
-            let deleteBtn = isStaff ? `<button class="btn-del" onclick="deleteJoki('${job.id}')" style="width: auto;">DEL</button>` : '';
+            let deleteBtn = isStaff ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
 
             if (window.currentTab === 'FEED') {
                 actionBtn = `<button onclick="openCheckoutModal('${job.id}')">ORDER JOKI</button>`;
@@ -1017,9 +929,9 @@
                         : `<span style="color:#888; font-size:11px;">[TAKEN BY ${escapeHtml(job.assignedTo || 'STAFF')}]</span>`;
                 } else {
                     if (job.status === 'in_progress') {
-                        actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: var(--accent-cyan); color: var(--accent-cyan);">PAY NOW (DP/FULL)</button>`;
+                        actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc;">PAY NOW (DP/FULL)</button>`;
                     } else {
-                        actionBtn = `<span style="color:var(--accent-cyan); font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
+                        actionBtn = `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
                     }
                 }
             }
@@ -1039,7 +951,7 @@
                         <span>REQUESTED: ${escapeHtml(job.requestedAt || 'N/A')}</span>
                         ${job.deadline ? '<span>DEADLINE: ' + escapeHtml(job.deadline) + '</span>' : ''}
                     </div>
-                    <div style="margin-top: 10px; display: flex; justify-content: flex-end; align-items: center; gap: 6px;">
+                    <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center;">
                         ${actionBtn}
                         ${deleteBtn}
                     </div>
@@ -1194,7 +1106,7 @@
         const finalAmt = payType === 'DP50' ? total * 0.5 : total;
         const formatted = formatRupiah(finalAmt);
 
-        document.getElementById('checkout-item-price').innerText = `DUE NOW: ${formatted} ${payType === 'DP50' ? '(50% DP)' : '(FULL)'}`;
+        document.getElementById('checkout-item-price').innerText = `TOTAL DUE NOW: ${formatted} ${payType === 'DP50' ? '(50% DP)' : '(FULL)'}`;
         document.getElementById('qris-amount').innerText = formatted;
         document.getElementById('ewallet-amount').innerText = formatted;
     };
@@ -1302,10 +1214,10 @@
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resize(); window.addEventListener('resize', resize);
         const particles = [];
-        for (let i = 0; i < 35; i++) {
+        for (let i = 0; i < 45; i++) {
             particles.push({
                 x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+                vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
                 radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 + 0.2
             });
         }
