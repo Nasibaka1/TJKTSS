@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -335,11 +335,11 @@
 <!-- Google Authentication Overlay -->
 <div class="modal-overlay" id="auth-modal" style="display: flex;">
     <div class="modal-box" style="text-align: center;">
-        <div class="modal-title">[ AUTHENTICATION REQUIRED ]</div>
-        <p style="font-size: 11px; color: #888; margin-bottom: 20px;">SIGN IN WITH GOOGLE TO ACCESS TJKTSS</p>
+        <div class="modal-title" id="txt-auth-title">[ AUTENTIKASI DIPERLUKAN ]</div>
+        <p style="font-size: 11px; color: #888; margin-bottom: 20px;" id="txt-auth-desc">MASUK DENGAN GOOGLE UNTUK MENGAKSES TJKTSS</p>
         
         <button onclick="loginWithGoogle()" style="border-color: #00ffcc; color: #00ffcc; padding: 12px 24px; font-size: 13px; width: 100%;">
-            [G] SIGN IN WITH GOOGLE
+            [G] MASUK DENGAN GOOGLE
         </button>
     </div>
 </div>
@@ -356,28 +356,29 @@
             </pre>
         </div>
         <div class="sys-info">
-            <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Click to change username">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
-            <div>
-                <button onclick="logoutSession()" style="font-size: 10px; padding: 4px 8px;">[X] LOGOUT</button>
+            <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Klik untuk ubah nama">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button onclick="toggleLanguage()" id="lang-btn" style="font-size: 10px; padding: 4px 8px; border-color: #00ffcc; color: #00ffcc;">[EN]</button>
+                <button onclick="logoutSession()" id="logout-btn" style="font-size: 10px; padding: 4px 8px;">[X] KELUAR</button>
             </div>
         </div>
     </header>
 
     <div class="stats-bar">
-        <div>ACTIVE LISTINGS: <span id="stat-active">0</span></div>
-        <div>OPEN CUSTOM REQUESTS: <span id="stat-custom">0</span></div>
-        <div>TOTAL ORDERS: <span id="stat-orders">0</span></div>
+        <div><span id="label-stat-active">LAYANAN AKTIF</span>: <span id="stat-active">0</span></div>
+        <div><span id="label-stat-custom">PERMINTAAN KUSTOM</span>: <span id="stat-custom">0</span></div>
+        <div><span id="label-stat-orders">TOTAL TRANSAKSI</span>: <span id="stat-orders">0</span></div>
         <div>ROLE: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
     </div>
 
     <div class="controls">
         <div class="btn-group" style="width: 100%;">
-            <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] SERVICE FEED</button>
-            <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] CUSTOM REQUESTS</button>
-            <button id="tab-orders" onclick="switchTab('ORDERS')">[3] MY TRANSACTIONS</button>
-            <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none; border-color: #00ffcc; color: #00ffcc;">+ MANAGE EMPLOYEES</button>
-            <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST A JOKI</button>
-            <button id="btn-action-request" onclick="openCustomRequestModal()">+ SUBMIT CUSTOM ASSIGNMENT</button>
+            <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
+            <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUEST KUSTOM</button>
+            <button id="tab-orders" onclick="switchTab('ORDERS')">[3] TRANSAKSI SAYA</button>
+            <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none; border-color: #00ffcc; color: #00ffcc;">+ KELOLA PEGAWAI</button>
+            <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
+            <button id="btn-action-request" onclick="openCustomRequestModal()">+ AJUKAN TUGAS KUSTOM</button>
         </div>
     </div>
 
@@ -388,11 +389,11 @@
     <div class="cli-section">
         <div class="cli-prompt-line">
             <span id="cli-user-prompt">guest@tjkt:~#</span>
-            <input type="text" id="cli-input" placeholder="Type command (e.g., 'help' or 'role')" onkeydown="handleCliKeyDown(event)">
-            <button onclick="executeCliCommand()">EXEC</button>
+            <input type="text" id="cli-input" placeholder="Ketik perintah (cth: 'help' atau 'role')" onkeydown="handleCliKeyDown(event)">
+            <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Engine Initialized.</div>
+            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi.</div>
         </div>
     </div>
 </div>
@@ -400,14 +401,14 @@
 <!-- Modal: Edit Username -->
 <div class="modal-overlay" id="username-modal">
     <div class="modal-box">
-        <div class="modal-title">UPDATE USER DISPLAY NAME</div>
+        <div class="modal-title" id="m-title-user">UBAH NAMA TAMPILAN PENGGUNA</div>
         <div class="modal-field">
-            <label>ENTER NEW USERNAME</label>
-            <input type="text" id="new-username-input" placeholder="e.g., Turner">
+            <label id="m-label-user">MASUKKAN USERNAME BARU</label>
+            <input type="text" id="new-username-input" placeholder="cth., Turner">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('username-modal')">CANCEL</button>
-            <button onclick="saveCustomUsername()">SAVE USERNAME</button>
+            <button onclick="closeModal('username-modal')" id="m-btn-cancel1">BATAL</button>
+            <button onclick="saveCustomUsername()" id="m-btn-save1">SIMPAN</button>
         </div>
     </div>
 </div>
@@ -415,22 +416,20 @@
 <!-- Modal: Admin Manage Employees -->
 <div class="modal-overlay" id="employee-modal">
     <div class="modal-box">
-        <div class="modal-title">[ ADMIN ] AUTHORIZE EMPLOYEE GOOGLE ACCOUNTS</div>
+        <div class="modal-title" id="m-title-emp">[ ADMIN ] OTORISASI AKUN GOOGLE PEGAWAI</div>
         <div class="modal-field">
-            <label>ADD GOOGLE EMAIL ADDRESS</label>
+            <label id="m-label-emp">TAMBAHKAN ALAMAT EMAIL GOOGLE</label>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <input type="email" id="new-employee-email" placeholder="e.g., employee@gmail.com" style="flex: 1; min-width: 200px;">
-                <button onclick="addEmployeeEmail()">AUTHORIZE</button>
+                <input type="email" id="new-employee-email" placeholder="cth., pegawai@gmail.com" style="flex: 1; min-width: 200px;">
+                <button onclick="addEmployeeEmail()" id="m-btn-auth">OTORISASI</button>
             </div>
         </div>
         <div style="margin-top: 15px;">
-            <label style="font-size: 11px; color: #aaa; display: block; margin-bottom: 6px;">AUTHORIZED STAFF MEMBERS:</label>
-            <div id="employee-list-container">
-                <!-- Dynamic Employee Email List -->
-            </div>
+            <label style="font-size: 11px; color: #aaa; display: block; margin-bottom: 6px;" id="m-label-staff-list">DAFTAR STAFF TEROTORISASI:</label>
+            <div id="employee-list-container"></div>
         </div>
         <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-            <button onclick="closeModal('employee-modal')">CLOSE</button>
+            <button onclick="closeModal('employee-modal')" id="m-btn-close1">TUTUP</button>
         </div>
     </div>
 </div>
@@ -438,26 +437,26 @@
 <!-- Modal: Post Joki (Employee) -->
 <div class="modal-overlay" id="post-modal">
     <div class="modal-box">
-        <div class="modal-title">POST AVAILABLE SERVICE</div>
+        <div class="modal-title" id="m-title-post">BUAT LAYANAN JOKI</div>
         <div class="modal-field">
-            <label>TITLE</label>
-            <input type="text" id="post-title" placeholder="e.g., Packet Tracer Inter-VLAN Routing">
+            <label id="m-label-title">JUDUL</label>
+            <input type="text" id="post-title" placeholder="cth., Packet Tracer Inter-VLAN Routing">
         </div>
         <div class="modal-field">
-            <label>PRICE (e.g., 15000, 15rb, 15k, 15,000)</label>
-            <input type="text" id="post-price" placeholder="15rb or 15,000">
+            <label id="m-label-price">HARGA (cth: 15000, 15rb, 15k)</label>
+            <input type="text" id="post-price" placeholder="15rb atau 15,000">
         </div>
         <div class="modal-field">
-            <label>DESCRIPTION & INCLUSIONS</label>
-            <textarea id="post-desc" rows="3" placeholder="Includes PKT file + screenshot report..."></textarea>
+            <label id="m-label-desc">DESKRIPSI & CAKUPAN</label>
+            <textarea id="post-desc" rows="3" placeholder="Termasuk file PKT + laporan screenshot..."></textarea>
         </div>
         <div class="modal-field">
-            <label>ATTACH IMAGE / SERVICE PREVIEW (AUTO-COMPRESSED)</label>
+            <label id="m-label-img">LAMPIRKAN GAMBAR / PREVIEW (AUTO-COMPRESSED)</label>
             <input type="file" id="post-img" accept="image/*">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('post-modal')">CANCEL</button>
-            <button onclick="submitPost()">PUBLISH SERVICE</button>
+            <button onclick="closeModal('post-modal')" id="m-btn-cancel2">BATAL</button>
+            <button onclick="submitPost()" id="m-btn-publish">PUBLIKASIKAN</button>
         </div>
     </div>
 </div>
@@ -465,30 +464,30 @@
 <!-- Modal: Custom Request (Customer) -->
 <div class="modal-overlay" id="custom-modal">
     <div class="modal-box">
-        <div class="modal-title">SUBMIT CUSTOM ASSIGNMENT REQUEST</div>
+        <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM</div>
         <div class="modal-field">
-            <label>ASSIGNMENT TITLE</label>
-            <input type="text" id="custom-title" placeholder="e.g., Debian 12 BIND9 DNS Config">
+            <label id="m-label-cust-title">JUDUL TUGAS</label>
+            <input type="text" id="custom-title" placeholder="cth., Konfigurasi Debian 12 BIND9 DNS">
         </div>
         <div class="modal-field">
-            <label>YOUR BUDGET OFFER (e.g., 20rb, 20,000, 20k)</label>
-            <input type="text" id="custom-budget" placeholder="20rb or 20,000">
+            <label id="m-label-cust-budget">TAWARAN BUDGET (cth: 20rb, 20,000)</label>
+            <input type="text" id="custom-budget" placeholder="20rb atau 20,000">
         </div>
         <div class="modal-field">
-            <label>DEADLINE</label>
-            <input type="text" id="custom-deadline" placeholder="Tomorrow, 17:00 WITA">
+            <label id="m-label-cust-deadline">TENGGAK WAKTU (DEADLINE)</label>
+            <input type="text" id="custom-deadline" placeholder="Besok, 17:00 WITA">
         </div>
         <div class="modal-field">
-            <label>ASSIGNMENT DETAILS / INSTRUCTIONS</label>
-            <textarea id="custom-desc" rows="3" placeholder="Configure domain tjkt.smkn7.sch.id on IP 192.168.10.1..."></textarea>
+            <label id="m-label-cust-desc">DETAIL / INSTRUKSI TUGAS</label>
+            <textarea id="custom-desc" rows="3" placeholder="Konfigurasi domain tjkt.smkn7.sch.id pada IP 192.168.10.1..."></textarea>
         </div>
         <div class="modal-field">
-            <label>ATTACH IMAGE / ASSIGNMENT SCREENSHOT (AUTO-COMPRESSED)</label>
+            <label id="m-label-cust-img">LAMPIRKAN GAMBAR / SCREENSHOT</label>
             <input type="file" id="custom-img" accept="image/*">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('custom-modal')">CANCEL</button>
-            <button onclick="submitCustomRequest()">SUBMIT REQUEST</button>
+            <button onclick="closeModal('custom-modal')" id="m-btn-cancel3">BATAL</button>
+            <button onclick="submitCustomRequest()" id="m-btn-submit-req">KIRIM PERMINTAAN</button>
         </div>
     </div>
 </div>
@@ -496,10 +495,10 @@
 <!-- Modal: Image Full-Size Viewer -->
 <div class="modal-overlay" id="img-viewer-modal" onclick="closeModal('img-viewer-modal')">
     <div class="modal-box" style="max-width: 700px; text-align: center; background: rgba(0,0,0,0.95);" onclick="event.stopPropagation()">
-        <div class="modal-title">[ ATTACHMENT PREVIEW ]</div>
+        <div class="modal-title" id="m-title-prev">[ PREVIEW LAMPIRAN ]</div>
         <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 70vh; border: 1px solid #444; margin: 10px 0;">
         <div style="text-align: right;">
-            <button onclick="closeModal('img-viewer-modal')">CLOSE</button>
+            <button onclick="closeModal('img-viewer-modal')" id="m-btn-close2">TUTUP</button>
         </div>
     </div>
 </div>
@@ -507,29 +506,29 @@
 <!-- Modal: Checkout / Order Payment -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
-        <div class="modal-title">ORDER & PAYMENT CHECKOUT</div>
+        <div class="modal-title" id="m-title-checkout">CHECKOUT PESANAN & PEMBAYARAN</div>
         <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px;"></p>
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 13px; margin-bottom: 12px;"></p>
 
-        <div class="modal-field">
-            <label>PAYMENT TERMS</label>
+        <div class="modal-field" id="pay-type-container">
+            <label id="m-label-payterm">KETENTUAN PEMBAYARAN</label>
             <select id="pay-type" onchange="calculateCheckout()">
-                <option value="DP50">50% Down Payment (DP)</option>
-                <option value="FULL">Full Payment (100%)</option>
+                <option value="DP50">Down Payment (DP) 50%</option>
+                <option value="FULL">Bayar Penuh (100%)</option>
             </select>
         </div>
 
         <div class="modal-field">
-            <label>PAYMENT METHOD</label>
+            <label id="m-label-paymethod">METODE PEMBAYARAN</label>
             <select id="pay-method" onchange="togglePaymentInstructions()">
                 <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
-                <option value="EWALLET">E-Wallet Direct Transfer (GoPay / DANA)</option>
+                <option value="EWALLET">Transfer Langsung E-Wallet (GoPay / DANA)</option>
             </select>
         </div>
 
         <!-- Embedded QRIS Display -->
         <div id="qris-display" class="qris-box">
-            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS TO PAY ]</p>
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-scan-qris">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
             
             <img src="qris.jpg" class="qris-img-render" alt="QRIS Kienziee Store">
@@ -540,24 +539,24 @@
 
         <!-- E-Wallet Direct Transfer Display -->
         <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
-            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ GOPAY / DANA DIRECT TRANSFER ]</p>
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-ewallet-title">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
 
             <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
-                <p style="font-size: 11px; color: #aaa;">NUMBER: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
-                <p style="font-size: 11px; color: #aaa; margin-top: 4px;">NAME: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
+                <p style="font-size: 11px; color: #aaa;" id="txt-ewallet-num">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 4px;" id="txt-ewallet-name">ATAS NAMA: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
             </div>
-            <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;">[COPY NUMBER]</button>
+            <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;" id="btn-copy-num">[SALIN NOMOR]</button>
         </div>
 
         <div class="modal-field" style="margin-top: 12px;">
-            <label>ATTACH PAYMENT PROOF SCREENSHOT (REQUIRED)</label>
+            <label id="m-label-proof">LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (WAJIB)</label>
             <input type="file" id="pay-proof-img" accept="image/*">
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('checkout-modal')">CANCEL</button>
-            <button onclick="confirmOrder()">CONFIRM ORDER</button>
+            <button onclick="closeModal('checkout-modal')" id="m-btn-cancel4">BATAL</button>
+            <button onclick="confirmOrder()" id="m-btn-confirm">KONFIRMASI PESANAN</button>
         </div>
     </div>
 </div>
@@ -584,7 +583,6 @@
         updateDoc
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Firebase Config pointing to tjktssv2
     const firebaseConfig = {
         apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
         authDomain: "tjktssv2.firebaseapp.com",
@@ -607,12 +605,85 @@
     window.currentUserEmail = null;
     window.userRole = 'CUSTOMER';
     window.currentTab = 'FEED';
+    window.currentLang = 'id'; // Default Bahasa Indonesia
 
     window.jobsList = [];
     window.transactionsList = [];
     window.authorizedEmployees = [];
 
-    // Real-Time Cloud Firestore Sync: Jobs (Marketplace & Custom)
+    // Kamus Terjemahan (ID & EN)
+    const translations = {
+        id: {
+            authTitle: "[ AUTENTIKASI DIPERLUKAN ]",
+            authDesc: "MASUK DENGAN GOOGLE UNTUK MENGAKSES TJKTSS",
+            authBtn: "[G] MASUK DENGAN GOOGLE",
+            logout: "[X] KELUAR",
+            statActive: "LAYANAN AKTIF",
+            statCustom: "PERMINTAAN KUSTOM",
+            statOrders: "TOTAL TRANSAKSI",
+            tabFeed: "[1] FEED LAYANAN",
+            tabCustom: "[2] REQUEST KUSTOM",
+            tabOrders: "[3] TRANSAKSI SAYA",
+            manageEmp: "+ KELOLA PEGAWAI",
+            postJoki: "+ POST JOKI",
+            reqCustom: "+ AJUKAN TUGAS KUSTOM",
+            cliPlaceholder: "Ketik perintah (cth: 'help' atau 'role')",
+            cliExec: "EKSEKUSI",
+            sysInit: "[SYS] Mesin TJKTSS Berhasil Diinisialisasi.",
+            noTrans: "[ TIDAK ADA TRANSAKSI DITEMUKAN ]",
+            noFeed: "[ TIDAK ADA LISTING FEED DITEMUKAN ]",
+            noCustom: "[ TIDAK ADA LISTING KUSTOM DITEMUKAN ]"
+        },
+        en: {
+            authTitle: "[ AUTHENTICATION REQUIRED ]",
+            authDesc: "SIGN IN WITH GOOGLE TO ACCESS TJKTSS",
+            authBtn: "[G] SIGN IN WITH GOOGLE",
+            logout: "[X] LOGOUT",
+            statActive: "ACTIVE LISTINGS",
+            statCustom: "CUSTOM REQUESTS",
+            statOrders: "TOTAL ORDERS",
+            tabFeed: "[1] SERVICE FEED",
+            tabCustom: "[2] CUSTOM REQUESTS",
+            tabOrders: "[3] MY TRANSACTIONS",
+            manageEmp: "+ MANAGE EMPLOYEES",
+            postJoki: "+ POST A JOKI",
+            reqCustom: "+ SUBMIT CUSTOM ASSIGNMENT",
+            cliPlaceholder: "Type command (e.g., 'help' or 'role')",
+            cliExec: "EXEC",
+            sysInit: "[SYS] TJKTSS Engine Initialized.",
+            noTrans: "[ NO TRANSACTIONS FOUND ]",
+            noFeed: "[ NO FEED LISTINGS FOUND ]",
+            noCustom: "[ NO CUSTOM LISTINGS FOUND ]"
+        }
+    };
+
+    window.toggleLanguage = function() {
+        window.currentLang = window.currentLang === 'id' ? 'en' : 'id';
+        document.getElementById('lang-btn').innerText = window.currentLang === 'id' ? '[EN]' : '[ID]';
+        document.documentElement.lang = window.currentLang;
+        updateStaticTexts();
+        window.renderGrid();
+    };
+
+    function updateStaticTexts() {
+        const t = translations[window.currentLang];
+        document.getElementById('txt-auth-title').innerText = t.authTitle;
+        document.getElementById('txt-auth-desc').innerText = t.authDesc;
+        document.getElementById('logout-btn').innerText = t.logout;
+        document.getElementById('label-stat-active').innerText = t.statActive;
+        document.getElementById('label-stat-custom').innerText = t.statCustom;
+        document.getElementById('label-stat-orders').innerText = t.statOrders;
+        document.getElementById('tab-feed').innerText = t.tabFeed;
+        document.getElementById('tab-custom').innerText = t.tabCustom;
+        document.getElementById('tab-orders').innerText = t.tabOrders;
+        document.getElementById('btn-action-manage-emp').innerText = t.manageEmp;
+        document.getElementById('btn-action-post').innerText = t.postJoki;
+        document.getElementById('btn-action-request').innerText = t.reqCustom;
+        document.getElementById('cli-input').placeholder = t.cliPlaceholder;
+        document.getElementById('exec-btn').innerText = t.cliExec;
+    }
+
+    // Real-Time Cloud Firestore Sync: Jobs
     onSnapshot(collection(db, "joki"), (snapshot) => {
         window.jobsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.renderGrid();
@@ -638,11 +709,9 @@
         window.updateUserInterface();
     });
 
-    // Live Firebase Auth Listener
     onAuthStateChanged(auth, (user) => {
         if (user) {
             window.currentUserEmail = user.email.toLowerCase().trim();
-            
             const customUsername = localStorage.getItem('custom_username_' + window.currentUserEmail);
             window.currentUser = customUsername || user.displayName || user.email.split('@')[0];
 
@@ -658,7 +727,6 @@
         }
     });
 
-    // Login function using popup
     window.loginWithGoogle = async function() {
         try {
             await signInWithPopup(auth, googleProvider);
@@ -683,7 +751,6 @@
         }
     }
 
-    /* Custom Username Functions */
     window.openUsernameModal = function() {
         document.getElementById('new-username-input').value = window.currentUser || '';
         document.getElementById('username-modal').style.display = 'flex';
@@ -691,30 +758,22 @@
 
     window.saveCustomUsername = function() {
         const input = document.getElementById('new-username-input').value.trim();
-        if (!input) {
-            alert('Username cannot be empty!');
-            return;
-        }
-
+        if (!input) { alert('Username cannot be empty!'); return; }
         window.currentUser = input;
         if (window.currentUserEmail) {
             localStorage.setItem('custom_username_' + window.currentUserEmail, input);
         }
-
         window.updateUserInterface();
         window.closeModal('username-modal');
         addLog(`[PROFILE] Display name updated to '${window.currentUser}'.`);
     };
 
-    /* Price Parser (10rb, 20,000, 15k) */
     window.parseAmountToNumber = function(amountStr) {
         if (!amountStr) return 0;
         let cleaned = String(amountStr).toLowerCase().trim();
         let isThousands = cleaned.includes('rb') || cleaned.includes('k');
         let numStr = cleaned.replace(/[^0-9.]/g, '');
-        if ((numStr.match(/\./g) || []).length > 1) {
-            numStr = numStr.replace(/\./g, '');
-        }
+        if ((numStr.match(/\./g) || []).length > 1) { numStr = numStr.replace(/\./g, ''); }
         let num = parseFloat(numStr) || 0;
         return isThousands ? num * 1000 : num;
     };
@@ -746,7 +805,6 @@
         window.renderGrid();
     };
 
-    /* Admin Management */
     window.openEmployeeManageModal = function() {
         window.renderEmployeeList();
         document.getElementById('employee-modal').style.display = 'flex';
@@ -802,7 +860,6 @@
         }
     };
 
-    /* Transaction Deletion & Cancellation */
     window.deleteTransaction = async function(txId) {
         if (confirm('Are you sure you want to delete this order transaction record?')) {
             await deleteDoc(doc(db, "transactions", txId));
@@ -810,10 +867,19 @@
         }
     };
 
+    // Staff confirmation to verify & approve remaining payment (pelunasan)
+    window.confirmRemainingPaymentStaff = async function(txId) {
+        if (confirm('Konfirmasi pelunasan pesanan ini? Status akan diubah menjadi LUNAS (PAID_FULL).')) {
+            await updateDoc(doc(db, "transactions", txId), {
+                status: 'PAID_FULL'
+            });
+            addLog(`[STAFF] Pelunasan untuk transaksi '${txId}' telah dikonfirmasi.`);
+        }
+    };
+
     window.cancelTransactionCustomer = async function(txId) {
         const tx = window.transactionsList.find(t => t.id === txId);
         if (!tx) return;
-
         const txTime = tx.createdAt || 0;
         const now = Date.now();
         const minutesPassed = (now - txTime) / (1000 * 60);
@@ -839,19 +905,23 @@
         grid.innerHTML = '';
 
         const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
-        const activeServices = window.jobsList.filter(j => j.type === 'marketplace');
-        const customRequests = window.jobsList.filter(j => j.type === 'custom_request');
+        const activeServices = window.jobsList.filter(j => j.type === 'marketplace' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
+        const customRequests = window.jobsList.filter(j => j.type === 'custom_request' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
 
         document.getElementById('stat-active').innerText = activeServices.length;
         document.getElementById('stat-custom').innerText = customRequests.length;
         document.getElementById('stat-orders').innerText = window.transactionsList.length;
 
         if (window.currentTab === 'ORDERS') {
-            if (window.transactionsList.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO TRANSACTIONS FOUND ]</div>`;
+            const userTransactions = isStaff 
+                ? window.transactionsList 
+                : window.transactionsList.filter(t => t.customerName === window.currentUser);
+
+            if (userTransactions.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${translations[window.currentLang].noTrans}</div>`;
                 return;
             }
-            window.transactionsList.forEach(tx => {
+            userTransactions.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = 'card';
 
@@ -860,18 +930,32 @@
                     : '';
 
                 let actionControlHtml = '';
+                let payRemainingBtn = '';
+                let staffConfirmBtn = '';
+
+                // Customer can pay remaining if it was DP50 and not yet fully paid
+                if (!isStaff && tx.paymentType === 'DP50' && tx.status !== 'PAID_FULL' && tx.status !== 'PENDING_REMAINING_APPROVAL' && tx.customerName === window.currentUser) {
+                    payRemainingBtn = `<button onclick="openRemainingCheckout('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">BAYAR PELUNASAN 50%</button>`;
+                } else if (!isStaff && tx.status === 'PENDING_REMAINING_APPROVAL') {
+                    payRemainingBtn = `<span style="color:#00ffcc; font-size:11px; margin-right:6px;">[MENUNGGU KONFIRMASI STAFF]</span>`;
+                }
+
+                // Staff can confirm remaining payment if status is PENDING_REMAINING_APPROVAL
+                if (isStaff && tx.status === 'PENDING_REMAINING_APPROVAL') {
+                    staffConfirmBtn = `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>`;
+                }
 
                 if (isStaff) {
                     actionControlHtml = `<button class="btn-del" onclick="deleteTransaction('${tx.id}')">DEL TX</button>`;
-                } else {
+                } else if (tx.customerName === window.currentUser) {
                     const txTime = tx.createdAt || 0;
                     const minutesPassed = (Date.now() - txTime) / (1000 * 60);
                     const remainingMin = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - minutesPassed);
 
                     if (remainingMin > 0) {
-                        actionControlHtml = `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL ORDER (${remainingMin}m left)</button>`;
+                        actionControlHtml = `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL (${remainingMin}m)</button>`;
                     } else {
-                        actionControlHtml = `<span style="color:#666; font-size:11px;">[CANCEL LOCKED]</span>`;
+                        actionControlHtml = `<span style="color:#666; font-size:11px;">[LOCKED]</span>`;
                     }
                 }
 
@@ -888,7 +972,9 @@
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
-                        <div style="margin-top: 10px; text-align: right;">
+                        <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+                            ${payRemainingBtn}
+                            ${staffConfirmBtn}
                             ${actionControlHtml}
                         </div>
                     </div>
@@ -901,7 +987,8 @@
         const targetList = window.currentTab === 'FEED' ? activeServices : customRequests;
 
         if (targetList.length === 0) {
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO ${window.currentTab} LISTINGS FOUND ]</div>`;
+            let msg = window.currentTab === 'FEED' ? translations[window.currentLang].noFeed : translations[window.currentLang].noCustom;
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${msg}</div>`;
             return;
         }
 
@@ -910,7 +997,7 @@
             card.className = 'card';
 
             let actionBtn = '';
-            let deleteBtn = isStaff ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
+            let deleteBtn = isStaff || job.authorName === window.currentUser ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
 
             if (window.currentTab === 'FEED') {
                 actionBtn = `<button onclick="openCheckoutModal('${job.id}')">ORDER NOW</button>`;
@@ -991,7 +1078,6 @@
         if (fileInput.files && fileInput.files[0]) {
             const file = fileInput.files[0];
             const reader = new FileReader();
-
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
@@ -1083,16 +1169,38 @@
     };
 
     let selectedCheckoutJob = null;
+    let activeRemainingTxId = null;
+
     window.openCheckoutModal = function(jobId) {
         selectedCheckoutJob = window.jobsList.find(j => j.id === jobId);
         if (!selectedCheckoutJob) return;
+        activeRemainingTxId = null;
         document.getElementById('checkout-item-title').innerText = selectedCheckoutJob.title;
+        document.getElementById('pay-type-container').style.display = 'block';
         window.calculateCheckout();
         document.getElementById('checkout-modal').style.display = 'flex';
     };
 
+    window.openRemainingCheckout = function(txId) {
+        const tx = window.transactionsList.find(t => t.id === txId);
+        if (!tx) return;
+        activeRemainingTxId = tx.id;
+        selectedCheckoutJob = { id: tx.jobId, title: tx.jobTitle, price: tx.totalPrice };
+        
+        document.getElementById('checkout-item-title').innerText = `PELUNASAN: ${tx.jobTitle}`;
+        document.getElementById('pay-type-container').style.display = 'none';
+        
+        const remainingAmt = tx.totalPrice - tx.amountPaid;
+        const formatted = formatRupiah(remainingAmt);
+        document.getElementById('checkout-item-price').innerText = `TOTAL DIBAYAR SEKARANG: ${formatted} (Sisa 50%)`;
+        document.getElementById('qris-amount').innerText = formatted;
+        document.getElementById('ewallet-amount').innerText = formatted;
+        
+        document.getElementById('checkout-modal').style.display = 'flex';
+    };
+
     window.calculateCheckout = function() {
-        if (!selectedCheckoutJob) return;
+        if (!selectedCheckoutJob || activeRemainingTxId) return;
         const payType = document.getElementById('pay-type').value;
         const total = selectedCheckoutJob.price;
         const finalAmt = payType === 'DP50' ? total * 0.5 : total;
@@ -1116,34 +1224,45 @@
     };
 
     window.confirmOrder = function() {
-        const payType = document.getElementById('pay-type').value;
         const payMethod = document.getElementById('pay-method').value;
         const proofInput = document.getElementById('pay-proof-img');
 
         if (!selectedCheckoutJob) return;
 
         const processTx = async (proofData = null) => {
-            const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
-            const newTx = {
-                id: txId,
-                jobId: selectedCheckoutJob.id,
-                jobTitle: selectedCheckoutJob.title,
-                customerName: window.currentUser,
-                totalPrice: selectedCheckoutJob.price,
-                paymentType: payType,
-                paymentMethod: payMethod,
-                amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price,
-                proofImage: proofData,
-                status: 'PENDING_VERIFICATION',
-                createdAt: Date.now(),
-                requestedAt: window.getCurrentFormattedTimestamp()
-            };
+            if (activeRemainingTxId) {
+                const existingTx = window.transactionsList.find(t => t.id === activeRemainingTxId);
+                await updateDoc(doc(db, "transactions", activeRemainingTxId), {
+                    status: 'PENDING_REMAINING_APPROVAL',
+                    proofImage: proofData || existingTx.proofImage
+                });
+                window.closeModal('checkout-modal');
+                if (proofInput) proofInput.value = '';
+                addLog(`[PAYMENT] Bukti pelunasan dikirim untuk transaksi '${activeRemainingTxId}', menunggu konfirmasi staff.`);
+            } else {
+                const payType = document.getElementById('pay-type').value;
+                const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
+                const newTx = {
+                    id: txId,
+                    jobId: selectedCheckoutJob.id,
+                    jobTitle: selectedCheckoutJob.title,
+                    customerName: window.currentUser,
+                    totalPrice: selectedCheckoutJob.price,
+                    paymentType: payType,
+                    paymentMethod: payMethod,
+                    amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price,
+                    proofImage: proofData,
+                    status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION',
+                    createdAt: Date.now(),
+                    requestedAt: window.getCurrentFormattedTimestamp()
+                };
 
-            await setDoc(doc(db, "transactions", txId), newTx);
-            window.closeModal('checkout-modal');
-            if (proofInput) proofInput.value = '';
-            window.switchTab('ORDERS');
-            addLog(`[ORDER] Order placed for '${selectedCheckoutJob.title}' via ${payMethod} (${payType}) on Firestore.`);
+                await setDoc(doc(db, "transactions", txId), newTx);
+                window.closeModal('checkout-modal');
+                if (proofInput) proofInput.value = '';
+                window.switchTab('ORDERS');
+                addLog(`[ORDER] Order placed for '${selectedCheckoutJob.title}' via ${payMethod} (${payType}) on Firestore.`);
+            }
         };
 
         if (proofInput && proofInput.files && proofInput.files[0]) {
