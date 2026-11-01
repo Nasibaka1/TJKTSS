@@ -25,6 +25,23 @@
             pointer-events: none; z-index: 0; opacity: 0.6;
         }
 
+        /* Minigame Overlay Screen */
+        #minigame-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #minigame-canvas {
+            border: 2px solid #00ffcc;
+            background: #050505;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+
         .terminal {
             max-width: 1000px;
             margin: 0 auto;
@@ -42,7 +59,6 @@
             margin-bottom: 16px;
         }
 
-        /* ASCII Art Container for Mobile Scaling */
         .ascii-container {
             width: 100%;
             overflow-x: auto;
@@ -50,12 +66,8 @@
             margin-bottom: 10px;
             padding-bottom: 4px;
         }
-        .ascii-container::-webkit-scrollbar {
-            height: 3px;
-        }
-        .ascii-container::-webkit-scrollbar-thumb {
-            background: #444;
-        }
+        .ascii-container::-webkit-scrollbar { height: 3px; }
+        .ascii-container::-webkit-scrollbar-thumb { background: #444; }
 
         pre.ascii-title {
             font-size: 11px;
@@ -85,10 +97,7 @@
             cursor: pointer;
         }
 
-        .user-badge:hover {
-            background-color: #00ffcc;
-            color: #000;
-        }
+        .user-badge:hover { background-color: #00ffcc; color: #000; }
 
         .stats-bar {
             display: flex;
@@ -282,49 +291,16 @@
             font-size: 11px; color: #444; pointer-events: none;
         }
 
-        /* MOBILE RESPONSIVE MEDIA QUERY (<= 768px) */
         @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            pre.ascii-title {
-                font-size: 8px;
-            }
-            .sys-info {
-                font-size: 11px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
-            }
-            .stats-bar {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
-                font-size: 11px;
-                padding: 8px;
-            }
-            .controls .btn-group {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-            }
-            .controls .btn-group button {
-                width: 100%;
-                text-align: center;
-                padding: 10px;
-                font-size: 13px;
-            }
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-            .cli-prompt-line {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .cli-prompt-line button {
-                width: 100%;
-                padding: 8px;
-            }
+            body { padding: 10px; }
+            pre.ascii-title { font-size: 8px; }
+            .sys-info { font-size: 11px; flex-direction: column; align-items: flex-start; gap: 6px; }
+            .stats-bar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 11px; padding: 8px; }
+            .controls .btn-group { display: flex; flex-direction: column; width: 100%; }
+            .controls .btn-group button { width: 100%; text-align: center; padding: 10px; font-size: 13px; }
+            .grid-container { grid-template-columns: 1fr; }
+            .cli-prompt-line { flex-direction: column; align-items: stretch; }
+            .cli-prompt-line button { width: 100%; padding: 8px; }
         }
     </style>
 </head>
@@ -332,12 +308,20 @@
 
 <canvas id="bg-canvas"></canvas>
 
+<!-- Minigame Overlay / Background Viewer -->
+<div id="minigame-screen">
+    <div style="margin-bottom: 10px; display: flex; gap: 15px; align-items: center;">
+        <span id="minigame-title" style="color: #00ffcc; font-weight: bold; font-size: 14px;">[ TETRIS MODE ]</span>
+        <button onclick="stopMinigame()" style="border-color: #ff5555; color: #ff5555; padding: 4px 12px;">[X] KELUAR / KEMBALI</button>
+    </div>
+    <canvas id="minigame-canvas" width="300" height="450"></canvas>
+</div>
+
 <!-- Google Authentication Overlay -->
 <div class="modal-overlay" id="auth-modal" style="display: flex;">
     <div class="modal-box" style="text-align: center;">
         <div class="modal-title" id="txt-auth-title">[ AUTENTIKASI DIPERLUKAN ]</div>
         <p style="font-size: 11px; color: #888; margin-bottom: 20px;" id="txt-auth-desc">MASUK DENGAN GOOGLE UNTUK MENGAKSES TJKTSS</p>
-        
         <button onclick="loginWithGoogle()" style="border-color: #00ffcc; color: #00ffcc; padding: 12px 24px; font-size: 13px; width: 100%;">
             [G] MASUK DENGAN GOOGLE
         </button>
@@ -383,18 +367,16 @@
         </div>
     </div>
 
-    <div id="feed-grid" class="grid-container">
-        <!-- Cards rendered dynamically -->
-    </div>
+    <div id="feed-grid" class="grid-container"></div>
 
     <div class="cli-section">
         <div class="cli-prompt-line">
             <span id="cli-user-prompt">guest@tjkt:~#</span>
-            <input type="text" id="cli-input" placeholder="Ketik perintah (cth: 'help' atau 'role')" onkeydown="handleCliKeyDown(event)">
+            <input type="text" id="cli-input" placeholder="Ketik perintah (cth: '/tetris', '/snake', 'help')" onkeydown="handleCliKeyDown(event)">
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi.</div>
+            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi. Ketik '/tetris' atau '/snake' untuk minigame.</div>
         </div>
     </div>
 </div>
@@ -462,7 +444,7 @@
     </div>
 </div>
 
-<!-- Modal: Custom Request (Customer) - Dilengkapi Opsi Pembayaran -->
+<!-- Modal: Custom Request (Customer) -->
 <div class="modal-overlay" id="custom-modal">
     <div class="modal-box">
         <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM & PEMBAYARAN</div>
@@ -505,7 +487,6 @@
             </select>
         </div>
 
-        <!-- Embedded QRIS Display untuk Custom Request -->
         <div id="custom-qris-display" class="qris-box">
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="custom-qris-amount">0 Rp</p>
@@ -514,7 +495,6 @@
             <p style="font-size: 10px; color: #aaa;">NMID: ID1026546274972</p>
         </div>
 
-        <!-- E-Wallet Display untuk Custom Request -->
         <div id="custom-ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="custom-ewallet-amount">0 Rp</p>
@@ -548,7 +528,7 @@
     </div>
 </div>
 
-<!-- Modal: Checkout / Order Payment (untuk Feed Layanan) -->
+<!-- Modal: Checkout / Order Payment -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
         <div class="modal-title" id="m-title-checkout">CHECKOUT PESANAN & PEMBAYARAN</div>
@@ -581,7 +561,6 @@
             </select>
         </div>
 
-        <!-- Embedded QRIS Display -->
         <div id="qris-display" class="qris-box">
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-scan-qris">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
@@ -590,7 +569,6 @@
             <p style="font-size: 10px; color: #aaa;">NMID: ID1026546274972</p>
         </div>
 
-        <!-- E-Wallet Direct Transfer Display -->
         <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-ewallet-title">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
@@ -663,6 +641,10 @@
     window.transactionsList = [];
     window.authorizedEmployees = [];
 
+    // Minigame Loop Variables
+    let minigameAnimId = null;
+    let minigameType = null;
+
     const translations = {
         id: {
             authTitle: "[ AUTENTIKASI DIPERLUKAN ]",
@@ -679,7 +661,7 @@
             manageEmp: "+ KELOLA PEGAWAI",
             postJoki: "+ POST JOKI",
             reqCustom: "+ AJUKAN TUGAS KUSTOM",
-            cliPlaceholder: "Ketik perintah (cth: 'help' atau 'role')",
+            cliPlaceholder: "Ketik perintah (cth: '/tetris', '/snake', 'help')",
             cliExec: "EKSEKUSI",
             sysInit: "[SYS] Mesin TJKTSS Berhasil Diinisialisasi.",
             noTrans: "[ TIDAK ADA TRANSAKSI DITEMUKAN ]",
@@ -701,7 +683,7 @@
             manageEmp: "+ MANAGE EMPLOYEES",
             postJoki: "+ POST A JOKI",
             reqCustom: "+ SUBMIT CUSTOM ASSIGNMENT",
-            cliPlaceholder: "Type command (e.g., 'help' or 'role')",
+            cliPlaceholder: "Type command (e.g., '/tetris', '/snake', 'help')",
             cliExec: "EXEC",
             sysInit: "[SYS] TJKTSS Engine Initialized.",
             noTrans: "[ NO TRANSACTIONS FOUND ]",
@@ -740,22 +722,16 @@
     onSnapshot(collection(db, "joki"), (snapshot) => {
         window.jobsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.renderGrid();
-    }, (error) => {
-        console.error("Firestore Jobs Sync Error:", error);
-    });
+    }, (error) => { console.error("Jobs Sync Error:", error); });
 
     onSnapshot(collection(db, "transactions"), (snapshot) => {
         window.transactionsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.renderGrid();
-    }, (error) => {
-        console.error("Firestore Transactions Sync Error:", error);
-    });
+    }, (error) => { console.error("Transactions Sync Error:", error); });
 
     onSnapshot(collection(db, "settings"), (snapshot) => {
         const empDoc = snapshot.docs.find(d => d.id === 'employees');
-        if (empDoc) {
-            window.authorizedEmployees = empDoc.data().list || [];
-        }
+        if (empDoc) { window.authorizedEmployees = empDoc.data().list || []; }
         determineUserRole();
         window.updateUserInterface();
     });
@@ -765,7 +741,6 @@
             window.currentUserEmail = user.email.toLowerCase().trim();
             const customUsername = localStorage.getItem('custom_username_' + window.currentUserEmail);
             window.currentUser = customUsername || user.displayName || user.email.split('@')[0];
-
             document.getElementById('auth-modal').style.display = 'none';
             determineUserRole();
             window.updateUserInterface();
@@ -779,27 +754,15 @@
     });
 
     window.loginWithGoogle = async function() {
-        try {
-            await signInWithPopup(auth, googleProvider);
-        } catch (error) {
-            console.error("Auth Error:", error);
-            alert("Google Sign-In Error: " + error.message);
-        }
+        try { await signInWithPopup(auth, googleProvider); } catch (error) { alert("Google Sign-In Error: " + error.message); }
     };
 
-    window.logoutSession = async function() {
-        await signOut(auth);
-        location.reload();
-    };
+    window.logoutSession = async function() { await signOut(auth); location.reload(); };
 
     function determineUserRole() {
-        if (window.currentUserEmail === ADMIN_EMAIL.toLowerCase()) {
-            window.userRole = 'ADMIN';
-        } else if (window.authorizedEmployees.includes(window.currentUserEmail)) {
-            window.userRole = 'EMPLOYEE';
-        } else {
-            window.userRole = 'CUSTOMER';
-        }
+        if (window.currentUserEmail === ADMIN_EMAIL.toLowerCase()) { window.userRole = 'ADMIN'; }
+        else if (window.authorizedEmployees.includes(window.currentUserEmail)) { window.userRole = 'EMPLOYEE'; }
+        else { window.userRole = 'CUSTOMER'; }
     }
 
     window.openUsernameModal = function() {
@@ -811,9 +774,7 @@
         const input = document.getElementById('new-username-input').value.trim();
         if (!input) { alert('Username cannot be empty!'); return; }
         window.currentUser = input;
-        if (window.currentUserEmail) {
-            localStorage.setItem('custom_username_' + window.currentUserEmail, input);
-        }
+        if (window.currentUserEmail) { localStorage.setItem('custom_username_' + window.currentUserEmail, input); }
         window.updateUserInterface();
         window.closeModal('username-modal');
         addLog(`[PROFILE] Display name updated to '${window.currentUser}'.`);
@@ -831,8 +792,7 @@
 
     window.getCurrentFormattedTimestamp = function() {
         const now = new Date();
-        const options = { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
-        return now.toLocaleDateString('en-US', options) + ' WITA';
+        return now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }) + ' WITA';
     };
 
     window.updateUserInterface = function() {
@@ -923,9 +883,7 @@
 
     window.confirmRemainingPaymentStaff = async function(txId) {
         if (confirm('Konfirmasi pelunasan pesanan ini? Status akan diubah menjadi LUNAS (PAID_FULL).')) {
-            await updateDoc(doc(db, "transactions", txId), {
-                status: 'PAID_FULL'
-            });
+            await updateDoc(doc(db, "transactions", txId), { status: 'PAID_FULL' });
             addLog(`[STAFF] Pelunasan untuk transaksi '${txId}' telah dikonfirmasi.`);
         }
     };
@@ -933,16 +891,11 @@
     window.cancelTransactionCustomer = async function(txId) {
         const tx = window.transactionsList.find(t => t.id === txId);
         if (!tx) return;
-        const txTime = tx.createdAt || 0;
-        const now = Date.now();
-        const minutesPassed = (now - txTime) / (1000 * 60);
-
-        if (minutesPassed > CUSTOMER_CANCEL_WINDOW_MINUTES) {
-            alert('Cancellation window expired (15 minutes limit exceeded). Please contact staff directly.');
+        if ((Date.now() - (tx.createdAt || 0)) / (1000 * 60) > CUSTOMER_CANCEL_WINDOW_MINUTES) {
+            alert('Cancellation window expired (15 minutes limit exceeded).');
             return;
         }
-
-        if (confirm('Cancel this transaction? This action cannot be undone.')) {
+        if (confirm('Cancel this transaction?')) {
             await deleteDoc(doc(db, "transactions", txId));
             addLog(`[CANCEL] Order '${txId}' cancelled by customer.`);
         }
@@ -956,7 +909,6 @@
     window.renderGrid = function() {
         const grid = document.getElementById('feed-grid');
         grid.innerHTML = '';
-
         const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
         const activeServices = window.jobsList.filter(j => j.type === 'marketplace' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
         const customRequests = window.jobsList.filter(j => j.type === 'custom_request' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
@@ -965,7 +917,6 @@
         document.getElementById('stat-custom').innerText = customRequests.length;
         document.getElementById('stat-orders').innerText = window.transactionsList.length;
 
-        // Tab: Semua Transaksi (Khusus Staff)
         if (window.currentTab === 'ALL_ORDERS' && isStaff) {
             if (window.transactionsList.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${translations[window.currentLang].noTrans}</div>`;
@@ -974,22 +925,10 @@
             window.transactionsList.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = 'card';
-
                 let proofsHtml = '';
-                if (tx.proofImage) {
-                    proofsHtml += `<div style="font-size:10px; color:#aaa; margin-top:4px;">BUKTI DP:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Klik untuk lihat bukti DP">`;
-                }
-                if (tx.proofImageRemaining) {
-                    proofsHtml += `<div style="font-size:10px; color:#00ffcc; margin-top:4px;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" title="Klik untuk lihat bukti Pelunasan" style="border-color:#00ffcc;">`;
-                }
-
-                let staffConfirmBtn = '';
-                if (tx.status === 'PENDING_REMAINING_APPROVAL') {
-                    staffConfirmBtn = `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>`;
-                }
-
-                let phoneInfo = tx.phone ? `<span>TELP / WA: <a href="https://wa.me/${tx.phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #00ffcc;">${escapeHtml(tx.phone)}</a></span>` : '';
-                let taskLinkInfo = tx.taskLink ? `<span>FILE/LINK TUGAS: <a href="${escapeHtml(tx.taskLink)}" target="_blank" style="color: #00ffcc; word-break: break-all;">${escapeHtml(tx.taskLink)}</a></span>` : '';
+                if (tx.proofImage) proofsHtml += `<div style="font-size:10px; color:#aaa; margin-top:4px;">BUKTI DP:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')">`;
+                if (tx.proofImageRemaining) proofsHtml += `<div style="font-size:10px; color:#00ffcc; margin-top:4px;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" style="border-color:#00ffcc;">`;
+                let staffBtn = tx.status === 'PENDING_REMAINING_APPROVAL' ? `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>` : '';
 
                 card.innerHTML = `
                     <div>
@@ -1001,13 +940,13 @@
                     <div>
                         <div class="card-meta">
                             <span>BUYER: ${escapeHtml(tx.customerName)}</span>
-                            ${phoneInfo}
-                            ${taskLinkInfo}
+                            ${tx.phone ? '<span>TELP/WA: ' + escapeHtml(tx.phone) + '</span>' : ''}
+                            ${tx.taskLink ? '<span>FILE/LINK: ' + escapeHtml(tx.taskLink) + '</span>' : ''}
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
                         <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
-                            ${staffConfirmBtn}
+                            ${staffBtn}
                             <button class="btn-del" onclick="deleteTransaction('${tx.id}')">DEL TX</button>
                         </div>
                     </div>
@@ -1017,10 +956,8 @@
             return;
         }
 
-        // Tab: Transaksi Saya
         if (window.currentTab === 'ORDERS') {
             const userTransactions = window.transactionsList.filter(t => t.customerName === window.currentUser);
-
             if (userTransactions.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${translations[window.currentLang].noTrans}</div>`;
                 return;
@@ -1028,35 +965,18 @@
             userTransactions.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = 'card';
-
                 let proofsHtml = '';
-                if (tx.proofImage) {
-                    proofsHtml += `<div style="font-size:10px; color:#aaa; margin-top:4px;">BUKTI DP:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Klik untuk lihat bukti DP">`;
-                }
-                if (tx.proofImageRemaining) {
-                    proofsHtml += `<div style="font-size:10px; color:#00ffcc; margin-top:4px;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" title="Klik untuk lihat bukti Pelunasan" style="border-color:#00ffcc;">`;
-                }
-
-                let payRemainingBtn = '';
+                if (tx.proofImage) proofsHtml += `<div style="font-size:10px; color:#aaa; margin-top:4px;">BUKTI DP:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')">`;
+                if (tx.proofImageRemaining) proofsHtml += `<div style="font-size:10px; color:#00ffcc; margin-top:4px;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" style="border-color:#00ffcc;">`;
+                
+                let payRemBtn = '';
                 if (tx.paymentType === 'DP50' && tx.status !== 'PAID_FULL' && tx.status !== 'PENDING_REMAINING_APPROVAL') {
-                    payRemainingBtn = `<button onclick="openRemainingCheckout('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">BAYAR PELUNASAN 50%</button>`;
+                    payRemBtn = `<button onclick="openRemainingCheckout('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">BAYAR PELUNASAN 50%</button>`;
                 } else if (tx.status === 'PENDING_REMAINING_APPROVAL') {
-                    payRemainingBtn = `<span style="color:#00ffcc; font-size:11px; margin-right:6px;">[MENUNGGU KONFIRMASI STAFF]</span>`;
+                    payRemBtn = `<span style="color:#00ffcc; font-size:11px; margin-right:6px;">[MENUNGGU KONFIRMASI]</span>`;
                 }
 
-                let actionControlHtml = '';
-                const txTime = tx.createdAt || 0;
-                const minutesPassed = (Date.now() - txTime) / (1000 * 60);
-                const remainingMin = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - minutesPassed);
-
-                if (remainingMin > 0) {
-                    actionControlHtml = `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL (${remainingMin}m)</button>`;
-                } else {
-                    actionControlHtml = `<span style="color:#666; font-size:11px;">[LOCKED]</span>`;
-                }
-
-                let phoneInfo = tx.phone ? `<span>TELP / WA: ${escapeHtml(tx.phone)}</span>` : '';
-                let taskLinkInfo = tx.taskLink ? `<span>FILE/LINK: ${escapeHtml(tx.taskLink)}</span>` : '';
+                let cancelBtn = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - (Date.now() - (tx.createdAt || 0)) / (1000 * 60)) > 0 ? `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL</button>` : '';
 
                 card.innerHTML = `
                     <div>
@@ -1068,14 +988,12 @@
                     <div>
                         <div class="card-meta">
                             <span>BUYER: ${escapeHtml(tx.customerName)}</span>
-                            ${phoneInfo}
-                            ${taskLinkInfo}
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
                         <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
-                            ${payRemainingBtn}
-                            ${actionControlHtml}
+                            ${payRemBtn}
+                            ${cancelBtn}
                         </div>
                     </div>
                 `;
@@ -1085,54 +1003,32 @@
         }
 
         const targetList = window.currentTab === 'FEED' ? activeServices : customRequests;
-
         if (targetList.length === 0) {
-            let msg = window.currentTab === 'FEED' ? translations[window.currentLang].noFeed : translations[window.currentLang].noCustom;
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${msg}</div>`;
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">${window.currentTab === 'FEED' ? translations[window.currentLang].noFeed : translations[window.currentLang].noCustom}</div>`;
             return;
         }
 
         targetList.forEach((job) => {
             const card = document.createElement('div');
             card.className = 'card';
-
-            let actionBtn = '';
-            let deleteBtn = isStaff || job.authorName === window.currentUser ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
-
-            if (window.currentTab === 'FEED') {
-                actionBtn = `<button onclick="openCheckoutModal('${job.id}')">ORDER NOW</button>`;
-            } else {
-                if (isStaff) {
-                    actionBtn = job.status === 'open' 
-                        ? `<button onclick="acceptCustomJob('${job.id}')">ACCEPT JOB</button>`
-                        : `<span style="color:#888; font-size:11px;">[TAKEN BY ${escapeHtml(job.assignedTo || 'STAFF')}]</span>`;
-                } else {
-                    actionBtn = `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`;
-                }
-            }
-
-            let imageHtml = job.image ? `<img src="${job.image}" class="card-img-preview" onclick="viewFullImage('${job.image}')">` : '';
-            let phoneInfo = job.phone ? `<span>TELP / WA: ${escapeHtml(job.phone)}</span>` : '';
-            let taskLinkInfo = job.taskLink ? `<span>FILE/LINK: ${escapeHtml(job.taskLink)}</span>` : '';
+            let actionBtn = window.currentTab === 'FEED' ? `<button onclick="openCheckoutModal('${job.id}')">ORDER NOW</button>` : (isStaff ? (job.status === 'open' ? `<button onclick="acceptCustomJob('${job.id}')">ACCEPT JOB</button>` : `<span style="color:#888; font-size:11px;">[TAKEN]</span>`) : `<span style="color:#00ffcc; font-size:11px;">STATUS: ${job.status.toUpperCase()}</span>`);
+            let delBtn = isStaff || job.authorName === window.currentUser ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
 
             card.innerHTML = `
                 <div>
                     <div class="card-title">${escapeHtml(job.title)}</div>
                     <div class="card-price">${formatRupiah(job.price)}</div>
                     <p class="card-desc">${escapeHtml(job.description || '')}</p>
-                    ${imageHtml}
+                    ${job.image ? `<img src="${job.image}" class="card-img-preview" onclick="viewFullImage('${job.image}')">` : ''}
                 </div>
                 <div>
                     <div class="card-meta">
                         <span>BY: ${escapeHtml(job.authorName)}</span>
-                        ${phoneInfo}
-                        ${taskLinkInfo}
                         <span>REQUESTED: ${escapeHtml(job.requestedAt || 'N/A')}</span>
-                        ${job.deadline ? '<span>DEADLINE: ' + escapeHtml(job.deadline) + '</span>' : ''}
                     </div>
                     <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center;">
                         ${actionBtn}
-                        ${deleteBtn}
+                        ${delBtn}
                     </div>
                 </div>
             `;
@@ -1141,28 +1037,14 @@
     };
 
     window.openPostModal = function() { document.getElementById('post-modal').style.display = 'flex'; };
-    window.openCustomRequestModal = function() { 
-        document.getElementById('custom-title').value = '';
-        document.getElementById('custom-budget').value = '';
-        document.getElementById('custom-deadline').value = '';
-        document.getElementById('custom-desc').value = '';
-        document.getElementById('custom-phone').value = '';
-        document.getElementById('custom-file-link').value = '';
-        document.getElementById('custom-qris-amount').innerText = '0 Rp';
-        document.getElementById('custom-ewallet-amount').innerText = '0 Rp';
-        document.getElementById('custom-modal').style.display = 'flex'; 
-    };
+    window.openCustomRequestModal = function() { document.getElementById('custom-modal').style.display = 'flex'; };
     window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
     window.calculateCustomCheckout = function() {
-        const budgetStr = document.getElementById('custom-budget').value;
-        const total = window.parseAmountToNumber(budgetStr);
-        const payType = document.getElementById('custom-pay-type').value;
-        const finalAmt = payType === 'DP50' ? total * 0.5 : total;
-        const formatted = formatRupiah(finalAmt);
-
-        document.getElementById('custom-qris-amount').innerText = formatted;
-        document.getElementById('custom-ewallet-amount').innerText = formatted;
+        const total = window.parseAmountToNumber(document.getElementById('custom-budget').value);
+        const finalAmt = document.getElementById('custom-pay-type').value === 'DP50' ? total * 0.5 : total;
+        document.getElementById('custom-qris-amount').innerText = formatRupiah(finalAmt);
+        document.getElementById('custom-ewallet-amount').innerText = formatRupiah(finalAmt);
     };
 
     window.toggleCustomPaymentInstructions = function() {
@@ -1174,146 +1056,69 @@
     window.submitPost = function() {
         const title = document.getElementById('post-title').value.trim();
         const price = window.parseAmountToNumber(document.getElementById('post-price').value);
-        const desc = document.getElementById('post-desc').value.trim();
-        const fileInput = document.getElementById('post-img');
-
         if (!title || !price) { alert('Valid Title and Price required!'); return; }
-
-        const processPost = async (imageDataStr = null) => {
+        
+        const fileInput = document.getElementById('post-img');
+        const process = async (imgStr) => {
             const jobId = 'job-' + Date.now();
-            const newJob = {
-                id: jobId,
-                title: title,
-                price: price,
-                description: desc,
-                image: imageDataStr,
-                type: 'marketplace',
-                status: 'open',
-                authorName: window.currentUser,
-                requestedAt: window.getCurrentFormattedTimestamp()
-            };
-
-            await setDoc(doc(db, "joki", jobId), newJob);
+            await setDoc(doc(db, "joki", jobId), { id: jobId, title, price, description: document.getElementById('post-desc').value.trim(), image: imgStr, type: 'marketplace', status: 'open', authorName: window.currentUser, requestedAt: window.getCurrentFormattedTimestamp() });
             window.closeModal('post-modal');
-            document.getElementById('post-title').value = '';
-            document.getElementById('post-price').value = '';
-            document.getElementById('post-desc').value = '';
-            fileInput.value = '';
-            addLog(`[MARKETPLACE] Published service '${title}' (${formatRupiah(price)}) to Firestore.`);
+            addLog(`[MARKETPLACE] Published service '${title}'.`);
         };
 
-        if (fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
+        if (fileInput.files[0]) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 const img = new Image();
-                img.onload = function() {
+                img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
-                    let width = img.width; let height = img.height;
-                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
-                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                    canvas.width = width; canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    processPost(canvas.toDataURL('image/jpeg', 0.7));
+                    canvas.width = 800; canvas.height = 800 * (img.height / img.width);
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    process(canvas.toDataURL('image/jpeg', 0.7));
                 };
                 img.src = e.target.result;
             };
-            reader.readAsDataURL(file);
-        } else {
-            processPost(null);
-        }
+            reader.readAsDataURL(fileInput.files[0]);
+        } else { process(null); }
     };
 
     window.submitCustomRequestWithPayment = function() {
         const title = document.getElementById('custom-title').value.trim();
         const budget = window.parseAmountToNumber(document.getElementById('custom-budget').value);
-        const deadline = document.getElementById('custom-deadline').value.trim();
-        const desc = document.getElementById('custom-desc').value.trim();
         const phone = document.getElementById('custom-phone').value.trim();
-        const taskLink = document.getElementById('custom-file-link').value.trim();
-        const payType = document.getElementById('custom-pay-type').value;
-        const payMethod = document.getElementById('custom-pay-method').value;
         const fileInput = document.getElementById('custom-img');
+        if (!title || !budget) { alert('Title and Budget required!'); return; }
+        if (!phone) { alert('Phone number required!'); return; }
+        if (!fileInput.files[0]) { alert('Payment proof required!'); return; }
 
-        if (!title || !budget) { alert('Valid Title and Budget required!'); return; }
-        if (!phone) { alert('Harap isi nomor telepon/WhatsApp!'); return; }
-        if (!fileInput.files || !fileInput.files[0]) { alert('Harap lampirkan bukti pembayaran!'); return; }
-
-        const processRequestWithPay = async (imageDataStr = null, proofData = null) => {
-            const jobId = 'job-' + Date.now();
-            const newJob = {
-                id: jobId,
-                title: title,
-                price: budget,
-                deadline: deadline,
-                description: desc,
-                phone: phone,
-                taskLink: taskLink,
-                image: imageDataStr,
-                type: 'custom_request',
-                status: 'in_progress',
-                authorName: window.currentUser,
-                requestedAt: window.getCurrentFormattedTimestamp()
-            };
-
-            const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
-            const newTx = {
-                id: txId,
-                jobId: jobId,
-                jobTitle: title,
-                customerName: window.currentUser,
-                phone: phone,
-                taskLink: taskLink,
-                totalPrice: budget,
-                paymentType: payType,
-                paymentMethod: payMethod,
-                amountPaid: payType === 'DP50' ? budget * 0.5 : budget,
-                proofImage: proofData,
-                proofImageRemaining: null,
-                status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION',
-                createdAt: Date.now(),
-                requestedAt: window.getCurrentFormattedTimestamp()
-            };
-
-            await setDoc(doc(db, "joki", jobId), newJob);
-            await setDoc(doc(db, "transactions", txId), newTx);
-
-            window.closeModal('custom-modal');
-            window.switchTab('ORDERS');
-            addLog(`[CUSTOM] Submitted request & paid for '${title}' (${formatRupiah(budget)}) on Firestore.`);
-        };
-
-        const file = fileInput.files[0];
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async (e) => {
             const img = new Image();
-            img.onload = function() {
+            img.onload = async () => {
                 const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
-                let width = img.width; let height = img.height;
-                if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
-                else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                canvas.width = width; canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-                processRequestWithPay(null, canvas.toDataURL('image/jpeg', 0.7));
+                canvas.width = 800; canvas.height = 800 * (img.height / img.width);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                const proofData = canvas.toDataURL('image/jpeg', 0.7);
+
+                const jobId = 'job-' + Date.now();
+                const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
+                const payType = document.getElementById('custom-pay-type').value;
+
+                await setDoc(doc(db, "joki", jobId), { id: jobId, title, price: budget, deadline: document.getElementById('custom-deadline').value.trim(), description: document.getElementById('custom-desc').value.trim(), phone, taskLink: document.getElementById('custom-file-link').value.trim(), type: 'custom_request', status: 'in_progress', authorName: window.currentUser, requestedAt: window.getCurrentFormattedTimestamp() });
+                await setDoc(doc(db, "transactions", txId), { id: txId, jobId, jobTitle: title, customerName: window.currentUser, phone, taskLink: document.getElementById('custom-file-link').value.trim(), totalPrice: budget, paymentType: payType, paymentMethod: document.getElementById('custom-pay-method').value, amountPaid: payType === 'DP50' ? budget * 0.5 : budget, proofImage: proofData, status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION', createdAt: Date.now(), requestedAt: window.getCurrentFormattedTimestamp() });
+
+                window.closeModal('custom-modal');
+                window.switchTab('ORDERS');
+                addLog(`[CUSTOM] Request & Payment submitted for '${title}'.`);
             };
             img.src = e.target.result;
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(fileInput.files[0]);
     };
 
     window.acceptCustomJob = async function(jobId) {
-        const job = window.jobsList.find(j => j.id === jobId);
-        if (job) {
-            await updateDoc(doc(db, "joki", jobId), {
-                status: 'in_progress',
-                assignedTo: window.currentUser
-            });
-            addLog(`[ACCEPT] You accepted job '${job.title}' on Firestore.`);
-        }
+        await updateDoc(doc(db, "joki", jobId), { status: 'in_progress', assignedTo: window.currentUser });
+        addLog(`[ACCEPT] Job accepted.`);
     };
 
     let selectedCheckoutJob = null;
@@ -1323,13 +1128,8 @@
         selectedCheckoutJob = window.jobsList.find(j => j.id === jobId);
         if (!selectedCheckoutJob) return;
 
-        // Pengecekan: Cegah user memesan layanan yang sama jika sudah ada transaksinya
-        const alreadyOrdered = window.transactionsList.some(
-            t => t.customerName === window.currentUser && t.jobId === jobId
-        );
-
-        if (alreadyOrdered) {
-            alert('Kamu sudah pernah memesan layanan ini! Cek tab [3] Transaksi Saya.');
+        if (window.transactionsList.some(t => t.customerName === window.currentUser && t.jobId === jobId)) {
+            alert('Kamu sudah pernah memesan layanan ini!');
             return;
         }
 
@@ -1348,30 +1148,20 @@
         if (!tx) return;
         activeRemainingTxId = tx.id;
         selectedCheckoutJob = { id: tx.jobId, title: tx.jobTitle, price: tx.totalPrice };
-        
         document.getElementById('checkout-item-title').innerText = `PELUNASAN: ${tx.jobTitle}`;
         document.getElementById('pay-type-container').style.display = 'none';
         document.getElementById('pay-proof-img').value = '';
-        
-        const remainingAmt = tx.totalPrice - tx.amountPaid;
-        const formatted = formatRupiah(remainingAmt);
-        document.getElementById('checkout-item-price').innerText = `TOTAL DIBAYAR SEKARANG: ${formatted} (Sisa 50%)`;
-        document.getElementById('qris-amount').innerText = formatted;
-        document.getElementById('ewallet-amount').innerText = formatted;
-        
+        const rem = tx.totalPrice - tx.amountPaid;
+        document.getElementById('checkout-item-price').innerText = `TOTAL DIBAYAR: ${formatRupiah(rem)}`;
+        document.getElementById('qris-amount').innerText = formatRupiah(rem);
         document.getElementById('checkout-modal').style.display = 'flex';
     };
 
     window.calculateCheckout = function() {
         if (!selectedCheckoutJob || activeRemainingTxId) return;
-        const payType = document.getElementById('pay-type').value;
-        const total = selectedCheckoutJob.price;
-        const finalAmt = payType === 'DP50' ? total * 0.5 : total;
-        const formatted = formatRupiah(finalAmt);
-
-        document.getElementById('checkout-item-price').innerText = `TOTAL DUE NOW: ${formatted} ${payType === 'DP50' ? '(50% DP)' : '(FULL)'}`;
-        document.getElementById('qris-amount').innerText = formatted;
-        document.getElementById('ewallet-amount').innerText = formatted;
+        const finalAmt = document.getElementById('pay-type').value === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price;
+        document.getElementById('checkout-item-price').innerText = `TOTAL DUE NOW: ${formatRupiah(finalAmt)}`;
+        document.getElementById('qris-amount').innerText = formatRupiah(finalAmt);
     };
 
     window.togglePaymentInstructions = function() {
@@ -1382,95 +1172,167 @@
 
     window.copyNumber = function(text) {
         navigator.clipboard.writeText(text);
-        addLog(`[CLIPBOARD] Copied number '${text}' to clipboard.`);
-        alert('Copied GoPay/DANA number: ' + text);
+        alert('Copied: ' + text);
     };
 
     window.confirmOrder = function() {
-        const payMethod = document.getElementById('pay-method').value;
         const proofInput = document.getElementById('pay-proof-img');
         const phone = document.getElementById('order-phone').value.trim();
-        const taskLink = document.getElementById('order-task-link').value.trim();
+        if (!proofInput.files[0]) { alert('Harap lampirkan bukti pembayaran!'); return; }
 
-        if (!selectedCheckoutJob) return;
-
-        if (!proofInput.files || !proofInput.files[0]) {
-            alert('Harap lampirkan bukti screenshot pembayaran terlebih dahulu!');
-            return;
-        }
-
-        const processTx = async (proofData = null) => {
-            if (activeRemainingTxId) {
-                await updateDoc(doc(db, "transactions", activeRemainingTxId), {
-                    status: 'PENDING_REMAINING_APPROVAL',
-                    proofImageRemaining: proofData
-                });
-                window.closeModal('checkout-modal');
-                if (proofInput) proofInput.value = '';
-                addLog(`[PAYMENT] Bukti pelunasan dikirim untuk transaksi '${activeRemainingTxId}', menunggu konfirmasi staff.`);
-            } else {
-                if (!phone) { alert('Harap isi nomor telepon/WhatsApp!'); return; }
-                const payType = document.getElementById('pay-type').value;
-                const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
-                const newTx = {
-                    id: txId,
-                    jobId: selectedCheckoutJob.id,
-                    jobTitle: selectedCheckoutJob.title,
-                    customerName: window.currentUser,
-                    phone: phone,
-                    taskLink: taskLink,
-                    totalPrice: selectedCheckoutJob.price,
-                    paymentType: payType,
-                    paymentMethod: payMethod,
-                    amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price,
-                    proofImage: proofData,
-                    proofImageRemaining: null,
-                    status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION',
-                    createdAt: Date.now(),
-                    requestedAt: window.getCurrentFormattedTimestamp()
-                };
-
-                await setDoc(doc(db, "transactions", txId), newTx);
-                window.closeModal('checkout-modal');
-                if (proofInput) proofInput.value = '';
-                window.switchTab('ORDERS');
-                addLog(`[ORDER] Order placed for '${selectedCheckoutJob.title}' via ${payMethod} (${payType}) on Firestore.`);
-            }
-        };
-
-        const file = proofInput.files[0];
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async (e) => {
             const img = new Image();
-            img.onload = function() {
+            img.onload = async () => {
                 const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
-                let width = img.width; let height = img.height;
-                if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
-                else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                canvas.width = width; canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-                processTx(canvas.toDataURL('image/jpeg', 0.7));
+                canvas.width = 800; canvas.height = 800 * (img.height / img.width);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                const proofData = canvas.toDataURL('image/jpeg', 0.7);
+
+                if (activeRemainingTxId) {
+                    await updateDoc(doc(db, "transactions", activeRemainingTxId), { status: 'PENDING_REMAINING_APPROVAL', proofImageRemaining: proofData });
+                    window.closeModal('checkout-modal');
+                    addLog(`[PAYMENT] Bukti pelunasan dikirim.`);
+                } else {
+                    if (!phone) { alert('Nomor telepon wajib diisi!'); return; }
+                    const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
+                    const payType = document.getElementById('pay-type').value;
+                    await setDoc(doc(db, "transactions", txId), { id: txId, jobId: selectedCheckoutJob.id, jobTitle: selectedCheckoutJob.title, customerName: window.currentUser, phone, taskLink: document.getElementById('order-task-link').value.trim(), totalPrice: selectedCheckoutJob.price, paymentType: payType, paymentMethod: document.getElementById('pay-method').value, amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price, proofImage: proofData, status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION', createdAt: Date.now(), requestedAt: window.getCurrentFormattedTimestamp() });
+                    window.closeModal('checkout-modal');
+                    window.switchTab('ORDERS');
+                    addLog(`[ORDER] Order placed.`);
+                }
             };
             img.src = e.target.result;
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(proofInput.files[0]);
     };
 
+    // --- TERMINAL COMMANDS FOR /tetris and /snake ---
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
     window.executeCliCommand = function() {
         const input = document.getElementById('cli-input');
-        const cmd = input.value.trim();
+        const cmd = input.value.trim().toLowerCase();
         if (!cmd) return;
         addLog(`${window.currentUser || 'guest'}@tjkt:~# ${cmd}`);
         input.value = '';
 
-        if (cmd.toLowerCase() === 'help') addLog(`[HELP] Commands: role, clear`);
-        else if (cmd.toLowerCase() === 'role') window.toggleRole();
-        else if (cmd.toLowerCase() === 'clear') document.getElementById('log-box').innerHTML = '';
-        else addLog(`[ERROR] Command not recognized.`);
+        if (cmd === '/tetris') {
+            startMinigame('tetris');
+            addLog(`[MINIGAME] Tetris background loop activated.`);
+        } else if (cmd === '/snake') {
+            startMinigame('snake');
+            addLog(`[MINIGAME] Snake background loop activated.`);
+        } else if (cmd === 'help') {
+            addLog(`[HELP] Commands: /tetris, /snake, role, clear`);
+        } else if (cmd === 'role') {
+            window.toggleRole();
+        } else if (cmd === 'clear') {
+            document.getElementById('log-box').innerHTML = '';
+        } else {
+            addLog(`[ERROR] Command not recognized.`);
+        }
     };
+
+    function startMinigame(type) {
+        minigameType = type;
+        document.getElementById('minigame-screen').style.display = 'flex';
+        document.getElementById('minigame-title').innerText = type === 'tetris' ? '[ TETRIS BACKGROUND LOOP ]' : '[ SNAKE BACKGROUND LOOP ]';
+        
+        const canvas = document.getElementById('minigame-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        if (minigameAnimId) cancelAnimationFrame(minigameAnimId);
+
+        if (type === 'tetris') {
+            runTetrisLoop(ctx, canvas);
+        } else {
+            runSnakeLoop(ctx, canvas);
+        }
+    }
+
+    window.stopMinigame = function() {
+        document.getElementById('minigame-screen').style.display = 'none';
+        if (minigameAnimId) cancelAnimationFrame(minigameAnimId);
+        minigameAnimId = null;
+        addLog(`[MINIGAME] Background game closed.`);
+    };
+
+    // Tetris Loop Generator
+    function runTetrisLoop(ctx, canvas) {
+        let blocks = [];
+        for(let i=0; i<15; i++) {
+            blocks.push({ x: Math.floor(Math.random()*10)*30, y: Math.random()*-450, size: 30, speed: Math.random()*2+1, color: '#00ffcc' });
+        }
+        function loop() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Grid lines
+            ctx.strokeStyle = '#112222';
+            for(let x=0; x<canvas.width; x+=30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+            for(let y=0; y<canvas.height; y+=30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+
+            blocks.forEach(b => {
+                b.y += b.speed;
+                if(b.y > canvas.height) { b.y = -30; b.x = Math.floor(Math.random()*10)*30; }
+                ctx.fillStyle = b.color;
+                ctx.fillRect(b.x+2, b.y+2, b.size-4, b.size-4);
+            });
+            minigameAnimId = requestAnimationFrame(loop);
+        }
+        loop();
+    }
+
+    // Snake Loop Generator
+    function runSnakeLoop(ctx, canvas) {
+        let snake = [{x: 150, y: 150}, {x: 140, y: 150}, {x: 130, y: 150}];
+        let dx = 10, dy = 0;
+        let food = {x: 200, y: 200};
+        let frameCount = 0;
+
+        function loop() {
+            frameCount++;
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Food (Apple)
+            ctx.fillStyle = '#ff5555';
+            ctx.fillRect(food.x, food.y, 10, 10);
+
+            if (frameCount % 8 === 0) {
+                let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+                if (head.x >= canvas.width) head.x = 0;
+                if (head.x < 0) head.x = canvas.width - 10;
+                if (head.y >= canvas.height) head.y = 0;
+                if (head.y < 0) head.y = canvas.height - 10;
+
+                snake.unshift(head);
+
+                if (Math.abs(head.x - food.x) < 5 && Math.abs(head.y - food.y) < 5) {
+                    food = { x: Math.floor(Math.random()*(canvas.width/10))*10, y: Math.floor(Math.random()*(canvas.height/10))*10 };
+                } else {
+                    snake.pop();
+                }
+
+                // AI direction change
+                if (Math.random() < 0.1) {
+                    let dirs = [{dx:10,dy:0}, {dx:-10,dy:0}, {dx:0,dy:10}, {dx:0,dy:-10}];
+                    let d = dirs[Math.floor(Math.random()*dirs.length)];
+                    dx = d.dx; dy = d.dy;
+                }
+            }
+
+            // Draw Snake
+            snake.forEach((part, index) => {
+                ctx.fillStyle = index === 0 ? '#00ffcc' : '#00aa88';
+                ctx.fillRect(part.x, part.y, 9, 9);
+            });
+
+            minigameAnimId = requestAnimationFrame(loop);
+        }
+        loop();
+    }
 
     function addLog(msg) {
         const logBox = document.getElementById('log-box');
@@ -1480,37 +1342,29 @@
         logBox.scrollTop = logBox.scrollHeight;
     }
 
-    function formatRupiah(number) {
-        return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(number) + " Rp";
-    }
+    function formatRupiah(num) { return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num) + " Rp"; }
+    function escapeHtml(text) { return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-    function escapeHtml(text) {
-        return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
-
+    // Background Particle Canvas
     function initParticles() {
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resize(); window.addEventListener('resize', resize);
-        const particles = [];
-        for (let i = 0; i < 45; i++) {
-            particles.push({
-                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
-                radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 + 0.2
-            });
-        }
+        const particles = Array.from({length: 45}, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 + 0.2
+        }));
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                let p = particles[i];
+            particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
                 if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
                 if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
                 ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; ctx.fill();
-            }
+            });
             requestAnimationFrame(animate);
         }
         animate();
