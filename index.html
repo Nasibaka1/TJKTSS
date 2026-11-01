@@ -452,7 +452,6 @@
         onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // Your exact tjktssv2 Firebase JS SDK Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
         authDomain: "tjktssv2.firebaseapp.com",
@@ -486,8 +485,8 @@
 
             document.getElementById('auth-modal').style.display = 'none';
             determineUserRole();
-            updateUserInterface();
-            renderGrid();
+            window.updateUserInterface();
+            window.renderGrid();
             addLog(`[AUTH] Logged in via Google as '${window.currentUser}' (${window.currentUserEmail}).`);
         } else {
             document.getElementById('auth-modal').style.display = 'flex';
@@ -877,7 +876,7 @@
     }
 
     function escapeHtml(text) {
-        return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     function initParticles() {
