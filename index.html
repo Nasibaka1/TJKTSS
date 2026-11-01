@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TJKT JOKI MARKETPLACE [OFFLINE TEST]</title>
+    <title>TJKT JOKI MARKETPLACE</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -246,17 +246,15 @@
 
 <canvas id="bg-canvas"></canvas>
 
-<!-- Mock Offline Login Overlay -->
+<!-- Google Authentication Overlay -->
 <div class="modal-overlay" id="auth-modal" style="display: flex;">
     <div class="modal-box" style="text-align: center;">
-        <div class="modal-title">[ OFFLINE TEST MODE: AUTHENTICATION ]</div>
-        <p style="font-size: 11px; color: #888; margin-bottom: 16px;">SELECT A TEST GOOGLE ACCOUNT TO SIGN IN</p>
+        <div class="modal-title">[ AUTHENTICATION REQUIRED ]</div>
+        <p style="font-size: 11px; color: #888; margin-bottom: 20px;">SIGN IN WITH GOOGLE TO ACCESS TJKT MARKETPLACE</p>
         
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button onclick="mockLogin('muhammadfadhilrandaputra@gmail.com', 'Fadhil Admin')" style="border-color: #00ffcc; color: #00ffcc;">[G] LOGIN AS ADMIN (fadhilrandaputra)</button>
-            <button onclick="mockLogin('turner@gmail.com', 'Turner Staff')">[G] LOGIN AS STAFF (turner@gmail.com)</button>
-            <button onclick="mockLogin('customer@gmail.com', 'Regular Customer')">[G] LOGIN AS CUSTOMER (customer@gmail.com)</button>
-        </div>
+        <button onclick="loginWithGoogle()" style="border-color: #00ffcc; color: #00ffcc; padding: 10px 20px; font-size: 13px;">
+            [G] SIGN IN WITH GOOGLE
+        </button>
     </div>
 </div>
 
@@ -273,7 +271,6 @@
         <div class="sys-info">
             <div>USER: <span id="sys-user">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
             <div>
-                <button onclick="resetData()" style="font-size: 10px; padding: 2px 6px;">[R] RESET DATA</button>
                 <button onclick="logoutSession()" style="font-size: 10px; padding: 2px 6px;">[X] LOGOUT</button>
             </div>
         </div>
@@ -297,7 +294,6 @@
         </div>
     </div>
 
-    <!-- Container for Listings / Feed / Orders -->
     <div id="feed-grid" class="grid-container">
         <!-- Cards rendered dynamically -->
     </div>
@@ -309,7 +305,7 @@
             <button onclick="executeCliCommand()">EXEC</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] Offline LocalStorage Engine Initialized.</div>
+            <div class="log-entry">[SYS] TJKT Marketplace Engine Initialized.</div>
         </div>
     </div>
 </div>
@@ -426,9 +422,9 @@
         </div>
 
         <div id="qris-display" class="qris-box">
-            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ MOCK QRIS SCANNER ]</p>
+            <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS TO PAY ]</p>
             <p style="font-size: 18px; font-weight: bold; margin: 8px 0;" id="qris-amount">0 Rp</p>
-            <p style="font-size: 10px; color: #aaa;">Simulated Payment to TJKT SURUH-SURUH</p>
+            <p style="font-size: 10px; color: #aaa;">Static Merchant: TJKT SURUH-SURUH</p>
         </div>
 
         <div id="cash-display" class="qris-box" style="display: none; border-color: #ffffff; background: #111;">
@@ -445,10 +441,87 @@
 
 <div class="auth-watermark">made by @Turner</div>
 
-<script>
+<!-- Firebase Modular Web SDK v10 -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+        getAuth, 
+        GoogleAuthProvider, 
+        signInWithPopup, 
+        signOut, 
+        onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // Your exact tjktssv2 Firebase JS SDK Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
+        authDomain: "tjktssv2.firebaseapp.com",
+        projectId: "tjktssv2",
+        storageBucket: "tjktssv2.firebasestorage.app",
+        messagingSenderId: "842333117452",
+        appId: "1:842333117452:web:ea45034d64f0e03895e229",
+        measurementId: "G-07HX39S99Y"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+
     const ADMIN_EMAIL = 'muhammadfadhilrandaputra@gmail.com';
 
-    function parseAmountToNumber(amountStr) {
+    window.currentUser = null;
+    window.currentUserEmail = null;
+    window.userRole = 'CUSTOMER';
+    window.currentTab = 'FEED';
+
+    window.authorizedEmployees = JSON.parse(localStorage.getItem('offline_employees')) || [];
+    window.jobsList = JSON.parse(localStorage.getItem('offline_jobs')) || [];
+    window.transactionsList = JSON.parse(localStorage.getItem('offline_txs')) || [];
+
+    // Live Firebase Auth Listener
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            window.currentUser = user.displayName || user.email.split('@')[0];
+            window.currentUserEmail = user.email.toLowerCase().trim();
+
+            document.getElementById('auth-modal').style.display = 'none';
+            determineUserRole();
+            updateUserInterface();
+            renderGrid();
+            addLog(`[AUTH] Logged in via Google as '${window.currentUser}' (${window.currentUserEmail}).`);
+        } else {
+            document.getElementById('auth-modal').style.display = 'flex';
+            window.currentUser = null;
+            window.currentUserEmail = null;
+        }
+    });
+
+    window.loginWithGoogle = async function() {
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+            console.error("Auth Error:", error);
+            alert("Google Sign-In Error: " + error.message);
+        }
+    };
+
+    window.logoutSession = async function() {
+        await signOut(auth);
+        location.reload();
+    };
+
+    function determineUserRole() {
+        if (window.currentUserEmail === ADMIN_EMAIL.toLowerCase()) {
+            window.userRole = 'ADMIN';
+        } else if (window.authorizedEmployees.includes(window.currentUserEmail)) {
+            window.userRole = 'EMPLOYEE';
+        } else {
+            window.userRole = 'CUSTOMER';
+        }
+    }
+
+    /* Price Parser (10rb, 20,000, 15k) */
+    window.parseAmountToNumber = function(amountStr) {
         if (!amountStr) return 0;
         let cleaned = String(amountStr).toLowerCase().trim();
         let isThousands = cleaned.includes('rb') || cleaned.includes('k');
@@ -457,252 +530,124 @@
             numStr = numStr.replace(/\./g, '');
         }
         let num = parseFloat(numStr) || 0;
-        if (isThousands) {
-            return num * 1000;
-        }
-        return num;
-    }
-
-    function getCurrentFormattedTimestamp() {
-        const now = new Date();
-        const options = { 
-            month: 'short', 
-            day: 'numeric', 
-            year: 'numeric', 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false
-        };
-        return now.toLocaleDateString('en-US', options) + ' WITA';
-    }
-
-    // Default Seed Data
-    const defaultJobs = [
-        {
-            id: 'job-101',
-            title: 'Cisco Packet Tracer VTP & ACL Config',
-            price: 15000,
-            description: 'Complete VTP Domain + Access List setup with PKT source file and documentation.',
-            type: 'marketplace',
-            status: 'open',
-            authorName: 'Turner',
-            requestedAt: 'Nov 1, 2026, 10:15 WITA'
-        },
-        {
-            id: 'job-102',
-            title: 'Debian 12 Apache Virtual Host Setup',
-            price: 10000,
-            description: 'Apache2 multi-site setup with custom root index directory.',
-            type: 'marketplace',
-            status: 'open',
-            authorName: 'fadhil',
-            requestedAt: 'Nov 1, 2026, 11:30 WITA'
-        },
-        {
-            id: 'job-103',
-            title: 'BIND9 Master & Slave DNS Server',
-            price: 20000,
-            deadline: 'Tomorrow 18:00 WITA',
-            description: 'Custom domain zone setup for smkn7.sch.id on IP 192.168.10.1.',
-            type: 'custom_request',
-            status: 'open',
-            authorName: 'Dede',
-            requestedAt: 'Nov 1, 2026, 12:45 WITA'
-        }
-    ];
-
-    let currentUser = localStorage.getItem('offline_user') || null;
-    let currentUserEmail = localStorage.getItem('offline_user_email') || null;
-    let userRole = 'CUSTOMER';
-    let currentTab = 'FEED';
-
-    let authorizedEmployees = JSON.parse(localStorage.getItem('offline_employees')) || ['turner@gmail.com', 'fadhil@gmail.com'];
-    let jobsList = JSON.parse(localStorage.getItem('offline_jobs')) || [...defaultJobs];
-    let transactionsList = JSON.parse(localStorage.getItem('offline_txs')) || [];
-
-    window.onload = function() {
-        initParticles();
-        if (currentUserEmail) {
-            document.getElementById('auth-modal').style.display = 'none';
-            determineUserRole();
-            updateUserInterface();
-            renderGrid();
-            addLog(`[AUTH] Restored session as '${currentUser}' (${currentUserEmail}).`);
-        } else {
-            document.getElementById('auth-modal').style.display = 'flex';
-        }
+        return isThousands ? num * 1000 : num;
     };
 
-    function mockLogin(email, username) {
-        currentUserEmail = email.toLowerCase().trim();
-        currentUser = username;
+    window.getCurrentFormattedTimestamp = function() {
+        const now = new Date();
+        const options = { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+        return now.toLocaleDateString('en-US', options) + ' WITA';
+    };
 
-        localStorage.setItem('offline_user', username);
-        localStorage.setItem('offline_user_email', currentUserEmail);
+    window.saveToStorage = function() {
+        localStorage.setItem('offline_jobs', JSON.stringify(window.jobsList));
+        localStorage.setItem('offline_txs', JSON.stringify(window.transactionsList));
+        localStorage.setItem('offline_employees', JSON.stringify(window.authorizedEmployees));
+    };
 
-        document.getElementById('auth-modal').style.display = 'none';
-        determineUserRole();
-        updateUserInterface();
-        renderGrid();
-        addLog(`[AUTH] Authenticated as '${currentUser}' (${currentUserEmail}).`);
-    }
+    window.updateUserInterface = function() {
+        document.getElementById('sys-user').innerText = `${window.currentUser || 'guest'}@tjkt`;
+        document.getElementById('cli-user-prompt').innerText = `${window.currentUser || 'guest'}@tjkt:~#`;
+        document.getElementById('sys-role').innerText = window.userRole;
+        document.getElementById('stat-role-text').innerText = window.userRole;
 
-    function determineUserRole() {
-        if (currentUserEmail === ADMIN_EMAIL.toLowerCase()) {
-            userRole = 'ADMIN';
-        } else if (authorizedEmployees.includes(currentUserEmail)) {
-            userRole = 'EMPLOYEE';
-        } else {
-            userRole = 'CUSTOMER';
-        }
-    }
-
-    function logoutSession() {
-        localStorage.removeItem('offline_user');
-        localStorage.removeItem('offline_user_email');
-        location.reload();
-    }
-
-    function resetData() {
-        if (confirm('Reset offline database to default sample data?')) {
-            localStorage.removeItem('offline_jobs');
-            localStorage.removeItem('offline_txs');
-            localStorage.removeItem('offline_employees');
-            jobsList = [...defaultJobs];
-            transactionsList = [];
-            authorizedEmployees = ['turner@gmail.com', 'fadhil@gmail.com'];
-            saveToStorage();
-            renderGrid();
-            addLog(`[RESET] Restored original test dataset.`);
-        }
-    }
-
-    function saveToStorage() {
-        localStorage.setItem('offline_jobs', JSON.stringify(jobsList));
-        localStorage.setItem('offline_txs', JSON.stringify(transactionsList));
-        localStorage.setItem('offline_employees', JSON.stringify(authorizedEmployees));
-    }
-
-    function updateUserInterface() {
-        document.getElementById('sys-user').innerText = `${currentUser}@tjkt`;
-        document.getElementById('cli-user-prompt').innerText = `${currentUser}@tjkt:~#`;
-        document.getElementById('sys-role').innerText = userRole;
-        document.getElementById('stat-role-text').innerText = userRole;
-
-        const isStaff = userRole === 'ADMIN' || userRole === 'EMPLOYEE';
+        const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
         document.getElementById('btn-action-post').style.display = isStaff ? 'inline-block' : 'none';
-        document.getElementById('btn-action-manage-emp').style.display = userRole === 'ADMIN' ? 'inline-block' : 'none';
+        document.getElementById('btn-action-manage-emp').style.display = window.userRole === 'ADMIN' ? 'inline-block' : 'none';
         document.getElementById('btn-action-request').style.display = 'inline-block';
-    }
+    };
 
-    function toggleRole() {
-        if (userRole === 'ADMIN') {
-            userRole = 'EMPLOYEE';
-        } else if (userRole === 'EMPLOYEE') {
-            userRole = 'CUSTOMER';
-        } else {
-            determineUserRole();
-        }
-        updateUserInterface();
-        addLog(`[ROLE] Switched active mode view to ${userRole}.`);
-        renderGrid();
-    }
+    window.toggleRole = function() {
+        if (window.userRole === 'ADMIN') window.userRole = 'EMPLOYEE';
+        else if (window.userRole === 'EMPLOYEE') window.userRole = 'CUSTOMER';
+        else determineUserRole();
+        window.updateUserInterface();
+        addLog(`[ROLE] Switched active view mode to ${window.userRole}.`);
+        window.renderGrid();
+    };
 
-    /* Admin Employee Management */
-    function openEmployeeManageModal() {
-        renderEmployeeList();
+    /* Admin Management */
+    window.openEmployeeManageModal = function() {
+        window.renderEmployeeList();
         document.getElementById('employee-modal').style.display = 'flex';
-    }
+    };
 
-    function renderEmployeeList() {
+    window.renderEmployeeList = function() {
         const container = document.getElementById('employee-list-container');
         container.innerHTML = '';
-
-        if (authorizedEmployees.length === 0) {
+        if (window.authorizedEmployees.length === 0) {
             container.innerHTML = `<div style="color: #666; font-size: 11px;">No employees added yet.</div>`;
             return;
         }
-
-        authorizedEmployees.forEach((email) => {
+        window.authorizedEmployees.forEach((email) => {
             const div = document.createElement('div');
             div.className = 'employee-list-item';
-            div.innerHTML = `
-                <span>${escapeHtml(email)}</span>
-                <button class="btn-del" onclick="removeEmployeeEmail('${email}')">REVOKE</button>
-            `;
+            div.innerHTML = `<span>${escapeHtml(email)}</span><button class="btn-del" onclick="removeEmployeeEmail('${email}')">REVOKE</button>`;
             container.appendChild(div);
         });
-    }
+    };
 
-    function addEmployeeEmail() {
+    window.addEmployeeEmail = function() {
         const input = document.getElementById('new-employee-email');
         const email = input.value.toLowerCase().trim();
-
-        if (!email || !email.includes('@')) {
-            alert('Please enter a valid Google email address!');
-            return;
-        }
-
-        if (!authorizedEmployees.includes(email)) {
-            authorizedEmployees.push(email);
-            saveToStorage();
-            renderEmployeeList();
+        if (!email || !email.includes('@')) { alert('Please enter a valid email address!'); return; }
+        if (!window.authorizedEmployees.includes(email)) {
+            window.authorizedEmployees.push(email);
+            window.saveToStorage();
+            window.renderEmployeeList();
             input.value = '';
             addLog(`[ADMIN] Authorized employee account: '${email}'.`);
-        } else {
-            alert('Email is already authorized!');
         }
-    }
+    };
 
-    function removeEmployeeEmail(email) {
-        authorizedEmployees = authorizedEmployees.filter(e => e !== email);
-        saveToStorage();
-        renderEmployeeList();
+    window.removeEmployeeEmail = function(email) {
+        window.authorizedEmployees = window.authorizedEmployees.filter(e => e !== email);
+        window.saveToStorage();
+        window.renderEmployeeList();
         addLog(`[ADMIN] Revoked employee access for: '${email}'.`);
-    }
+    };
 
-    function switchTab(tab) {
-        currentTab = tab;
+    window.switchTab = function(tab) {
+        window.currentTab = tab;
         document.getElementById('tab-feed').classList.toggle('active', tab === 'FEED');
         document.getElementById('tab-custom').classList.toggle('active', tab === 'CUSTOM');
         document.getElementById('tab-orders').classList.toggle('active', tab === 'ORDERS');
-        renderGrid();
-    }
+        window.renderGrid();
+    };
 
-    function deleteJoki(jobId) {
+    window.deleteJoki = function(jobId) {
         if (confirm('Are you sure you want to delete this joki posting?')) {
-            const job = jobsList.find(j => j.id === jobId);
-            jobsList = jobsList.filter(j => j.id !== jobId);
-            saveToStorage();
-            renderGrid();
+            const job = window.jobsList.find(j => j.id === jobId);
+            window.jobsList = window.jobsList.filter(j => j.id !== jobId);
+            window.saveToStorage();
+            window.renderGrid();
             addLog(`[DELETE] Deleted joki '${job ? job.title : jobId}'.`);
         }
-    }
+    };
 
-    function viewFullImage(imgData) {
+    window.viewFullImage = function(imgData) {
         document.getElementById('img-viewer-src').src = imgData;
         document.getElementById('img-viewer-modal').style.display = 'flex';
-    }
+    };
 
-    function renderGrid() {
+    window.renderGrid = function() {
         const grid = document.getElementById('feed-grid');
         grid.innerHTML = '';
 
-        const isStaff = userRole === 'ADMIN' || userRole === 'EMPLOYEE';
-        const activeServices = jobsList.filter(j => j.type === 'marketplace');
-        const customRequests = jobsList.filter(j => j.type === 'custom_request');
+        const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
+        const activeServices = window.jobsList.filter(j => j.type === 'marketplace');
+        const customRequests = window.jobsList.filter(j => j.type === 'custom_request');
 
         document.getElementById('stat-active').innerText = activeServices.length;
         document.getElementById('stat-custom').innerText = customRequests.length;
-        document.getElementById('stat-orders').innerText = transactionsList.length;
+        document.getElementById('stat-orders').innerText = window.transactionsList.length;
 
-        if (currentTab === 'ORDERS') {
-            if (transactionsList.length === 0) {
+        if (window.currentTab === 'ORDERS') {
+            if (window.transactionsList.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO TRANSACTIONS FOUND ]</div>`;
                 return;
             }
-
-            transactionsList.forEach(tx => {
+            window.transactionsList.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -722,10 +667,10 @@
             return;
         }
 
-        const targetList = currentTab === 'FEED' ? activeServices : customRequests;
+        const targetList = window.currentTab === 'FEED' ? activeServices : customRequests;
 
         if (targetList.length === 0) {
-            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO ${currentTab} LISTINGS FOUND ]</div>`;
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 40px;">[ NO ${window.currentTab} LISTINGS FOUND ]</div>`;
             return;
         }
 
@@ -736,7 +681,7 @@
             let actionBtn = '';
             let deleteBtn = isStaff ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
 
-            if (currentTab === 'FEED') {
+            if (window.currentTab === 'FEED') {
                 actionBtn = `<button onclick="openCheckoutModal('${job.id}')">ORDER JOKI</button>`;
             } else {
                 if (isStaff) {
@@ -748,9 +693,7 @@
                 }
             }
 
-            let imageHtml = job.image 
-                ? `<img src="${job.image}" class="card-img-preview" onclick="viewFullImage('${job.image}')" title="Click to view full image">` 
-                : '';
+            let imageHtml = job.image ? `<img src="${job.image}" class="card-img-preview" onclick="viewFullImage('${job.image}')">` : '';
 
             card.innerHTML = `
                 <div>
@@ -773,53 +716,50 @@
             `;
             grid.appendChild(card);
         });
-    }
+    };
 
-    /* Modal Controls */
-    function openPostModal() { document.getElementById('post-modal').style.display = 'flex'; }
-    function openCustomRequestModal() { document.getElementById('custom-modal').style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.openPostModal = function() { document.getElementById('post-modal').style.display = 'flex'; };
+    window.openCustomRequestModal = function() { document.getElementById('custom-modal').style.display = 'flex'; };
+    window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
-    function submitPost() {
+    window.submitPost = function() {
         const title = document.getElementById('post-title').value.trim();
-        const priceInput = document.getElementById('post-price').value;
-        const price = parseAmountToNumber(priceInput);
+        const price = window.parseAmountToNumber(document.getElementById('post-price').value);
         const desc = document.getElementById('post-desc').value.trim();
 
-        if (!title || !price) { alert('Valid Title and Price are required!'); return; }
+        if (!title || !price) { alert('Valid Title and Price required!'); return; }
 
-        jobsList.unshift({
+        window.jobsList.unshift({
             id: 'job-' + Date.now(),
             title: title,
             price: price,
             description: desc,
             type: 'marketplace',
             status: 'open',
-            authorName: currentUser,
-            requestedAt: getCurrentFormattedTimestamp()
+            authorName: window.currentUser,
+            requestedAt: window.getCurrentFormattedTimestamp()
         });
 
-        saveToStorage();
-        closeModal('post-modal');
+        window.saveToStorage();
+        window.closeModal('post-modal');
         document.getElementById('post-title').value = '';
         document.getElementById('post-price').value = '';
         document.getElementById('post-desc').value = '';
-        renderGrid();
+        window.renderGrid();
         addLog(`[MARKETPLACE] Published service '${title}' (${formatRupiah(price)}).`);
-    }
+    };
 
-    function submitCustomRequest() {
+    window.submitCustomRequest = function() {
         const title = document.getElementById('custom-title').value.trim();
-        const budgetInput = document.getElementById('custom-budget').value;
-        const budget = parseAmountToNumber(budgetInput);
+        const budget = window.parseAmountToNumber(document.getElementById('custom-budget').value);
         const deadline = document.getElementById('custom-deadline').value.trim();
         const desc = document.getElementById('custom-desc').value.trim();
         const fileInput = document.getElementById('custom-img');
 
-        if (!title || !budget) { alert('Valid Title and Budget offer are required!'); return; }
+        if (!title || !budget) { alert('Valid Title and Budget required!'); return; }
 
         const processRequest = (imageDataStr = null) => {
-            jobsList.unshift({
+            window.jobsList.unshift({
                 id: 'job-' + Date.now(),
                 title: title,
                 price: budget,
@@ -828,114 +768,101 @@
                 image: imageDataStr,
                 type: 'custom_request',
                 status: 'open',
-                authorName: currentUser,
-                requestedAt: getCurrentFormattedTimestamp()
+                authorName: window.currentUser,
+                requestedAt: window.getCurrentFormattedTimestamp()
             });
 
-            saveToStorage();
-            closeModal('custom-modal');
+            window.saveToStorage();
+            window.closeModal('custom-modal');
             document.getElementById('custom-title').value = '';
             document.getElementById('custom-budget').value = '';
             document.getElementById('custom-deadline').value = '';
             document.getElementById('custom-desc').value = '';
             fileInput.value = '';
-            renderGrid();
+            window.renderGrid();
             addLog(`[CUSTOM] Submitted custom request '${title}' (${formatRupiah(budget)}).`);
         };
 
         if (fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                processRequest(e.target.result);
-            };
+            reader.onload = e => processRequest(e.target.result);
             reader.readAsDataURL(fileInput.files[0]);
         } else {
             processRequest(null);
         }
-    }
+    };
 
-    function acceptCustomJob(jobId) {
-        const job = jobsList.find(j => j.id === jobId);
+    window.acceptCustomJob = function(jobId) {
+        const job = window.jobsList.find(j => j.id === jobId);
         if (job) {
             job.status = 'in_progress';
-            job.assignedTo = currentUser;
-            saveToStorage();
-            renderGrid();
+            job.assignedTo = window.currentUser;
+            window.saveToStorage();
+            window.renderGrid();
             addLog(`[ACCEPT] You accepted job '${job.title}'.`);
         }
-    }
+    };
 
-    /* Checkout & Payment */
     let selectedCheckoutJob = null;
-
-    function openCheckoutModal(jobId) {
-        selectedCheckoutJob = jobsList.find(j => j.id === jobId);
+    window.openCheckoutModal = function(jobId) {
+        selectedCheckoutJob = window.jobsList.find(j => j.id === jobId);
         if (!selectedCheckoutJob) return;
-
         document.getElementById('checkout-item-title').innerText = selectedCheckoutJob.title;
-        calculateCheckout();
+        window.calculateCheckout();
         document.getElementById('checkout-modal').style.display = 'flex';
-    }
+    };
 
-    function calculateCheckout() {
+    window.calculateCheckout = function() {
         if (!selectedCheckoutJob) return;
         const payType = document.getElementById('pay-type').value;
         const total = selectedCheckoutJob.price;
         const finalAmt = payType === 'DP50' ? total * 0.5 : total;
-
         document.getElementById('checkout-item-price').innerText = `TOTAL DUE NOW: ${formatRupiah(finalAmt)} ${payType === 'DP50' ? '(50% DP)' : '(FULL)'}`;
         document.getElementById('qris-amount').innerText = formatRupiah(finalAmt);
-    }
+    };
 
-    function togglePaymentInstructions() {
+    window.togglePaymentInstructions = function() {
         const method = document.getElementById('pay-method').value;
         document.getElementById('qris-display').style.display = method === 'QRIS' ? 'block' : 'none';
         document.getElementById('cash-display').style.display = method === 'CASH' ? 'block' : 'none';
-    }
+    };
 
-    function confirmOrder() {
+    window.confirmOrder = function() {
         const payType = document.getElementById('pay-type').value;
         const payMethod = document.getElementById('pay-method').value;
 
-        transactionsList.unshift({
+        window.transactionsList.unshift({
             id: 'tx-' + Math.floor(Math.random() * 9000 + 1000),
             jobId: selectedCheckoutJob.id,
             jobTitle: selectedCheckoutJob.title,
-            customerName: currentUser,
+            customerName: window.currentUser,
             totalPrice: selectedCheckoutJob.price,
             paymentType: payType,
             paymentMethod: payMethod,
             amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price,
             status: payMethod === 'QRIS' ? 'PAID_VERIFIED' : 'PENDING_CASH',
-            requestedAt: getCurrentFormattedTimestamp()
+            requestedAt: window.getCurrentFormattedTimestamp()
         });
 
-        saveToStorage();
-        closeModal('checkout-modal');
-        switchTab('ORDERS');
+        window.saveToStorage();
+        window.closeModal('checkout-modal');
+        window.switchTab('ORDERS');
         addLog(`[ORDER] Order placed for '${selectedCheckoutJob.title}' (${payType}).`);
-    }
+    };
 
-    function handleCliKeyDown(e) { if (e.key === 'Enter') executeCliCommand(); }
-    function executeCliCommand() {
+    window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
+    window.executeCliCommand = function() {
         const input = document.getElementById('cli-input');
         const cmd = input.value.trim();
         if (!cmd) return;
-        addLog(`${currentUser}@tjkt:~# ${cmd}`);
+        addLog(`${window.currentUser || 'guest'}@tjkt:~# ${cmd}`);
         input.value = '';
 
-        if (cmd.toLowerCase() === 'help') {
-            addLog(`[HELP] Commands: role, reset, clear`);
-        } else if (cmd.toLowerCase() === 'role') {
-            toggleRole();
-        } else if (cmd.toLowerCase() === 'reset') {
-            resetData();
-        } else if (cmd.toLowerCase() === 'clear') {
-            document.getElementById('log-box').innerHTML = '';
-        } else {
-            addLog(`[ERROR] Command not recognized.`);
-        }
-    }
+        if (cmd.toLowerCase() === 'help') addLog(`[HELP] Commands: role, clear`);
+        else if (cmd.toLowerCase() === 'role') window.toggleRole();
+        else if (cmd.toLowerCase() === 'clear') document.getElementById('log-box').innerHTML = '';
+        else addLog(`[ERROR] Command not recognized.`);
+    };
 
     function addLog(msg) {
         const logBox = document.getElementById('log-box');
@@ -950,7 +877,7 @@
     }
 
     function escapeHtml(text) {
-        return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     function initParticles() {
@@ -980,6 +907,7 @@
         }
         animate();
     }
+    initParticles();
 </script>
 
 </body>
