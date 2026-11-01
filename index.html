@@ -519,8 +519,8 @@
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="custom-ewallet-amount">0 Rp</p>
             <div style="background: #000; border: 1px solid #444; padding: 8px; margin: 8px 0; text-align: left;">
-                <p style="font-size: 11px; color: #aaa;">NOMOR: <span style="color: #fff; font-weight: bold;">08977246853</span></p>
-                <p style="font-size: 11px; color: #aaa; margin-top: 2px;">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
+                <p style="font-size: 11px; color: #aaa;">NOMOR: <span style="color: #fff; font-weight: bold;">081254394038</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 2px;">ATAS NAMA: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
             </div>
             <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;">[SALIN NOMOR]</button>
         </div>
@@ -595,8 +595,8 @@
             <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-ewallet-title">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
             <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
             <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
-                <p style="font-size: 11px; color: #aaa;" id="txt-ewallet-num">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">08977246853</span></p>
-                <p style="font-size: 11px; color: #aaa; margin-top: 4px;" id="txt-ewallet-name">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
+                <p style="font-size: 11px; color: #aaa;" id="txt-ewallet-num">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">081254394038</span></p>
+                <p style="font-size: 11px; color: #aaa; margin-top: 4px;" id="txt-ewallet-name">ATAS NAMA: <span style="color: #00ffcc;">DWI ANGGARA PRASETYA</span></p>
             </div>
             <button onclick="copyNumber('081254394038')" style="font-size: 10px; padding: 3px 8px;" id="btn-copy-num">[SALIN NOMOR]</button>
         </div>
@@ -1327,6 +1327,7 @@
         document.getElementById('pay-type-container').style.display = 'block';
         document.getElementById('order-phone').value = '';
         document.getElementById('order-task-link').value = '';
+        document.getElementById('pay-proof-img').value = '';
         window.calculateCheckout();
         document.getElementById('checkout-modal').style.display = 'flex';
     };
@@ -1339,6 +1340,7 @@
         
         document.getElementById('checkout-item-title').innerText = `PELUNASAN: ${tx.jobTitle}`;
         document.getElementById('pay-type-container').style.display = 'none';
+        document.getElementById('pay-proof-img').value = '';
         
         const remainingAmt = tx.totalPrice - tx.amountPaid;
         const formatted = formatRupiah(remainingAmt);
@@ -1381,6 +1383,12 @@
 
         if (!selectedCheckoutJob) return;
 
+        // Validasi wajib upload bukti pembayaran
+        if (!proofInput.files || !proofInput.files[0]) {
+            alert('Harap lampirkan bukti screenshot pembayaran terlebih dahulu!');
+            return;
+        }
+
         const processTx = async (proofData = null) => {
             if (activeRemainingTxId) {
                 await updateDoc(doc(db, "transactions", activeRemainingTxId), {
@@ -1420,28 +1428,24 @@
             }
         };
 
-        if (proofInput && proofInput.files && proofInput.files[0]) {
-            const file = proofInput.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
-                    let width = img.width; let height = img.height;
-                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
-                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                    canvas.width = width; canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    processTx(canvas.toDataURL('image/jpeg', 0.7));
-                };
-                img.src = e.target.result;
+        const file = proofInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
+                let width = img.width; let height = img.height;
+                if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
+                else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+                canvas.width = width; canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                processTx(canvas.toDataURL('image/jpeg', 0.7));
             };
-            reader.readAsDataURL(file);
-        } else {
-            processTx(null);
-        }
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     };
 
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
