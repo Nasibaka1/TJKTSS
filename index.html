@@ -483,6 +483,10 @@
             <textarea id="custom-desc" rows="3" placeholder="Konfigurasi domain tjkt.smkn7.sch.id pada IP 192.168.10.1..."></textarea>
         </div>
         <div class="modal-field">
+            <label>LINK / FILE TUGAS (Opsional, cth: Link Google Drive / Deskripsi File)</label>
+            <input type="text" id="custom-file-link" placeholder="https://drive.google.com/... atau catatan file">
+        </div>
+        <div class="modal-field">
             <label id="m-label-cust-img">LAMPIRKAN GAMBAR / SCREENSHOT</label>
             <input type="file" id="custom-img" accept="image/*">
         </div>
@@ -510,6 +514,16 @@
         <div class="modal-title" id="m-title-checkout">CHECKOUT PESANAN & PEMBAYARAN</div>
         <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px;"></p>
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 13px; margin-bottom: 12px;"></p>
+
+        <div class="modal-field">
+            <label>NOMOR TELEPON / WHATSAPP (UNTUK KOMUNIKASI KENDALA)</label>
+            <input type="text" id="order-phone" placeholder="cth., 081234567890">
+        </div>
+
+        <div class="modal-field">
+            <label>LINK ATAU CATATAN FILE TUGAS</label>
+            <input type="text" id="order-task-link" placeholder="cth., Link Google Drive / file pendukung">
+        </div>
 
         <div class="modal-field" id="pay-type-container">
             <label id="m-label-payterm">KETENTUAN PEMBAYARAN</label>
@@ -924,25 +938,34 @@
                 const card = document.createElement('div');
                 card.className = 'card';
 
-                let proofHtml = tx.proofImage 
-                    ? `<img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Click to view payment proof">` 
-                    : '';
+                let proofsHtml = '';
+                if (tx.proofImage) {
+                    proofsHtml += `<div style="font-size:10px; color:#aaa; margin-top:4px;">BUKTI DP:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Klik untuk lihat bukti DP">`;
+                }
+                if (tx.proofImageRemaining) {
+                    proofsHtml += `<div style="font-size:10px; color:#00ffcc; margin-top:4px;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" title="Klik untuk lihat bukti Pelunasan" style="border-color:#00ffcc;">`;
+                }
 
                 let staffConfirmBtn = '';
                 if (tx.status === 'PENDING_REMAINING_APPROVAL') {
                     staffConfirmBtn = `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>`;
                 }
 
+                let phoneInfo = tx.phone ? `<span>TELP / WA: <a href="https://wa.me/${tx.phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #00ffcc;">${escapeHtml(tx.phone)}</a></span>` : '';
+                let taskLinkInfo = tx.taskLink ? `<span>FILE/LINK TUGAS: <a href="${escapeHtml(tx.taskLink)}" target="_blank" style="color: #00ffcc; word-break: break-all;">${escapeHtml(tx.taskLink)}</a></span>` : '';
+
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
                         <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${tx.paymentType})</div>
                         <p class="card-desc">Method: ${tx.paymentMethod} | Status: <span style="color:#00ffcc">${tx.status}</span></p>
-                        ${proofHtml}
+                        ${proofsHtml}
                     </div>
                     <div>
                         <div class="card-meta">
                             <span>BUYER: ${escapeHtml(tx.customerName)}</span>
+                            ${phoneInfo}
+                            ${taskLinkInfo}
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
@@ -957,7 +980,7 @@
             return;
         }
 
-        // Tab: Transaksi Saya (Hanya menampilkan transaksi milik user sendiri)
+        // Tab: Transaksi Saya
         if (window.currentTab === 'ORDERS') {
             const userTransactions = window.transactionsList.filter(t => t.customerName === window.currentUser);
 
@@ -969,9 +992,13 @@
                 const card = document.createElement('div');
                 card.className = 'card';
 
-                let proofHtml = tx.proofImage 
-                    ? `<img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Click to view payment proof">` 
-                    : '';
+                let proofsHtml = '';
+                if (tx.proofImage) {
+                    proofsHtml += `<div style="font-size:10px; color:#aaa; margin-top:4px;">BUKTI DP:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')" title="Klik untuk lihat bukti DP">`;
+                }
+                if (tx.proofImageRemaining) {
+                    proofsHtml += `<div style="font-size:10px; color:#00ffcc; margin-top:4px;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" title="Klik untuk lihat bukti Pelunasan" style="border-color:#00ffcc;">`;
+                }
 
                 let payRemainingBtn = '';
                 if (tx.paymentType === 'DP50' && tx.status !== 'PAID_FULL' && tx.status !== 'PENDING_REMAINING_APPROVAL') {
@@ -991,16 +1018,21 @@
                     actionControlHtml = `<span style="color:#666; font-size:11px;">[LOCKED]</span>`;
                 }
 
+                let phoneInfo = tx.phone ? `<span>TELP / WA: ${escapeHtml(tx.phone)}</span>` : '';
+                let taskLinkInfo = tx.taskLink ? `<span>FILE/LINK: ${escapeHtml(tx.taskLink)}</span>` : '';
+
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
                         <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${tx.paymentType})</div>
                         <p class="card-desc">Method: ${tx.paymentMethod} | Status: <span style="color:#00ffcc">${tx.status}</span></p>
-                        ${proofHtml}
+                        ${proofsHtml}
                     </div>
                     <div>
                         <div class="card-meta">
                             <span>BUYER: ${escapeHtml(tx.customerName)}</span>
+                            ${phoneInfo}
+                            ${taskLinkInfo}
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
@@ -1135,6 +1167,7 @@
         const budget = window.parseAmountToNumber(document.getElementById('custom-budget').value);
         const deadline = document.getElementById('custom-deadline').value.trim();
         const desc = document.getElementById('custom-desc').value.trim();
+        const taskLink = document.getElementById('custom-file-link').value.trim();
         const fileInput = document.getElementById('custom-img');
 
         if (!title || !budget) { alert('Valid Title and Budget required!'); return; }
@@ -1147,6 +1180,7 @@
                 price: budget,
                 deadline: deadline,
                 description: desc,
+                taskLink: taskLink,
                 image: imageDataStr,
                 type: 'custom_request',
                 status: 'open',
@@ -1160,6 +1194,7 @@
             document.getElementById('custom-budget').value = '';
             document.getElementById('custom-deadline').value = '';
             document.getElementById('custom-desc').value = '';
+            document.getElementById('custom-file-link').value = '';
             fileInput.value = '';
             addLog(`[CUSTOM] Submitted custom request '${title}' (${formatRupiah(budget)}) to Firestore.`);
         };
@@ -1208,6 +1243,8 @@
         activeRemainingTxId = null;
         document.getElementById('checkout-item-title').innerText = selectedCheckoutJob.title;
         document.getElementById('pay-type-container').style.display = 'block';
+        document.getElementById('order-phone').value = '';
+        document.getElementById('order-task-link').value = '';
         window.calculateCheckout();
         document.getElementById('checkout-modal').style.display = 'flex';
     };
@@ -1257,20 +1294,22 @@
     window.confirmOrder = function() {
         const payMethod = document.getElementById('pay-method').value;
         const proofInput = document.getElementById('pay-proof-img');
+        const phone = document.getElementById('order-phone').value.trim();
+        const taskLink = document.getElementById('order-task-link').value.trim();
 
         if (!selectedCheckoutJob) return;
 
         const processTx = async (proofData = null) => {
             if (activeRemainingTxId) {
-                const existingTx = window.transactionsList.find(t => t.id === activeRemainingTxId);
                 await updateDoc(doc(db, "transactions", activeRemainingTxId), {
                     status: 'PENDING_REMAINING_APPROVAL',
-                    proofImage: proofData || existingTx.proofImage
+                    proofImageRemaining: proofData
                 });
                 window.closeModal('checkout-modal');
                 if (proofInput) proofInput.value = '';
                 addLog(`[PAYMENT] Bukti pelunasan dikirim untuk transaksi '${activeRemainingTxId}', menunggu konfirmasi staff.`);
             } else {
+                if (!phone) { alert('Harap isi nomor telepon/WhatsApp!'); return; }
                 const payType = document.getElementById('pay-type').value;
                 const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
                 const newTx = {
@@ -1278,11 +1317,14 @@
                     jobId: selectedCheckoutJob.id,
                     jobTitle: selectedCheckoutJob.title,
                     customerName: window.currentUser,
+                    phone: phone,
+                    taskLink: taskLink,
                     totalPrice: selectedCheckoutJob.price,
                     paymentType: payType,
                     paymentMethod: payMethod,
                     amountPaid: payType === 'DP50' ? selectedCheckoutJob.price * 0.5 : selectedCheckoutJob.price,
                     proofImage: proofData,
+                    proofImageRemaining: null,
                     status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION',
                     createdAt: Date.now(),
                     requestedAt: window.getCurrentFormattedTimestamp()
