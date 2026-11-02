@@ -1342,10 +1342,7 @@
 
         const proofInput = document.getElementById('pay-proof-img');
         
-        // Buat bukti opsional atau jika belum ada file, buat placeholder kosong agar tidak error "Harap lampirkan bukti pembayaran"
         if (!proofInput.files[0]) {
-            // Jika belum upload bukti, kita berikan opsi untuk lanjut atau simpan tanpa bukti dulu jika diinginkan, 
-            // namun agar aman kita buat tidak wajib atau beri placeholder gambar transparan.
             proceedWithProof(null);
             return;
         }
@@ -1447,108 +1444,10 @@
 
     function startBgAnimation(type) {
         window.activeBgGame = type;
-        const canvas = document.getElementById('game-bg-layer');
-        canvas.style.display = 'block';
-        const ctx = canvas.getContext('2d');
-
-        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-
-        if (type === 'tetris') {
-            runBgTetrisLoop(ctx, canvas);
-        } else {
-            runBgSnakeLoop(ctx, canvas);
-        }
     }
 
     window.stopBgAnimation = function() {
         window.activeBgGame = null;
-        const canvas = document.getElementById('game-bg-layer');
-        canvas.style.display = 'none';
-        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
-        bgGameAnimId = null;
-    };
-
-    function runBgTetrisLoop(ctx, canvas) {
-        let blocks = Array.from({length: 25}, () => ({
-            x: Math.floor(Math.random() * (canvas.width / 30)) * 30,
-            y: Math.random() * -canvas.height,
-            size: 28,
-            speed: Math.random() * 1.5 + 0.8,
-            color: '#00ffcc'
-        }));
-
-        function loop() {
-            if (window.activeBgGame !== 'tetris') return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            blocks.forEach(b => {
-                b.y += b.speed;
-                if (b.y > canvas.height) {
-                    b.y = -30;
-                    b.x = Math.floor(Math.random() * (canvas.width / 30)) * 30;
-                }
-                ctx.fillStyle = b.color;
-                ctx.fillRect(b.x, b.y, b.size, b.size);
-            });
-            bgGameAnimId = requestAnimationFrame(loop);
-        }
-        loop();
-    }
-
-    function runBgSnakeLoop(ctx, canvas) {
-        let snakes = [
-            { snake: [{x:100, y:100}, {x:90, y:100}, {x:80, y:100}], dx: 10, dy: 0, food: {x: 300, y: 300}, color: '#00ffcc' },
-            { snake: [{x:400, y:200}, {x:390, y:200}, {x:380, y:200}], dx: 0, dy: 10, food: {x: 200, y: 400}, color: '#00aa88' },
-            { snake: [{x:200, y:500}, {x:200, y:510}, {x:200, y:520}], dx: -10, dy: 0, food: {x: 500, y: 100}, color: '#55ffcc' }
-        ];
-        let frame = 0;
-
-        function loop() {
-            if (window.activeBgGame !== 'snake') return;
-            frame++;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            snakes.forEach(s => {
-                ctx.fillStyle = '#ff5555';
-                ctx.fillRect(s.food.x, s.food.y, 8, 8);
-
-                if (frame % 12 === 0) {
-                    let head = {x: s.snake[0].x + s.dx, y: s.snake[0].y + s.dy};
-                    if (head.x >= canvas.width) head.x = 0;
-                    if (head.x < 0) head.x = canvas.width - 10;
-                    if (head.y >= canvas.height) head.y = 0;
-                    if (head.y < 0) head.y = canvas.height - 10;
-
-                    s.snake.unshift(head);
-
-                    if (Math.abs(head.x - s.food.x) < 8 && Math.abs(head.y - s.food.y) < 8) {
-                        s.food = { x: Math.floor(Math.random()*(canvas.width/20))*20, y: Math.floor(Math.random()*(canvas.height/20))*20 };
-                    } else {
-                        s.snake.pop();
-                    }
-
-                    if (Math.random() < 0.15) {
-                        let dirs = [{dx:10,dy:0}, {dx:-10,dy:0}, {dx:0,dy:10}, {dx:0,dy:-10}];
-                        let d = dirs[Math.floor(Math.random()*dirs.length)];
-                        s.dx = d.dx; s.dy = d.dy;
-                    }
-                }
-
-                s.snake.forEach((p, idx) => {
-                    ctx.fillStyle = idx === 0 ? s.color : '#006655';
-                    ctx.fillRect(p.x, p.y, 8, 8);
-                });
-            });
-
-            bgGameAnimId = requestAnimationFrame(loop);
-        }
-        loop();
     }
 
     function addLog(msg) {
@@ -1561,33 +1460,6 @@
 
     function formatRupiah(num) { return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num) + " Rp"; }
     function escapeHtml(text) { return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-
-    function initParticles() {
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        resize(); window.addEventListener('resize', resize);
-        const particles = Array.from({length: 45}, () => ({
-            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
-            radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 + 0.3
-        }));
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.removeUnused = true;
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
-                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-    }
-    initParticles();
 </script>
-
 </body>
 </html>
