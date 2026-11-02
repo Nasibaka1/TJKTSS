@@ -1,0 +1,5141 @@
+{
+    "title": "Kamus Bahasa Kenyah-Bahasa Indonesia",
+    "compiler": [
+        "Suindah Sari",
+        "Pandu Pratama Putra"
+    ],
+    "year": 2025,
+    "publisher": "Balai Bahasa Provinsi Kalimantan Timur",
+    "dialek_lepoq_jalan": {
+        "aang": {
+            "kelas_kata": "n",
+            "arti": "antara; sela;"
+        },
+        "abit": {
+            "kelas_kata": "n",
+            "arti": "tengkuk"
+        },
+        "abu": {
+            "kelas_kata": "n",
+            "arti": "abu; debu;"
+        },
+        "abun": {
+            "kelas_kata": "n",
+            "arti": "1 awan; 2 embun;"
+        },
+        "mabun": {
+            "kelas_kata": "v",
+            "arti": "1 berawan: tau ini mabun aleq seq awang hari ini"
+        },
+        "abut": {
+            "kelas_kata": "n",
+            "arti": "belakang"
+        },
+        "adam": {
+            "kelas_kata": "n",
+            "arti": "bau busuk"
+        },
+        "adaq": {
+            "kelas_kata": "n",
+            "arti": "kunang-kunang"
+        },
+        "adiu": {
+            "kelas_kata": "n",
+            "arti": "wasir; ambeien"
+        },
+        "aing": {
+            "kelas_kata": "n",
+            "arti": "isi kayu bagian dalam yg keras"
+        },
+        "ait": {
+            "kelas_kata": "n",
+            "arti": "pasir"
+        },
+        "aka": {
+            "kelas_kata": "n",
+            "arti": "akar;"
+        },
+        "ngaka": {
+            "kelas_kata": "v",
+            "arti": "berakar"
+        },
+        "1akit": {
+            "kelas_kata": "n",
+            "arti": "gayung; timba;"
+        },
+        "makit": {
+            "kelas_kata": "v",
+            "arti": "menimba"
+        },
+        "2akit": {
+            "kelas_kata": "n",
+            "arti": "rakit"
+        },
+        "alaq": {
+            "kelas_kata": "v",
+            "arti": "1 ambil; mengambil: alaq lekai na ambil sayur itu; 2 terima;"
+        },
+        "1alo": {
+            "kelas_kata": "n",
+            "arti": "anak sungai"
+        },
+        "2alo": {
+            "kelas_kata": "n",
+            "arti": "parit; galengan"
+        },
+        "aloq": {
+            "kelas_kata": "n",
+            "arti": "orang asing"
+        },
+        "alut": {
+            "kelas_kata": "n",
+            "arti": "perahu;"
+        },
+        "amai": {
+            "kelas_kata": "n",
+            "arti": "bapak;"
+        },
+        "amang": {
+            "kelas_kata": "v",
+            "arti": "merayap"
+        },
+        "amin": {
+            "kelas_kata": "n",
+            "arti": "rumah;"
+        },
+        "ampan": {
+            "kelas_kata": "n",
+            "arti": "1 duda krn istrinya meninggal dunia; 2 panggilan atau"
+        },
+        "ampap": {
+            "kelas_kata": "v",
+            "arti": "telungkup: lundoq ampap tidur telungkup;"
+        },
+        "pampap": {
+            "kelas_kata": "v",
+            "arti": "menelungkupkan: uweq pampap kiyut ina ibu"
+        },
+        "ampit": {
+            "kelas_kata": "n",
+            "arti": "mata jala"
+        },
+        "ampun": {
+            "kelas_kata": "n",
+            "arti": "penyakit campak"
+        },
+        "anai": {
+            "kelas_kata": "n",
+            "arti": "rayap; anai-anai"
+        },
+        "anak": {
+            "kelas_kata": "n",
+            "arti": "anak;"
+        },
+        "anang": {
+            "kelas_kata": "n",
+            "arti": "dahi"
+        },
+        "andruq": {
+            "kelas_kata": "n",
+            "arti": "handuk"
+        },
+        "angan": {
+            "kelas_kata": "n",
+            "arti": "tungku"
+        },
+        "angkok": {
+            "kelas_kata": "n",
+            "arti": "cincin"
+        },
+        "angkung": {
+            "kelas_kata": "n",
+            "arti": "gong kecil"
+        },
+        "anit": {
+            "kelas_kata": "n",
+            "arti": "kulit (tt manusia dan hewan);"
+        },
+        "manit": {
+            "kelas_kata": "v",
+            "arti": "menguliti: nya'ap de meq manik ca pun kemarin"
+        },
+        "anting": {
+            "kelas_kata": "n",
+            "arti": "anting;"
+        },
+        "anun": {
+            "kelas_kata": "n",
+            "arti": "hak; milik: sapai ina anun keq baju itu milik saya;"
+        },
+        "nganun": {
+            "kelas_kata": "v",
+            "arti": "memiliki: seq nganun amin dia memiliki rumah"
+        },
+        "ao": {
+            "kelas_kata": "n",
+            "arti": "potongam bambu"
+        },
+        "apak": {
+            "kelas_kata": "n",
+            "arti": "bapak"
+        },
+        "apan": {
+            "kelas_kata": "p",
+            "arti": "supaya; agar : mepa amin apan bueq sapu rumah agar"
+        },
+        "apau": {
+            "kelas_kata": "n",
+            "arti": "apo (perbukitan yg atasnya datar, dimanfaatkan sbg"
+        },
+        "aping": {
+            "kelas_kata": "n",
+            "arti": "kipas;"
+        },
+        "maping": {
+            "kelas_kata": "v",
+            "arti": "mengipasi: Alung maping padai Alung mengipasi"
+        },
+        "asai": {
+            "kelas_kata": "n",
+            "arti": "kapak"
+        },
+        "1asat": {
+            "kelas_kata": "n",
+            "arti": "musim"
+        },
+        "2asat": {
+            "kelas_kata": "n",
+            "arti": "jalan di ladang atau hutan;"
+        },
+        "asing": {
+            "kelas_kata": "n",
+            "arti": "1 roda; 2 gasing"
+        },
+        "asoq": {
+            "kelas_kata": "n",
+            "arti": "1 papan; 2 lantai"
+        },
+        "asu": {
+            "kelas_kata": "n",
+            "arti": "anjing;"
+        },
+        "atai": {
+            "kelas_kata": "n",
+            "arti": "hati"
+        },
+        "atang": {
+            "kelas_kata": "n",
+            "arti": "dapur kayu"
+        },
+        "ataq": {
+            "kelas_kata": "a",
+            "arti": "amis: buoq ataq gak atuk ikan ini bau amis"
+        },
+        "atip": {
+            "kelas_kata": "n",
+            "arti": "capitan bara atau kayu bakar di tungku, dibuat dr lipatan"
+        },
+        "ato": {
+            "kelas_kata": "n",
+            "arti": "ratus: sen keq enem ato libu uangku enam ratus ribu"
+        },
+        "atuk": {
+            "kelas_kata": "n",
+            "arti": "ikan;"
+        },
+        "aun": {
+            "kelas_kata": "v",
+            "arti": "1 ada: aun tekem ko amin ne kalian ada tidak di rumah; 2"
+        },
+        "1awang": {
+            "kelas_kata": "n",
+            "arti": "cuaca"
+        },
+        "2awang": {
+            "kelas_kata": "n",
+            "arti": "lubang"
+        },
+        "1aya": {
+            "kelas_kata": "num",
+            "arti": "delapan;"
+        },
+        "2aya": {
+            "kelas_kata": "p",
+            "arti": "aduh: aya sakit gaq ulu keq aduh, sakit kepalaku"
+        },
+        "ba'a": {
+            "kelas_kata": "n",
+            "arti": "1 belandar; 2 sokoguru"
+        },
+        "baa": {
+            "kelas_kata": "n",
+            "arti": "beras;"
+        },
+        "1baan": {
+            "kelas_kata": "n",
+            "arti": "ikatan padi yg sudah dipetik, biasanya disimpan untuk"
+        },
+        "2baan": {
+            "kelas_kata": "n",
+            "arti": "kantong"
+        },
+        "babui": {
+            "kelas_kata": "n",
+            "arti": "babi hutan; celeng;"
+        },
+        "baca": {
+            "kelas_kata": "v",
+            "arti": "baca, membaca: sadik pekalai baca buku adik belajar"
+        },
+        "bacut": {
+            "kelas_kata": "n",
+            "arti": "buah tarap"
+        },
+        "badaq": {
+            "kelas_kata": "v",
+            "arti": "beri tahu: encam te koq badaq deng iya tolong beri tahu"
+        },
+        "baduq": {
+            "kelas_kata": "n",
+            "arti": "nangka"
+        },
+        "1bai": {
+            "kelas_kata": "n",
+            "arti": "hutan;"
+        },
+        "2bai": {
+            "kelas_kata": "n",
+            "arti": "tepian"
+        },
+        "baing": {
+            "kelas_kata": "n",
+            "arti": "parang; mandau;"
+        },
+        "bala": {
+            "kelas_kata": "n",
+            "arti": "merah"
+        },
+        "bali": {
+            "kelas_kata": "n",
+            "arti": "hantu"
+        },
+        "balok": {
+            "kelas_kata": "n",
+            "arti": "balok kayu"
+        },
+        "balu": {
+            "kelas_kata": "n",
+            "arti": "1 janda krn ditinggal meninggal pasangan; 2 nama"
+        },
+        "baluq": {
+            "kelas_kata": "a",
+            "arti": "biasa;"
+        },
+        "bang": {
+            "kelas_kata": "n",
+            "arti": "upah; imbalan"
+        },
+        "banga": {
+            "kelas_kata": "a",
+            "arti": "basi: kanen ini banga nasi ini basi"
+        },
+        "bangini": {
+            "kelas_kata": "adv",
+            "arti": "hanya: bangini laq lekai meq sayur kami hanya ini"
+        },
+        "bangku": {
+            "kelas_kata": "n",
+            "arti": "1 bangku; 2 kursi"
+        },
+        "banit": {
+            "kelas_kata": "n",
+            "arti": "kebun"
+        },
+        "banut": {
+            "kelas_kata": "v",
+            "arti": "tergores: taket keq banut sioq suaq kaki saya tergores"
+        },
+        "banyat": {
+            "kelas_kata": "n",
+            "arti": "anjat;"
+        },
+        "baq": {
+            "kelas_kata": "v",
+            "arti": "gendong, menggendong: uweq baq padai deng ingen ibu"
+        },
+        "barit": {
+            "kelas_kata": "n",
+            "arti": "kotak dr kayu atau papan yg digunakan sbg tempat"
+        },
+        "barum": {
+            "kelas_kata": "a",
+            "arti": "1 kembung: barum batek keq perutku kembung; 2"
+        },
+        "basaq": {
+            "kelas_kata": "a",
+            "arti": "basah: basaq sapai keq bajuku basah;"
+        },
+        "batang": {
+            "kelas_kata": "n",
+            "arti": "batang"
+        },
+        "batu": {
+            "kelas_kata": "n",
+            "arti": "batu;"
+        },
+        "1batuk": {
+            "kelas_kata": "n",
+            "arti": "leher"
+        },
+        "2batuk": {
+            "kelas_kata": "n",
+            "arti": "batuk"
+        },
+        "batung": {
+            "kelas_kata": "n",
+            "arti": "korek;"
+        },
+        "baung": {
+            "kelas_kata": "n",
+            "arti": "kecebong"
+        },
+        "1bawang": {
+            "kelas_kata": "n",
+            "arti": "rawa-rawa"
+        },
+        "2bawang": {
+            "kelas_kata": "n",
+            "arti": "bawang;"
+        },
+        "bayai": {
+            "kelas_kata": "n",
+            "arti": "nama panggilan atau sapaan untuk seseorang, baik laki -"
+        },
+        "1bayaq": {
+            "kelas_kata": "n",
+            "arti": "buaya"
+        },
+        "2bayaq": {
+            "kelas_kata": "v",
+            "arti": "ikut: ubaq keq nai bayaq ikoq aku mau ikut kamu"
+        },
+        "3bayaq": {
+            "kelas_kata": "v",
+            "arti": "terakhir"
+        },
+        "bayu": {
+            "kelas_kata": "n",
+            "arti": "angin;"
+        },
+        "biawan": {
+            "kelas_kata": "n",
+            "arti": "ikan biawan"
+        },
+        "bidit": {
+            "kelas_kata": "v",
+            "arti": "tergores kecil: bidit seq uben ujoq rupanya tangannya"
+        },
+        "bila": {
+            "kelas_kata": "n",
+            "arti": "tebing"
+        },
+        "bilaq": {
+            "kelas_kata": "a",
+            "arti": "pucat (tt wajah): bilaq aleq seq silung koq pucat sekali"
+        },
+        "birai": {
+            "kelas_kata": "n",
+            "arti": "salak"
+        },
+        "1bisau": {
+            "kelas_kata": "a",
+            "arti": "kaget: bisau ngelinga denga kem kaget mendengar kabar"
+        },
+        "2bisau": {
+            "kelas_kata": "n",
+            "arti": "musibah tanpa korban"
+        },
+        "biu": {
+            "kelas_kata": "n",
+            "arti": "jerat"
+        },
+        "biuq": {
+            "kelas_kata": "a",
+            "arti": "1 besar: biuq aleq lasan meq besar sekali halaman rumah"
+        },
+        "bong": {
+            "kelas_kata": "n",
+            "arti": "pemberat pancingan"
+        },
+        "booq": {
+            "kelas_kata": "n",
+            "arti": "aroma"
+        },
+        "1boq": {
+            "kelas_kata": "n",
+            "arti": "gelar bagi kepala suku"
+        },
+        "2boq": {
+            "kelas_kata": "p",
+            "arti": "kalau: boq aun awang koq nai ko amin kalau ada waktu"
+        },
+        "buan": {
+            "kelas_kata": "n",
+            "arti": "1 sangkar; 2 kandang; 3 kamar; 4 tempat; 5 wadah"
+        },
+        "buang": {
+            "kelas_kata": "n",
+            "arti": "beruang"
+        },
+        "buaq": {
+            "kelas_kata": "n",
+            "arti": "buah;"
+        },
+        "bub": {
+            "kelas_kata": "n",
+            "arti": "1 bola; 2 kok"
+        },
+        "bubu": {
+            "kelas_kata": "n",
+            "arti": "bubu"
+        },
+        "budok": {
+            "kelas_kata": "a",
+            "arti": "bodoh: budok aleq koq ne kamu bodoh sekali;"
+        },
+        "1buku": {
+            "kelas_kata": "n",
+            "arti": "buku"
+        },
+        "2buku": {
+            "kelas_kata": "n",
+            "arti": "ruas; buku"
+        },
+        "bukun": {
+            "kelas_kata": "n",
+            "arti": "botol"
+        },
+        "bulak": {
+            "kelas_kata": "v",
+            "arti": "pindah (untuk menetap di tempat lain): tai meq bulak ka"
+        },
+        "bulan": {
+            "kelas_kata": "n",
+            "arti": "bulan;"
+        },
+        "bulit": {
+            "kelas_kata": "n",
+            "arti": "bubur"
+        },
+        "buloq": {
+            "kelas_kata": "n",
+            "arti": "bambu;"
+        },
+        "bulu": {
+            "kelas_kata": "n",
+            "arti": "bulu;"
+        },
+        "bum": {
+            "kelas_kata": "n",
+            "arti": "bentol"
+        },
+        "bungan": {
+            "kelas_kata": "n",
+            "arti": "dewa"
+        },
+        "bunyau": {
+            "kelas_kata": "n",
+            "arti": "jeruk manis"
+        },
+        "buoq": {
+            "kelas_kata": "n",
+            "arti": "aroma"
+        },
+        "burak": {
+            "kelas_kata": "n",
+            "arti": "1 tapai; 2 arak;"
+        },
+        "buraq": {
+            "kelas_kata": "n",
+            "arti": "kapas"
+        },
+        "butaq": {
+            "kelas_kata": "a",
+            "arti": "buta: cen dalau umit keq butaq sejak kecil mata saya buta;"
+        },
+        "butoq": {
+            "kelas_kata": "n",
+            "arti": "kemaluan laki-laki"
+        },
+        "butui": {
+            "kelas_kata": "a",
+            "arti": "kasar: butui aleq anit koq ne kasar sekali kulitmu ini"
+        },
+        "buu": {
+            "kelas_kata": "a",
+            "arti": "bosan: buu gak keq uman babui saya sudah bosan makan"
+        },
+        "buyang": {
+            "kelas_kata": "n",
+            "arti": "judi"
+        },
+        "buyoq": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk ibu yg anak keduanya"
+        },
+        "ca": {
+            "kelas_kata": "num",
+            "arti": "satu;"
+        },
+        "can": {
+            "kelas_kata": "n",
+            "arti": "tangga"
+        },
+        "cap": {
+            "kelas_kata": "n",
+            "arti": "tanggal"
+        },
+        "cuk": {
+            "kelas_kata": "v",
+            "arti": "suruh, menyuruh: akeq cuk seken keq misep sungai aku"
+        },
+        "cuq": {
+            "kelas_kata": "a",
+            "arti": "jauh: cuq aleq amin meq jauh sekali rumah kami;"
+        },
+        "cut": {
+            "kelas_kata": "v",
+            "arti": "injak;"
+        },
+        "daa": {
+            "kelas_kata": "n",
+            "arti": "pandan"
+        },
+        "daaq": {
+            "kelas_kata": "n",
+            "arti": "darah"
+        },
+        "daan": {
+            "kelas_kata": "n",
+            "arti": "dahan"
+        },
+        "daduq": {
+            "kelas_kata": "a",
+            "arti": "panjang: daduq aleq puk koq ne panjang sekali"
+        },
+        "dalau": {
+            "kelas_kata": "n",
+            "arti": "1 musim; waktu; 2 situasi; suasana;"
+        },
+        "dapun": {
+            "kelas_kata": "n",
+            "arti": "dapur;"
+        },
+        "daun": {
+            "kelas_kata": "n",
+            "arti": "durian kerantungan"
+        },
+        "1daya": {
+            "kelas_kata": "n",
+            "arti": "hulu"
+        },
+        "2daya": {
+            "kelas_kata": "n",
+            "arti": "talam; baki"
+        },
+        "dayung": {
+            "kelas_kata": "n",
+            "arti": "dukun"
+        },
+        "dipa": {
+            "kelas_kata": "n",
+            "arti": "seberang sungai"
+        },
+        "dua": {
+            "kelas_kata": "num",
+            "arti": "dua;"
+        },
+        "dudaq": {
+            "kelas_kata": "v",
+            "arti": "bertemu"
+        },
+        "dudo": {
+            "kelas_kata": "a",
+            "arti": "dekat;"
+        },
+        "duk": {
+            "kelas_kata": "n",
+            "arti": "1 kera; 2 monyet;"
+        },
+        "duku": {
+            "kelas_kata": "n",
+            "arti": "duku"
+        },
+        "dulu": {
+            "kelas_kata": "n",
+            "arti": "orang"
+        },
+        "gaat": {
+            "kelas_kata": "n",
+            "arti": "pinang"
+        },
+        "gadun": {
+            "kelas_kata": "n",
+            "arti": "baskom"
+        },
+        "gajah": {
+            "kelas_kata": "n",
+            "arti": "gajah"
+        },
+        "garaq": {
+            "kelas_kata": "n",
+            "arti": "merpati"
+        },
+        "garip": {
+            "kelas_kata": "a",
+            "arti": "1 kering kerontang: garip aleq ne tung kayu ini kering"
+        },
+        "giam": {
+            "kelas_kata": "n",
+            "arti": "riam"
+        },
+        "gok": {
+            "kelas_kata": "v",
+            "arti": "jitak"
+        },
+        "gulaq": {
+            "kelas_kata": "n",
+            "arti": "gula;"
+        },
+        "guru": {
+            "kelas_kata": "n",
+            "arti": "guru"
+        },
+        "iut": {
+            "kelas_kata": "a",
+            "arti": "kecil"
+        },
+        "iang": {
+            "kelas_kata": "n",
+            "arti": "bukit"
+        },
+        "iba": {
+            "kelas_kata": "n",
+            "arti": "liur"
+        },
+        "ida": {
+            "kelas_kata": "n",
+            "arti": "orang"
+        },
+        "idup": {
+            "kelas_kata": "n",
+            "arti": "film"
+        },
+        "igan-igan": {
+            "kelas_kata": "a",
+            "arti": "banyak gaya: igan-igan ne seq leto ina perempuan itu"
+        },
+        "iko": {
+            "kelas_kata": "n",
+            "arti": "ekor"
+        },
+        "ikoq": {
+            "kelas_kata": "pron",
+            "arti": "1 kamu: lataq aleq usa ikoq badanmu besar sekali; 2 ia;"
+        },
+        "ilang": {
+            "kelas_kata": "n",
+            "arti": "pisau"
+        },
+        "ilap": {
+            "kelas_kata": "v",
+            "arti": "lirik;"
+        },
+        "ngilap": {
+            "kelas_kata": "v",
+            "arti": "melirik"
+        },
+        "ilu": {
+            "kelas_kata": "pron",
+            "arti": "kita: nempan ilu tai naoq besok kita ke ladang"
+        },
+        "ilun": {
+            "kelas_kata": "n",
+            "arti": "1 piatu; 2 panggilan untuk menyapa seorang piatu"
+        },
+        "inat": {
+            "kelas_kata": "n",
+            "arti": "ingus"
+        },
+        "ini": {
+            "kelas_kata": "pron",
+            "arti": "ini: ini sapai koq ini bajumu"
+        },
+        "inoq": {
+            "kelas_kata": "n",
+            "arti": "manik-manik;"
+        },
+        "inu": {
+            "kelas_kata": "pron",
+            "arti": "apa: inu denga kem apa kabar kalian"
+        },
+        "isau": {
+            "kelas_kata": "n",
+            "arti": "kelengkeng"
+        },
+        "isit": {
+            "kelas_kata": "n",
+            "arti": "kelebarau"
+        },
+        "pisiu": {
+            "kelas_kata": "v",
+            "arti": "berbicara: ngan ne koq pisiu kamu berbicara dng"
+        },
+        "iting": {
+            "kelas_kata": "n",
+            "arti": "dahan dan/atau ranting"
+        },
+        "itung": {
+            "kelas_kata": "n",
+            "arti": "ambeien; wasir"
+        },
+        "iuk": {
+            "kelas_kata": "n",
+            "arti": "bungkus;"
+        },
+        "miuk": {
+            "kelas_kata": "v",
+            "arti": "membungkus: miuq kanen ni na bungkus nasi itu"
+        },
+        "iya": {
+            "kelas_kata": "pron",
+            "arti": "dia: iya engkang taket koq dia pegang kakimu"
+        },
+        "iyang": {
+            "kelas_kata": "n",
+            "arti": "tebing"
+        },
+        "iyap": {
+            "kelas_kata": "n",
+            "arti": "ayam"
+        },
+        "iyong": {
+            "kelas_kata": "v",
+            "arti": "ayun;"
+        },
+        "ngiyong": {
+            "kelas_kata": "v",
+            "arti": "mengayun"
+        },
+        "iyu": {
+            "kelas_kata": "n",
+            "arti": "kepiting"
+        },
+        "jaa": {
+            "kelas_kata": "n",
+            "arti": "dagu"
+        },
+        "1jaat": {
+            "kelas_kata": "n",
+            "arti": "nama panggilan atau sapaan untuk seseorang, baik laki -"
+        },
+        "2jaat": {
+            "kelas_kata": "a",
+            "arti": "1 jelek: ayen jaat ne dulu jangan berbuat jelek pd orang"
+        },
+        "jagaq": {
+            "kelas_kata": "v",
+            "arti": "jaga;"
+        },
+        "jagun": {
+            "kelas_kata": "v",
+            "arti": "tinju;"
+        },
+        "nyagun": {
+            "kelas_kata": "v",
+            "arti": "1 hantam; 2 kelahi"
+        },
+        "jakan": {
+            "kelas_kata": "n",
+            "arti": "arak"
+        },
+        "jakit": {
+            "kelas_kata": "n",
+            "arti": "kerangka untuk mempermudah memanjat pohon"
+        },
+        "jakoq": {
+            "kelas_kata": "n",
+            "arti": "tembakau"
+        },
+        "jam": {
+            "kelas_kata": "n",
+            "arti": "jam;"
+        },
+        "jamang": {
+            "kelas_kata": "a",
+            "arti": "jorok: jamang aleq seq koq kamu itu jorok sekali"
+        },
+        "jamuk": {
+            "kelas_kata": "n",
+            "arti": "lalat"
+        },
+        "janan": {
+            "kelas_kata": "n",
+            "arti": "jalan"
+        },
+        "jat": {
+            "kelas_kata": "n",
+            "arti": "pisau peraut rotan"
+        },
+        "jataq": {
+            "kelas_kata": "n",
+            "arti": "antah"
+        },
+        "jawi": {
+            "kelas_kata": "n",
+            "arti": "duri yg panjang di sekitar daun rotan"
+        },
+        "jaya": {
+            "kelas_kata": "a",
+            "arti": "rajin: jaya aleq anak leto ina rajin sekali anak gadis itu"
+        },
+        "nyilaq": {
+            "kelas_kata": "v",
+            "arti": "jilat"
+        },
+        "jinan": {
+            "kelas_kata": "n",
+            "arti": "selama"
+        },
+        "juit": {
+            "kelas_kata": "n",
+            "arti": "brutu"
+        },
+        "jukat": {
+            "kelas_kata": "a",
+            "arti": "cukup: jukat majan tai meq masat cukup lama kami"
+        },
+        "julan": {
+            "kelas_kata": "n",
+            "arti": "1 loteng; 2 rak di bawah atap untuk menyimpan barang"
+        },
+        "julaq": {
+            "kelas_kata": "n",
+            "arti": "ludah;"
+        },
+        "julung": {
+            "kelas_kata": "n",
+            "arti": "muka; depan"
+        },
+        "juma": {
+            "kelas_kata": "n",
+            "arti": "depan: nai kaq juma mari ke depan"
+        },
+        "juman": {
+            "kelas_kata": "n",
+            "arti": "teluk"
+        },
+        "junut": {
+            "kelas_kata": "a",
+            "arti": "terlalu masak (tt makanan): junut aleq uben ikoq pesak"
+        },
+        "ju'ung": {
+            "kelas_kata": "v",
+            "arti": "jongkok: encam madung juung bisa duduk jongkok"
+        },
+        "1ka": {
+            "kelas_kata": "n",
+            "arti": "reng"
+        },
+        "kabuk": {
+            "kelas_kata": "n",
+            "arti": "biawak"
+        },
+        "kadai": {
+            "kelas_kata": "n",
+            "arti": "sendok;"
+        },
+        "kading": {
+            "kelas_kata": "n",
+            "arti": "kambing"
+        },
+        "kaduq": {
+            "kelas_kata": "a",
+            "arti": "1 banyak: kaduq lemanai ko lepoq ne banyak sekali"
+        },
+        "kajang": {
+            "kelas_kata": "n",
+            "arti": "atap daun nipah"
+        },
+        "kak": {
+            "kelas_kata": "n",
+            "arti": "gagak"
+        },
+        "kakau": {
+            "kelas_kata": "n",
+            "arti": "kakao"
+        },
+        "kalai": {
+            "kelas_kata": "v",
+            "arti": "belajar;"
+        },
+        "kalasayat": {
+            "kelas_kata": "n",
+            "arti": "wijen"
+        },
+        "kalasiau": {
+            "kelas_kata": "n",
+            "arti": "badak"
+        },
+        "kalung": {
+            "kelas_kata": "n",
+            "arti": "seni ukir, motif, dan lukisan pd lamin suku Dayak"
+        },
+        "ngalung": {
+            "kelas_kata": "v",
+            "arti": "mengukir"
+        },
+        "kamang": {
+            "kelas_kata": "n",
+            "arti": "kumbang bunga"
+        },
+        "kancau": {
+            "kelas_kata": "a",
+            "arti": "genit: kancau aleq anak leto ina genit sekali anak gadis"
+        },
+        "kang": {
+            "kelas_kata": "a",
+            "arti": "retak (tt tanah atau bangunan): kaduq aleq kang amin meq"
+        },
+        "kangkung": {
+            "kelas_kata": "n",
+            "arti": "kangkung"
+        },
+        "kapan": {
+            "kelas_kata": "a",
+            "arti": "tebal"
+        },
+        "1kasa": {
+            "kelas_kata": "a",
+            "arti": "deras; kencang: kasa aleq ujan ne taup de deras sekali"
+        },
+        "2kasa": {
+            "kelas_kata": "n",
+            "arti": "arus"
+        },
+        "kasau": {
+            "kelas_kata": "n",
+            "arti": "kasau"
+        },
+        "kasing": {
+            "kelas_kata": "a",
+            "arti": "hancur; berantakan: kasing aleq dalem amin ini"
+        },
+        "kasip": {
+            "kelas_kata": "a",
+            "arti": "miskin: kasip aleq udip kelunan dina miskin sekali"
+        },
+        "katalawaq": {
+            "kelas_kata": "n",
+            "arti": "laba-laba"
+        },
+        "katap": {
+            "kelas_kata": "v",
+            "arti": "tiru, meniru: encam anak keq katap isiu aloq anak saya"
+        },
+        "kati": {
+            "kelas_kata": "n",
+            "arti": "lele"
+        },
+        "katuq": {
+            "kelas_kata": "n",
+            "arti": "nasihat;"
+        },
+        "kawang": {
+            "kelas_kata": "a",
+            "arti": "luar: pet moq kawang pamen buang sampah di luar"
+        },
+        "kawit": {
+            "kelas_kata": "n",
+            "arti": "kayu berbentuk spt huruf L untuk mengait rumput"
+        },
+        "kaya": {
+            "kelas_kata": "a",
+            "arti": "tua: jakiq aleq uben tai kaya dia cepat sekali tua"
+        },
+        "kayaq": {
+            "kelas_kata": "a",
+            "arti": "kaya"
+        },
+        "kayu": {
+            "kelas_kata": "n",
+            "arti": "kayu;"
+        },
+        "kiba": {
+            "kelas_kata": "n",
+            "arti": "tas punggung yg terbuat dr anyaman rotan untuk"
+        },
+        "king": {
+            "kelas_kata": "n",
+            "arti": "sisik"
+        },
+        "kip": {
+            "kelas_kata": "n",
+            "arti": "1 kurap; 2 kudis"
+        },
+        "kiran": {
+            "kelas_kata": "n",
+            "arti": "tempat penyimpanan berbentuk kotak;"
+        },
+        "kirip": {
+            "kelas_kata": "n",
+            "arti": "hiasan tangan dr bulu burung enggang sbg properti tari"
+        },
+        "kiyung": {
+            "kelas_kata": "n",
+            "arti": "beo"
+        },
+        "kiyut": {
+            "kelas_kata": "n",
+            "arti": "piring;"
+        },
+        "kolak": {
+            "kelas_kata": "n",
+            "arti": "kolak"
+        },
+        "kompor": {
+            "kelas_kata": "n",
+            "arti": "kompor"
+        },
+        "kuaq": {
+            "kelas_kata": "a",
+            "arti": "imbang: kuaq majan udip da dua sama imbang umur"
+        },
+        "kuda": {
+            "kelas_kata": "n",
+            "arti": "kuda"
+        },
+        "kudaq": {
+            "kelas_kata": "pron",
+            "arti": "berapa;"
+        },
+        "kujat": {
+            "kelas_kata": "n",
+            "arti": "kudapan (penganan yg dimakan di luar waktu makan);"
+        },
+        "ngujat": {
+            "kelas_kata": "v",
+            "arti": "mengudap (makan kudapan)"
+        },
+        "kuju": {
+            "kelas_kata": "n",
+            "arti": "bangau"
+        },
+        "kula": {
+            "kelas_kata": "v",
+            "arti": "peras;"
+        },
+        "kulat": {
+            "kelas_kata": "n",
+            "arti": "jamur (tt makanan)"
+        },
+        "kulit": {
+            "kelas_kata": "n",
+            "arti": "kulit kayu"
+        },
+        "kumpin": {
+            "kelas_kata": "pron",
+            "arti": "bagaimana: kumpin seq lo kepesaq peti ini"
+        },
+        "kundrau": {
+            "kelas_kata": "n",
+            "arti": "kuntau"
+        },
+        "kupi": {
+            "kelas_kata": "n",
+            "arti": "kopi"
+        },
+        "kuta": {
+            "kelas_kata": "n",
+            "arti": "kota"
+        },
+        "kutang": {
+            "kelas_kata": "n",
+            "arti": "1 beha; kutang; 2 singlet"
+        },
+        "kutip": {
+            "kelas_kata": "n",
+            "arti": "kutu binatang;"
+        },
+        "kutu": {
+            "kelas_kata": "n",
+            "arti": "kutu"
+        },
+        "kuuk": {
+            "kelas_kata": "n",
+            "arti": "kokok;"
+        },
+        "nguuk": {
+            "kelas_kata": "v",
+            "arti": "berkokok"
+        },
+        "kuwai": {
+            "kelas_kata": "n",
+            "arti": "merak"
+        },
+        "kuwaq": {
+            "kelas_kata": "a",
+            "arti": "mirip"
+        },
+        "kuyat": {
+            "kelas_kata": "n",
+            "arti": "kera"
+        },
+        "kwit": {
+            "kelas_kata": "n",
+            "arti": "buah kepayang"
+        },
+        "laba": {
+            "kelas_kata": "n",
+            "arti": "laba-laba"
+        },
+        "laboq": {
+            "kelas_kata": "v",
+            "arti": "jatuh: laboq teken surat keq pensilku jatuh;"
+        },
+        "lada": {
+            "kelas_kata": "n",
+            "arti": "lada"
+        },
+        "laga": {
+            "kelas_kata": "n",
+            "arti": "1 rak; 2 perancah; 3 kerangka dinding yg biasanya terbuat"
+        },
+        "lai": {
+            "kelas_kata": "n",
+            "arti": "durian lai"
+        },
+        "1lait": {
+            "kelas_kata": "n",
+            "arti": "racun; bisa"
+        },
+        "2lait": {
+            "kelas_kata": "a",
+            "arti": "kelebihan rasa (baik manis ataupun asin): lait aleq gak keq"
+        },
+        "lajam": {
+            "kelas_kata": "a",
+            "arti": "liar"
+        },
+        "laki": {
+            "kelas_kata": "n",
+            "arti": "1 laki-laki; 2 suami;"
+        },
+        "laling": {
+            "kelas_kata": "n",
+            "arti": "belut"
+        },
+        "lalit": {
+            "kelas_kata": "n",
+            "arti": "banir"
+        },
+        "lalut": {
+            "kelas_kata": "n",
+            "arti": "anak sungai; sungai kecil"
+        },
+        "lampoq": {
+            "kelas_kata": "n",
+            "arti": "lampu"
+        },
+        "lamut": {
+            "kelas_kata": "n",
+            "arti": "ragi"
+        },
+        "lan": {
+            "kelas_kata": "a",
+            "arti": "benar; betul: lan mung isiu koq ne benar semua perkataanmu"
+        },
+        "lanan": {
+            "kelas_kata": "n",
+            "arti": "dingklik (tempat duduk kecil terbuat dr papan dan"
+        },
+        "lanaq": {
+            "kelas_kata": "n",
+            "arti": "nanah"
+        },
+        "langau": {
+            "kelas_kata": "n",
+            "arti": "lalat"
+        },
+        "langkau": {
+            "kelas_kata": "a",
+            "arti": "tinggi (tt kondisi tubuh): langkau aleq anak ina tinggi"
+        },
+        "lanya": {
+            "kelas_kata": "a",
+            "arti": "1 licin: lanya aleq asoq ini licin sekali lantai ini; 2 halus (tt"
+        },
+        "lasan": {
+            "kelas_kata": "n",
+            "arti": "halaman"
+        },
+        "lati": {
+            "kelas_kata": "n",
+            "arti": "cacing"
+        },
+        "latung": {
+            "kelas_kata": "n",
+            "arti": "karet gelang"
+        },
+        "lau": {
+            "kelas_kata": "a",
+            "arti": "lapar: tau ini lau aleq gak keq hari ini saya sangat lapar;"
+        },
+        "laung": {
+            "kelas_kata": "n",
+            "arti": "batang keladi; lompong"
+        },
+        "laut": {
+            "kelas_kata": "n",
+            "arti": "laut"
+        },
+        "lawa": {
+            "kelas_kata": "n",
+            "arti": "tangguk"
+        },
+        "lawat": {
+            "kelas_kata": "n",
+            "arti": "jembatan"
+        },
+        "layap": {
+            "kelas_kata": "v",
+            "arti": "banjir: layap amin kem banjir rumah kalian;"
+        },
+        "layuk": {
+            "kelas_kata": "n",
+            "arti": "1 madu; 2 lebah"
+        },
+        "lia": {
+            "kelas_kata": "n",
+            "arti": "telur kutu"
+        },
+        "liang": {
+            "kelas_kata": "n",
+            "arti": "liang kubur"
+        },
+        "libau": {
+            "kelas_kata": "a",
+            "arti": "dangkal;"
+        },
+        "liip": {
+            "kelas_kata": "n",
+            "arti": "bahu"
+        },
+        "likau": {
+            "kelas_kata": "n",
+            "arti": "alis"
+        },
+        "likoq": {
+            "kelas_kata": "n",
+            "arti": "tanjung"
+        },
+        "likut": {
+            "kelas_kata": "n",
+            "arti": "1 belakang; 2 punggung;"
+        },
+        "liling": {
+            "kelas_kata": "n",
+            "arti": "lingkaran"
+        },
+        "limpang": {
+            "kelas_kata": "n",
+            "arti": "pare; paria"
+        },
+        "limpok": {
+            "kelas_kata": "n",
+            "arti": "1 cabai; 2 sambal"
+        },
+        "lingai": {
+            "kelas_kata": "n",
+            "arti": "bayangan"
+        },
+        "lingu": {
+            "kelas_kata": "a",
+            "arti": "bingung; sesat;"
+        },
+        "lipa": {
+            "kelas_kata": "n",
+            "arti": "kecoak"
+        },
+        "litak": {
+            "kelas_kata": "n",
+            "arti": "panau"
+        },
+        "litut": {
+            "kelas_kata": "a",
+            "arti": "keruh;"
+        },
+        "liwang": {
+            "kelas_kata": "n",
+            "arti": "pagar;"
+        },
+        "lo": {
+            "kelas_kata": "n",
+            "arti": "jarum"
+        },
+        "lu": {
+            "kelas_kata": "n",
+            "arti": "alu"
+        },
+        "luai": {
+            "kelas_kata": "n",
+            "arti": "umbi keladi"
+        },
+        "lubang": {
+            "kelas_kata": "n",
+            "arti": "lubang;"
+        },
+        "luk": {
+            "kelas_kata": "n",
+            "arti": "telinga panjang suku Kenyah"
+        },
+        "luko": {
+            "kelas_kata": "n",
+            "arti": "bubur nasi yg dimasak di dalam bambu, dicampur pati"
+        },
+        "lukoq": {
+            "kelas_kata": "n",
+            "arti": "1 rokok; 2 sugi;"
+        },
+        "luloq": {
+            "kelas_kata": "n",
+            "arti": "air mata;"
+        },
+        "luluk": {
+            "kelas_kata": "n",
+            "arti": "pucuk;"
+        },
+        "lulut": {
+            "kelas_kata": "n",
+            "arti": "tulang kering"
+        },
+        "lumai": {
+            "kelas_kata": "a",
+            "arti": "lemah; lelah: lumai aleq gak keq saya rasanya lemah;"
+        },
+        "lumo": {
+            "kelas_kata": "n",
+            "arti": "pakaian atau topi berkabung berwarna merah muda,"
+        },
+        "lung": {
+            "kelas_kata": "n",
+            "arti": "muara sungai"
+        },
+        "lungun": {
+            "kelas_kata": "n",
+            "arti": "peti jenazah"
+        },
+        "lunuk": {
+            "kelas_kata": "n",
+            "arti": "beringin"
+        },
+        "lutoq": {
+            "kelas_kata": "a",
+            "arti": "layu"
+        },
+        "luung": {
+            "kelas_kata": "a",
+            "arti": "bulat: luung aleq silung koq wajahmu bulat;"
+        },
+        "ma": {
+            "kelas_kata": "n",
+            "arti": "kemaluan wanita"
+        },
+        "maam": {
+            "kelas_kata": "a",
+            "arti": "rakus: ayen maam ne penguman jangan rakus dng"
+        },
+        "maat": {
+            "kelas_kata": "v",
+            "arti": "gigit, menggigit"
+        },
+        "mabau": {
+            "kelas_kata": "v",
+            "arti": "menyiangi rumput di ladang"
+        },
+        "mabi": {
+            "kelas_kata": "a",
+            "arti": "kurang bisa: mabi aleq seq koq pegayeng kamu kurang"
+        },
+        "mabok": {
+            "kelas_kata": "a",
+            "arti": "mabuk: idi ca kelunan mabok jakan ada seorang yg"
+        },
+        "madang": {
+            "kelas_kata": "v",
+            "arti": "terbang;"
+        },
+        "padang": {
+            "kelas_kata": "v",
+            "arti": "menerbangkan"
+        },
+        "mading": {
+            "kelas_kata": "a",
+            "arti": "baru: sapai mading baju baru"
+        },
+        "magap": {
+            "kelas_kata": "v",
+            "arti": "raba, meraba"
+        },
+        "maing": {
+            "kelas_kata": "a",
+            "arti": "keras: kayu ina maing kayu itu keras"
+        },
+        "majan": {
+            "kelas_kata": "a",
+            "arti": "lama: majan aleq ne meq mudip koq ini ne kami sudah"
+        },
+        "majau": {
+            "kelas_kata": "v",
+            "arti": "panen padi; ketam"
+        },
+        "majit": {
+            "kelas_kata": "v",
+            "arti": "cukur, mencukur (tt rambut);"
+        },
+        "pajit": {
+            "kelas_kata": "n",
+            "arti": "hasil atau model cukur"
+        },
+        "makan": {
+            "kelas_kata": "v",
+            "arti": "suap"
+        },
+        "makang": {
+            "kelas_kata": "a",
+            "arti": "1 berani: makang mudip tengen berani hidup sendiri;"
+        },
+        "makup": {
+            "kelas_kata": "v",
+            "arti": "mengambil atau menangkup (tt air, beras, tepung, dsb)"
+        },
+        "malaria": {
+            "kelas_kata": "n",
+            "arti": "malaria"
+        },
+        "malat": {
+            "kelas_kata": "n",
+            "arti": "besi"
+        },
+        "mampaq": {
+            "kelas_kata": "a",
+            "arti": "tidak terlalu bisa bekerja: mampaq aleq seq uben amai"
+        },
+        "mampo": {
+            "kelas_kata": "n",
+            "arti": "kabut"
+        },
+        "manai": {
+            "kelas_kata": "n",
+            "arti": "laki-laki"
+        },
+        "manang": {
+            "kelas_kata": "a",
+            "arti": "1 jenong; 2 botak pd bagian depan kepala"
+        },
+        "mancan": {
+            "kelas_kata": "n",
+            "arti": "pepaya"
+        },
+        "manggis": {
+            "kelas_kata": "n",
+            "arti": "manggis"
+        },
+        "mano": {
+            "kelas_kata": "a",
+            "arti": "kotor: mano sapai koq ne kotor bajumu itu"
+        },
+        "manyam": {
+            "kelas_kata": "v",
+            "arti": "1 anyam, menganyam; 2 pintal, memintal"
+        },
+        "mapaq": {
+            "kelas_kata": "v",
+            "arti": "loncat; lompat"
+        },
+        "maq": {
+            "kelas_kata": "a",
+            "arti": "lumpuh"
+        },
+        "maru": {
+            "kelas_kata": "a",
+            "arti": "1 pusing: maru keq kimet iya saya pusing memikirkan dia;"
+        },
+        "masa": {
+            "kelas_kata": "v",
+            "arti": "mengelap; mengepel: encam tekoq masa lanan ina"
+        },
+        "masat": {
+            "kelas_kata": "v",
+            "arti": "jalan, berjalan;"
+        },
+        "mat": {
+            "kelas_kata": "n",
+            "arti": "emas"
+        },
+        "mata": {
+            "kelas_kata": "n",
+            "arti": "mata"
+        },
+        "matai": {
+            "kelas_kata": "v",
+            "arti": "1 mati; 2 bunuh;"
+        },
+        "matak": {
+            "kelas_kata": "v",
+            "arti": "1 memadamkan (tt api, mesin, elektronik); 2 padamkan:"
+        },
+        "mataq": {
+            "kelas_kata": "a",
+            "arti": "mentah: mataq lepa atuk ini ikan ini masih mentah"
+        },
+        "matatau": {
+            "kelas_kata": "n",
+            "arti": "matahari;"
+        },
+        "matung": {
+            "kelas_kata": "v",
+            "arti": "hanyut;"
+        },
+        "ngatung": {
+            "kelas_kata": "v",
+            "arti": "mengikat (tt sesuatu yg bisa hanyut msl perahu)"
+        },
+        "mawat": {
+            "kelas_kata": "n",
+            "arti": "kalong"
+        },
+        "maya": {
+            "kelas_kata": "v",
+            "arti": "terbenam"
+        },
+        "mayau": {
+            "kelas_kata": "v",
+            "arti": "garuk;"
+        },
+        "mayung": {
+            "kelas_kata": "a",
+            "arti": "demam: mayung uweq keq ibuku demam"
+        },
+        "mia": {
+            "kelas_kata": "a",
+            "arti": "benci; jengkel: mia seq naat akeq dia melihat saya dng"
+        },
+        "miang": {
+            "kelas_kata": "a",
+            "arti": "terjal: miang aleq uma meq terjal sekali ladang kami"
+        },
+        "miat": {
+            "kelas_kata": "a",
+            "arti": "gelisah: miat seq koq amin te dia gelisah di rumah"
+        },
+        "midan": {
+            "kelas_kata": "pron",
+            "arti": "kapan; bilamana: midan nai kem abeq kapan kalian"
+        },
+        "miga": {
+            "kelas_kata": "v",
+            "arti": "kibas, mengibas"
+        },
+        "miit": {
+            "kelas_kata": "v",
+            "arti": "colek"
+        },
+        "mimum": {
+            "kelas_kata": "v",
+            "arti": "jahit, menjahit"
+        },
+        "miwa": {
+            "kelas_kata": "v",
+            "arti": "memercikkan;"
+        },
+        "moq": {
+            "kelas_kata": "n",
+            "arti": "sampah"
+        },
+        "mpuung": {
+            "kelas_kata": "a",
+            "arti": "tidak sengaja: mpi keq mpuung saya tidak sengaja"
+        },
+        "mua": {
+            "kelas_kata": "a",
+            "arti": "sakit ringan: seq keq mua saya sakit ringan"
+        },
+        "muang": {
+            "kelas_kata": "v",
+            "arti": "haus"
+        },
+        "muaq": {
+            "kelas_kata": "v",
+            "arti": "muntah"
+        },
+        "muat": {
+            "kelas_kata": "a",
+            "arti": "laju: muat aleq koq masat laju sekali kamu jalan"
+        },
+        "muau": {
+            "kelas_kata": "a",
+            "arti": "cuek: muau seq be lo pisiu dia cuek kalau kita berbicara"
+        },
+        "mudung": {
+            "kelas_kata": "n",
+            "arti": "gunung"
+        },
+        "muga": {
+            "kelas_kata": "v",
+            "arti": "melahirkan"
+        },
+        "muit": {
+            "kelas_kata": "v",
+            "arti": "mengungkit: ayen muit salaq tiang koq jangan mengungkit"
+        },
+        "mujun": {
+            "kelas_kata": "n",
+            "arti": "paruh"
+        },
+        "mujut": {
+            "kelas_kata": "v",
+            "arti": "mengangkat (tt barang kecil)"
+        },
+        "muk": {
+            "kelas_kata": "n",
+            "arti": "gelas"
+        },
+        "muka": {
+            "kelas_kata": "v",
+            "arti": "membuka (msl tali atau tikar)"
+        },
+        "mukat": {
+            "kelas_kata": "v",
+            "arti": "mendaki"
+        },
+        "mukun": {
+            "kelas_kata": "a",
+            "arti": "tua: mukun ne pui keq nenekku sudah tua"
+        },
+        "mula": {
+            "kelas_kata": "v",
+            "arti": "tanam, menanam"
+        },
+        "mulo": {
+            "kelas_kata": "v",
+            "arti": "lempar;"
+        },
+        "mung": {
+            "kelas_kata": "num",
+            "arti": "semua"
+        },
+        "munung": {
+            "kelas_kata": "n",
+            "arti": "hasil menyelamatkan pohon buah untuk tidak ditebas"
+        },
+        "mupa": {
+            "kelas_kata": "v",
+            "arti": "1 pelintir, memelintir; 2 putar, memutar"
+        },
+        "mupuk": {
+            "kelas_kata": "a",
+            "arti": "lapuk"
+        },
+        "musa": {
+            "kelas_kata": "v",
+            "arti": "1 tumpah; 2 meluap"
+        },
+        "musang": {
+            "kelas_kata": "n",
+            "arti": "pulau"
+        },
+        "musid": {
+            "kelas_kata": "v",
+            "arti": "melepas kulit padi"
+        },
+        "muso": {
+            "kelas_kata": "v",
+            "arti": "hapus;"
+        },
+        "musun": {
+            "kelas_kata": "n",
+            "arti": "menebang: tai amai musun kayu dalau ina bapak pergi"
+        },
+        "mutip": {
+            "kelas_kata": "v",
+            "arti": "cubit dng kasar dan kuat: tede aleq koq mutip iya kuat"
+        },
+        "mutun": {
+            "kelas_kata": "v",
+            "arti": "potong, memotong;"
+        },
+        "putun": {
+            "kelas_kata": "v",
+            "arti": "potong;"
+        },
+        "naaq": {
+            "kelas_kata": "n",
+            "arti": "senja; sore"
+        },
+        "naat": {
+            "kelas_kata": "v",
+            "arti": "menonton; melihat"
+        },
+        "nading": {
+            "kelas_kata": "p",
+            "arti": "mulai"
+        },
+        "nai": {
+            "kelas_kata": "v",
+            "arti": "datang"
+        },
+        "nakan": {
+            "kelas_kata": "n",
+            "arti": "cempedak"
+        },
+        "nampun": {
+            "kelas_kata": "v",
+            "arti": "kubur, mengubur"
+        },
+        "napu": {
+            "kelas_kata": "n",
+            "arti": "tepung singkong"
+        },
+        "nasap": {
+            "kelas_kata": "v",
+            "arti": "masak sebentar"
+        },
+        "nawa": {
+            "kelas_kata": "a",
+            "arti": "1 lebar; 2 luas"
+        },
+        "nawai": {
+            "kelas_kata": "a",
+            "arti": "rindu"
+        },
+        "ngab": {
+            "kelas_kata": "n",
+            "arti": "jurang"
+        },
+        "ngadan": {
+            "kelas_kata": "n",
+            "arti": "nama"
+        },
+        "ngalai": {
+            "kelas_kata": "adv",
+            "arti": "1 pernah: ngalai keq tai kina saya pernah ke sana; 2"
+        },
+        "ngalo": {
+            "kelas_kata": "v",
+            "arti": "mengalir"
+        },
+        "ngan": {
+            "kelas_kata": "p",
+            "arti": "dengan"
+        },
+        "nganan": {
+            "kelas_kata": "v",
+            "arti": "asuh, mengasuh"
+        },
+        "ngancat": {
+            "kelas_kata": "v",
+            "arti": "memelarkan msl tali, karet, atau per: pui ngancat tali"
+        },
+        "nganup": {
+            "kelas_kata": "v",
+            "arti": "berburu"
+        },
+        "ngaput": {
+            "kelas_kata": "v",
+            "arti": "1 mengikat (msl kayu dng kayu pd pondok); 2"
+        },
+        "ngasa": {
+            "kelas_kata": "v",
+            "arti": "lari, berlari;"
+        },
+        "ngayang": {
+            "kelas_kata": "v",
+            "arti": "angkat, mengangkat"
+        },
+        "ngimpang": {
+            "kelas_kata": "a",
+            "arti": "1 cemburu: ngimpang aleq seq kok cemburu sekali"
+        },
+        "ngirut": {
+            "kelas_kata": "v",
+            "arti": "memicingkan mata"
+        },
+        "ngujau": {
+            "kelas_kata": "v",
+            "arti": "petik, memetik"
+        },
+        "niun": {
+            "kelas_kata": "adv",
+            "arti": "1 tidak; 2 belum"
+        },
+        "no": {
+            "kelas_kata": "p",
+            "arti": "ya: kumpin no bagaimana ya"
+        },
+        "nuat": {
+            "kelas_kata": "a",
+            "arti": "sebentar"
+        },
+        "nuboq": {
+            "kelas_kata": "v",
+            "arti": "rebus, merebus"
+        },
+        "nujoq": {
+            "kelas_kata": "v",
+            "arti": "tunjuk"
+        },
+        "nutung": {
+            "kelas_kata": "v",
+            "arti": "bakar;"
+        },
+        "tutung": {
+            "kelas_kata": "v",
+            "arti": "terbakar"
+        },
+        "nyait": {
+            "kelas_kata": "v",
+            "arti": "berhubungan seksual"
+        },
+        "nyak": {
+            "kelas_kata": "n",
+            "arti": "lemak;"
+        },
+        "nyamuk": {
+            "kelas_kata": "n",
+            "arti": "nyamuk"
+        },
+        "nyara": {
+            "kelas_kata": "a",
+            "arti": "1 capai; lelah: nyara aleq gaq keq saya lelah sekali; 2"
+        },
+        "nyatap": {
+            "kelas_kata": "n",
+            "arti": "tombak;"
+        },
+        "nyatung": {
+            "kelas_kata": "v",
+            "arti": "renang, berenang"
+        },
+        "nyian": {
+            "kelas_kata": "a",
+            "arti": "ringan: kayu ina nyian kayu itu ringan"
+        },
+        "nyidau": {
+            "kelas_kata": "v",
+            "arti": "menyanyikan kidung ratapan saat ada orang yg"
+        },
+        "nyiun": {
+            "kelas_kata": "v",
+            "arti": "tidak"
+        },
+        "nyo": {
+            "kelas_kata": "n",
+            "arti": "kelapa"
+        },
+        "nyurat": {
+            "kelas_kata": "v",
+            "arti": "menulis"
+        },
+        "nyuun": {
+            "kelas_kata": "v",
+            "arti": "pikul, memikul"
+        },
+        "pa": {
+            "kelas_kata": "n",
+            "arti": "sapu;"
+        },
+        "pacat": {
+            "kelas_kata": "n",
+            "arti": "pacet"
+        },
+        "pacon": {
+            "kelas_kata": "n",
+            "arti": "pacul; cangkul;"
+        },
+        "macon": {
+            "kelas_kata": "v",
+            "arti": "mencangkul"
+        },
+        "padai": {
+            "kelas_kata": "n",
+            "arti": "padi;"
+        },
+        "padan": {
+            "kelas_kata": "a",
+            "arti": "tidak mau kalah"
+        },
+        "padek": {
+            "kelas_kata": "n",
+            "arti": "ikan pelian"
+        },
+        "pagan": {
+            "kelas_kata": "n",
+            "arti": "penjolok; galah"
+        },
+        "pait": {
+            "kelas_kata": "a",
+            "arti": "pahit"
+        },
+        "pajaq": {
+            "kelas_kata": "v",
+            "arti": "1 gandeng; 2 ki menguatkan"
+        },
+        "paku": {
+            "kelas_kata": "n",
+            "arti": "pakis; paku"
+        },
+        "palaq": {
+            "kelas_kata": "p",
+            "arti": "kepada"
+        },
+        "palit": {
+            "kelas_kata": "v",
+            "arti": "terhempas"
+        },
+        "pana": {
+            "kelas_kata": "a",
+            "arti": "panas: pana aleq tau ini panas sekali hari ini;"
+        },
+        "pang": {
+            "kelas_kata": "n",
+            "arti": "sela antara jari-jari tangan atau kaki"
+        },
+        "paq": {
+            "kelas_kata": "n",
+            "arti": "mulut;"
+        },
+        "parip": {
+            "kelas_kata": "n",
+            "arti": "tulah; kutukan"
+        },
+        "paroq": {
+            "kelas_kata": "n",
+            "arti": "kerikil"
+        },
+        "1pasa": {
+            "kelas_kata": "n",
+            "arti": "lap;"
+        },
+        "2pasa": {
+            "kelas_kata": "n",
+            "arti": "lomba; tanding"
+        },
+        "paso": {
+            "kelas_kata": "v",
+            "arti": "memindahkan"
+        },
+        "1pat": {
+            "kelas_kata": "n",
+            "arti": "tikar;"
+        },
+        "2pat": {
+            "kelas_kata": "num",
+            "arti": "empat"
+        },
+        "pau": {
+            "kelas_kata": "n",
+            "arti": "belalang"
+        },
+        "paun": {
+            "kelas_kata": "n",
+            "arti": "tumpukan sisa bakaran yg sudah dibakar"
+        },
+        "payang": {
+            "kelas_kata": "n",
+            "arti": "penganan fermentasi dr kedelai, kacang tanah, dan"
+        },
+        "payau": {
+            "kelas_kata": "n",
+            "arti": "rusa sambar"
+        },
+        "pia": {
+            "kelas_kata": "n",
+            "arti": "belimbing;"
+        },
+        "piat": {
+            "kelas_kata": "v",
+            "arti": "ganggu, mengganggu: ayen koq piat akeq jangan ganggu"
+        },
+        "pilau": {
+            "kelas_kata": "n",
+            "arti": "minyak"
+        },
+        "piling": {
+            "kelas_kata": "v",
+            "arti": "putar: ikoq piling saung ina kamu putar seraung itu"
+        },
+        "pinga": {
+            "kelas_kata": "n",
+            "arti": "pipi"
+        },
+        "pinut": {
+            "kelas_kata": "a",
+            "arti": "hemat"
+        },
+        "piu": {
+            "kelas_kata": "n",
+            "arti": "bunga"
+        },
+        "po": {
+            "kelas_kata": "n",
+            "arti": "joran"
+        },
+        "pui": {
+            "kelas_kata": "n",
+            "arti": "nenek dan/atau kakek;"
+        },
+        "puk": {
+            "kelas_kata": "n",
+            "arti": "rambut;"
+        },
+        "pukat": {
+            "kelas_kata": "n",
+            "arti": "jaring ikan"
+        },
+        "puloq": {
+            "kelas_kata": "num",
+            "arti": "1 puluh; 2 sepuluh"
+        },
+        "pulut": {
+            "kelas_kata": "n",
+            "arti": "getah karet"
+        },
+        "pun": {
+            "kelas_kata": "n",
+            "arti": "hewan"
+        },
+        "pupa": {
+            "kelas_kata": "v",
+            "arti": "balik: ikoq pupa saga tilo kamu balik telur goreng"
+        },
+        "pusing": {
+            "kelas_kata": "a",
+            "arti": "pusing"
+        },
+        "puso": {
+            "kelas_kata": "a",
+            "arti": "luntur: kalung apeq ina puso hiasan kain itu luntur"
+        },
+        "pusok": {
+            "kelas_kata": "n",
+            "arti": "jantung"
+        },
+        "put": {
+            "kelas_kata": "v",
+            "arti": "tiup"
+        },
+        "puun": {
+            "kelas_kata": "a",
+            "arti": "1 kusam; 2 antik"
+        },
+        "puyuh": {
+            "kelas_kata": "n",
+            "arti": "ikan papuyu; ikan betok"
+        },
+        "rok": {
+            "kelas_kata": "n",
+            "arti": "rok"
+        },
+        "saai": {
+            "kelas_kata": "n",
+            "arti": "katak"
+        },
+        "sabai": {
+            "kelas_kata": "n",
+            "arti": "besan"
+        },
+        "sabun": {
+            "kelas_kata": "n",
+            "arti": "sabun"
+        },
+        "sada": {
+            "kelas_kata": "n",
+            "arti": "pinggir; tepi;"
+        },
+        "sadin": {
+            "kelas_kata": "n",
+            "arti": "adik"
+        },
+        "saga": {
+            "kelas_kata": "n",
+            "arti": "goreng;"
+        },
+        "nyaga": {
+            "kelas_kata": "v",
+            "arti": "menggoreng"
+        },
+        "sagan": {
+            "kelas_kata": "n",
+            "arti": "talenan"
+        },
+        "sai": {
+            "kelas_kata": "n",
+            "arti": "ampas;"
+        },
+        "sakai": {
+            "kelas_kata": "n",
+            "arti": "tamu"
+        },
+        "sakit": {
+            "kelas_kata": "a",
+            "arti": "sakit;"
+        },
+        "sala": {
+            "kelas_kata": "n",
+            "arti": "sarang;"
+        },
+        "salak": {
+            "kelas_kata": "a",
+            "arti": "salah"
+        },
+        "salau": {
+            "kelas_kata": "a",
+            "arti": "tenang;"
+        },
+        "salit": {
+            "kelas_kata": "a",
+            "arti": "lengket;"
+        },
+        "nyalit": {
+            "kelas_kata": "v",
+            "arti": "melengketkan"
+        },
+        "saliu": {
+            "kelas_kata": "v",
+            "arti": "ganti;"
+        },
+        "nyaliu": {
+            "kelas_kata": "v",
+            "arti": "mengganti: akeq nyaliu sapai anak keq aku"
+        },
+        "saloq": {
+            "kelas_kata": "n",
+            "arti": "racun sumpitan"
+        },
+        "sana": {
+            "kelas_kata": "n",
+            "arti": "keringat"
+        },
+        "sanam": {
+            "kelas_kata": "n",
+            "arti": "semut;"
+        },
+        "sandan": {
+            "kelas_kata": "n",
+            "arti": "sandal"
+        },
+        "sang": {
+            "kelas_kata": "n",
+            "arti": "tumbuhan palma yg daunnya dimanfaatkan untuk"
+        },
+        "sangat": {
+            "kelas_kata": "n",
+            "arti": "cabang;"
+        },
+        "sangkok": {
+            "kelas_kata": "n",
+            "arti": "daun katuk"
+        },
+        "sanit": {
+            "kelas_kata": "a",
+            "arti": "pedas;"
+        },
+        "sap": {
+            "kelas_kata": "n",
+            "arti": "asap;"
+        },
+        "manyap": {
+            "kelas_kata": "v",
+            "arti": "mengasapi;"
+        },
+        "sapai": {
+            "kelas_kata": "n",
+            "arti": "baju;"
+        },
+        "sapau": {
+            "kelas_kata": "n",
+            "arti": "1 sirap dr daun nipah; 2 atap;"
+        },
+        "nyapau": {
+            "kelas_kata": "v",
+            "arti": "mengatapi"
+        },
+        "sapuk": {
+            "kelas_kata": "n",
+            "arti": "bunga buah-buahan;"
+        },
+        "saung": {
+            "kelas_kata": "n",
+            "arti": "caping"
+        },
+        "saup": {
+            "kelas_kata": "n",
+            "arti": "tangkai parang"
+        },
+        "sawah": {
+            "kelas_kata": "n",
+            "arti": "sawah"
+        },
+        "sawan": {
+            "kelas_kata": "n",
+            "arti": "pisang hutan, daun dan buahnya berukuran kecil"
+        },
+        "sawo": {
+            "kelas_kata": "n",
+            "arti": "sawo"
+        },
+        "sem": {
+            "kelas_kata": "n",
+            "arti": "1 mangga; 2 buah asam;"
+        },
+        "senau": {
+            "kelas_kata": "n",
+            "arti": "ikan biawan"
+        },
+        "setai": {
+            "kelas_kata": "n",
+            "arti": "kapul"
+        },
+        "sibuk": {
+            "kelas_kata": "n",
+            "arti": "jangkrik"
+        },
+        "siku": {
+            "kelas_kata": "n",
+            "arti": "siku"
+        },
+        "silawit": {
+            "kelas_kata": "n",
+            "arti": "cecak"
+        },
+        "silu": {
+            "kelas_kata": "n",
+            "arti": "kuku"
+        },
+        "silung": {
+            "kelas_kata": "n",
+            "arti": "wajah; muka"
+        },
+        "sin": {
+            "kelas_kata": "n",
+            "arti": "daging;"
+        },
+        "sing": {
+            "kelas_kata": "n",
+            "arti": "kucing"
+        },
+        "sioq": {
+            "kelas_kata": "a",
+            "arti": "tepat"
+        },
+        "sip": {
+            "kelas_kata": "n",
+            "arti": "1 ganjal; ganjalan: tai sip pamen beri ganjal pintu; 2 selilit;"
+        },
+        "sirup": {
+            "kelas_kata": "n",
+            "arti": "sirup"
+        },
+        "soq": {
+            "kelas_kata": "n",
+            "arti": "tunas"
+        },
+        "su": {
+            "kelas_kata": "n",
+            "arti": "cucu"
+        },
+        "sua": {
+            "kelas_kata": "n",
+            "arti": "sarung parang;"
+        },
+        "suaq": {
+            "kelas_kata": "n",
+            "arti": "duri"
+        },
+        "suat": {
+            "kelas_kata": "v",
+            "arti": "1 luka; 2 terluka;"
+        },
+        "nyuat": {
+            "kelas_kata": "v",
+            "arti": "melukai"
+        },
+        "subut": {
+            "kelas_kata": "n",
+            "arti": "ubun-ubun"
+        },
+        "sui": {
+            "kelas_kata": "n",
+            "arti": "burung besar"
+        },
+        "sukak": {
+            "kelas_kata": "n",
+            "arti": "tiang;"
+        },
+        "sukang": {
+            "kelas_kata": "n",
+            "arti": "kuda-kuda"
+        },
+        "sukat": {
+            "kelas_kata": "a",
+            "arti": "cukup: sukat kaduq ta seq padai meq padi kami cukup"
+        },
+        "suling": {
+            "kelas_kata": "n",
+            "arti": "seruling"
+        },
+        "sumur": {
+            "kelas_kata": "n",
+            "arti": "sumur"
+        },
+        "sung": {
+            "kelas_kata": "n",
+            "arti": "wadah air dr satu ruas bambu"
+        },
+        "sungai": {
+            "kelas_kata": "n",
+            "arti": "1 air; 2 sungai"
+        },
+        "surat": {
+            "kelas_kata": "n",
+            "arti": "surat"
+        },
+        "susu": {
+            "kelas_kata": "n",
+            "arti": "susu (minuman)"
+        },
+        "suwung": {
+            "kelas_kata": "n",
+            "arti": "paha"
+        },
+        "taban": {
+            "kelas_kata": "n",
+            "arti": "obat;"
+        },
+        "naban": {
+            "kelas_kata": "v",
+            "arti": "mengobati"
+        },
+        "taga": {
+            "kelas_kata": "v",
+            "arti": "bangun"
+        },
+        "tagak": {
+            "kelas_kata": "n",
+            "arti": "kemarau"
+        },
+        "tai": {
+            "kelas_kata": "n",
+            "arti": "tahi; kotoran;"
+        },
+        "tain": {
+            "kelas_kata": "p",
+            "arti": "ya: kumpin tain bagaimana ya"
+        },
+        "taing": {
+            "kelas_kata": "n",
+            "arti": "alas menjemur padi"
+        },
+        "tajau": {
+            "kelas_kata": "n",
+            "arti": "tempayan; guci"
+        },
+        "tajung": {
+            "kelas_kata": "n",
+            "arti": "sarung"
+        },
+        "takang": {
+            "kelas_kata": "n",
+            "arti": "bunglon"
+        },
+        "tako": {
+            "kelas_kata": "n",
+            "arti": "tempat sayur dr daun pisang digunakan untuk makan"
+        },
+        "takung": {
+            "kelas_kata": "n",
+            "arti": "rawa"
+        },
+        "takut": {
+            "kelas_kata": "a",
+            "arti": "takut;"
+        },
+        "tali": {
+            "kelas_kata": "n",
+            "arti": "1 tali; 2 benang;"
+        },
+        "talun": {
+            "kelas_kata": "n",
+            "arti": "kulit kayu untuk membuat tali, baju, atau cawat"
+        },
+        "tamam": {
+            "kelas_kata": "n",
+            "arti": "bapak (milik kamu)"
+        },
+        "tanaq": {
+            "kelas_kata": "n",
+            "arti": "1 tanah; 2 darat"
+        },
+        "1tang": {
+            "kelas_kata": "n",
+            "arti": "ampa padi"
+        },
+        "2tang": {
+            "kelas_kata": "n",
+            "arti": "tang"
+        },
+        "3tang": {
+            "kelas_kata": "n",
+            "arti": "bulu pd padi, bambu, atau kacang hijau yg menyebabkan"
+        },
+        "tanyit": {
+            "kelas_kata": "n",
+            "arti": "banggeris; menggeris (Koompassia excelsa)"
+        },
+        "tapa": {
+            "kelas_kata": "a",
+            "arti": "lambat: sadin tapa nai taga adik lambat bangun"
+        },
+        "tapan": {
+            "kelas_kata": "n",
+            "arti": "tampi; nyiru;"
+        },
+        "napan": {
+            "kelas_kata": "v",
+            "arti": "menampi: encam keq napan baa saya bisa"
+        },
+        "taring": {
+            "kelas_kata": "n",
+            "arti": "wajan"
+        },
+        "taru": {
+            "kelas_kata": "n",
+            "arti": "musibah yg memakan korban"
+        },
+        "tas": {
+            "kelas_kata": "n",
+            "arti": "tas"
+        },
+        "tau": {
+            "kelas_kata": "n",
+            "arti": "kanan"
+        },
+        "taup": {
+            "kelas_kata": "n",
+            "arti": "malam"
+        },
+        "tawa": {
+            "kelas_kata": "v",
+            "arti": "tertawa"
+        },
+        "tawai": {
+            "kelas_kata": "n",
+            "arti": "hati atau jiwa"
+        },
+        "tegang": {
+            "kelas_kata": "n",
+            "arti": "rusuk"
+        },
+        "1tiga": {
+            "kelas_kata": "a",
+            "arti": "1 enak; 2 lincah; 3 bagus; cantik"
+        },
+        "2tiga": {
+            "kelas_kata": "num",
+            "arti": "tiga"
+        },
+        "tikung": {
+            "kelas_kata": "n",
+            "arti": "sudut"
+        },
+        "tilung": {
+            "kelas_kata": "n",
+            "arti": "kamar atau tempat tidur;"
+        },
+        "timun": {
+            "kelas_kata": "n",
+            "arti": "mentimum"
+        },
+        "tiqna": {
+            "kelas_kata": "v",
+            "arti": "lakukan"
+        },
+        "tiraq": {
+            "kelas_kata": "v",
+            "arti": "bicara;"
+        },
+        "titai": {
+            "kelas_kata": "n",
+            "arti": "jembatan"
+        },
+        "tua": {
+            "kelas_kata": "n",
+            "arti": "1 orangtua; 2 orang yg dituakan;"
+        },
+        "tuak": {
+            "kelas_kata": "n",
+            "arti": "tuak"
+        },
+        "tuba": {
+            "kelas_kata": "n",
+            "arti": "tuba (akar tumbuhan yg mengandung racun)"
+        },
+        "1tubang": {
+            "kelas_kata": "v",
+            "arti": "ambruk; rebah"
+        },
+        "2tubang": {
+            "kelas_kata": "n",
+            "arti": "panggilan untuk orang tua yg anaknya meninggal"
+        },
+        "tubo": {
+            "kelas_kata": "v",
+            "arti": "rawat, merawat"
+        },
+        "tuboq": {
+            "kelas_kata": "v",
+            "arti": "rebus;"
+        },
+        "tudo": {
+            "kelas_kata": "v",
+            "arti": "bermalam; menginap"
+        },
+        "tudung": {
+            "kelas_kata": "n",
+            "arti": "tudung saji"
+        },
+        "tuing": {
+            "kelas_kata": "n",
+            "arti": "pinggang"
+        },
+        "tujok": {
+            "kelas_kata": "num",
+            "arti": "tujuh"
+        },
+        "tukoq": {
+            "kelas_kata": "n",
+            "arti": "bisul"
+        },
+        "tukun": {
+            "kelas_kata": "n",
+            "arti": "palu"
+        },
+        "tulang": {
+            "kelas_kata": "n",
+            "arti": "tulang;"
+        },
+        "tumit": {
+            "kelas_kata": "n",
+            "arti": "tumit"
+        },
+        "tundun": {
+            "kelas_kata": "n",
+            "arti": "apen (dinding perahu)"
+        },
+        "tung": {
+            "kelas_kata": "n",
+            "arti": "daun;"
+        },
+        "tungkik": {
+            "kelas_kata": "v",
+            "arti": "berbenturan"
+        },
+        "tungun": {
+            "kelas_kata": "n",
+            "arti": "pohon kering dan mati yg hanya tersisa batangnya"
+        },
+        "tuning": {
+            "kelas_kata": "n",
+            "arti": "kuning"
+        },
+        "tunuk": {
+            "kelas_kata": "a",
+            "arti": "ramah"
+        },
+        "tunyang": {
+            "kelas_kata": "n",
+            "arti": "lumpur"
+        },
+        "tunyaq": {
+            "kelas_kata": "a",
+            "arti": "lembek"
+        },
+        "tuq": {
+            "kelas_kata": "n",
+            "arti": "sambungan;"
+        },
+        "turan": {
+            "kelas_kata": "a",
+            "arti": "cuek: turan aleq seq koq kamu cuek sekali"
+        },
+        "tut": {
+            "kelas_kata": "n",
+            "arti": "kentut;"
+        },
+        "tutui": {
+            "kelas_kata": "a",
+            "arti": "hemat"
+        },
+        "tuya": {
+            "kelas_kata": "v",
+            "arti": "main"
+        },
+        "tuyang": {
+            "kelas_kata": "n",
+            "arti": "1 teman; 2 kekasih"
+        },
+        "tuyau": {
+            "kelas_kata": "n",
+            "arti": "suara (tt binatang)"
+        },
+        "uat": {
+            "kelas_kata": "n",
+            "arti": "urat;"
+        },
+        "ubaq": {
+            "kelas_kata": "adv",
+            "arti": "mau;"
+        },
+        "ubi": {
+            "kelas_kata": "n",
+            "arti": "singkong;"
+        },
+        "ubing": {
+            "kelas_kata": "n",
+            "arti": "obeng"
+        },
+        "ubon": {
+            "kelas_kata": "n",
+            "arti": "obor dr bambu"
+        },
+        "uboq": {
+            "kelas_kata": "n",
+            "arti": "congek"
+        },
+        "ubut": {
+            "kelas_kata": "n",
+            "arti": "umbut;"
+        },
+        "ucaq": {
+            "kelas_kata": "n",
+            "arti": "kijang"
+        },
+        "uco": {
+            "kelas_kata": "v",
+            "arti": "pilin, memilin"
+        },
+        "udang": {
+            "kelas_kata": "n",
+            "arti": "udang"
+        },
+        "udon": {
+            "kelas_kata": "n",
+            "arti": "pasta gigi; odol"
+        },
+        "udoq": {
+            "kelas_kata": "n",
+            "arti": "tarian tradisional menggunakan topeng kayu yg"
+        },
+        "udu": {
+            "kelas_kata": "n",
+            "arti": "rumput"
+        },
+        "udun": {
+            "kelas_kata": "n",
+            "arti": "ikan gabus"
+        },
+        "ujan": {
+            "kelas_kata": "n",
+            "arti": "hujan;"
+        },
+        "ujap": {
+            "kelas_kata": "n",
+            "arti": "teras"
+        },
+        "ujau": {
+            "kelas_kata": "n",
+            "arti": "bayam"
+        },
+        "ujoq": {
+            "kelas_kata": "n",
+            "arti": "tangan"
+        },
+        "ulai": {
+            "kelas_kata": "n",
+            "arti": "ular"
+        },
+        "ulat": {
+            "kelas_kata": "n",
+            "arti": "bekas luka yg mengering"
+        },
+        "ulo": {
+            "kelas_kata": "n",
+            "arti": "tandan pisang"
+        },
+        "ulok": {
+            "kelas_kata": "a",
+            "arti": "gundul"
+        },
+        "ngulok": {
+            "kelas_kata": "v",
+            "arti": "1 menggunduli: amai ngulok sadin keq bapak"
+        },
+        "ulu": {
+            "kelas_kata": "n",
+            "arti": "kepala"
+        },
+        "uma": {
+            "kelas_kata": "n",
+            "arti": "ladang;"
+        },
+        "1uman": {
+            "kelas_kata": "n",
+            "arti": "tahun"
+        },
+        "2uman": {
+            "kelas_kata": "v",
+            "arti": "makan;"
+        },
+        "penguman": {
+            "kelas_kata": "n",
+            "arti": "1 pakan; 2 bekal"
+        },
+        "umaq": {
+            "kelas_kata": "n",
+            "arti": "rumah"
+        },
+        "umit": {
+            "kelas_kata": "a",
+            "arti": "kecil; sempit"
+        },
+        "undrat": {
+            "kelas_kata": "n",
+            "arti": "tepung;"
+        },
+        "upit": {
+            "kelas_kata": "n",
+            "arti": "burung kecil"
+        },
+        "urung": {
+            "kelas_kata": "n",
+            "arti": "1 wadah yg diletakkan di punggung, digunakan untuk"
+        },
+        "usa": {
+            "kelas_kata": "n",
+            "arti": "tubuh; badan;"
+        },
+        "usit": {
+            "kelas_kata": "n",
+            "arti": "taring"
+        },
+        "usuq": {
+            "kelas_kata": "n",
+            "arti": "dada"
+        },
+        "utan": {
+            "kelas_kata": "n",
+            "arti": "sebutan untuk yatim perempuan"
+        },
+        "utang": {
+            "kelas_kata": "n",
+            "arti": "utang"
+        },
+        "utat": {
+            "kelas_kata": "n",
+            "arti": "obor yg terbuat dr akar atau daun, digunakan untuk"
+        },
+        "uto": {
+            "kelas_kata": "n",
+            "arti": "mobil"
+        },
+        "utot": {
+            "kelas_kata": "v",
+            "arti": "1 jongkok; 2 bungkuk: jakeq seq uben tai koq utot no cepat"
+        },
+        "uwai": {
+            "kelas_kata": "n",
+            "arti": "rotan"
+        },
+        "uwat": {
+            "kelas_kata": "n",
+            "arti": "urat"
+        },
+        "uyan": {
+            "kelas_kata": "v",
+            "arti": "buat;"
+        },
+        "uyau": {
+            "kelas_kata": "n",
+            "arti": "sebutan untuk yatim laki-laki"
+        }
+    },
+    "dialek_lepoq_tau": {
+        "abit": {
+            "kelas_kata": "n",
+            "arti": "tengkuk"
+        },
+        "abu": {
+            "kelas_kata": "n",
+            "arti": "abu; debu;"
+        },
+        "abun": {
+            "kelas_kata": "n",
+            "arti": "awan"
+        },
+        "padam": {
+            "kelas_kata": "v",
+            "arti": "membusukkan: uweq padam ubi ibu"
+        },
+        "adan": {
+            "kelas_kata": "n",
+            "arti": "dingklik (tempat duduk kecil terbuat dr papan dan"
+        },
+        "adiu": {
+            "kelas_kata": "n",
+            "arti": "wasir; ambeien: pui lemudak adiu kaq amin taban nenek"
+        },
+        "ahaq": {
+            "kelas_kata": "p",
+            "arti": "ya (penegasan)"
+        },
+        "ahit": {
+            "kelas_kata": "n",
+            "arti": "pasir"
+        },
+        "aka": {
+            "kelas_kata": "n",
+            "arti": "akar"
+        },
+        "1akit": {
+            "kelas_kata": "n",
+            "arti": "gayung"
+        },
+        "2akit": {
+            "kelas_kata": "n",
+            "arti": "rakit"
+        },
+        "alaq": {
+            "kelas_kata": "v",
+            "arti": "1 ambil; mengambil: alaq petelut adieng ambil pensil itu"
+        },
+        "aliata": {
+            "kelas_kata": "n",
+            "arti": "kupu-kupu"
+        },
+        "alo": {
+            "kelas_kata": "n",
+            "arti": "sungai"
+        },
+        "alut": {
+            "kelas_kata": "n",
+            "arti": "perahu;"
+        },
+        "amai": {
+            "kelas_kata": "n",
+            "arti": "bapak;"
+        },
+        "amang": {
+            "kelas_kata": "v",
+            "arti": "rangkak;"
+        },
+        "ngamang": {
+            "kelas_kata": "v",
+            "arti": "merangkak: anak bala tadieng see ke"
+        },
+        "amin": {
+            "kelas_kata": "n",
+            "arti": "rumah;"
+        },
+        "ampap": {
+            "kelas_kata": "v",
+            "arti": "telungkup;"
+        },
+        "pampap": {
+            "kelas_kata": "v",
+            "arti": "menelungkup: uweq pampap sadin ncieq ibu"
+        },
+        "anai": {
+            "kelas_kata": "n",
+            "arti": "rayap"
+        },
+        "anak": {
+            "kelas_kata": "n",
+            "arti": "anak;"
+        },
+        "anang": {
+            "kelas_kata": "n",
+            "arti": "dahi"
+        },
+        "angan": {
+            "kelas_kata": "n",
+            "arti": "tungku"
+        },
+        "angkok": {
+            "kelas_kata": "n",
+            "arti": "cincin"
+        },
+        "angkong": {
+            "kelas_kata": "n",
+            "arti": "gong kecil"
+        },
+        "angsa": {
+            "kelas_kata": "n",
+            "arti": "angsa"
+        },
+        "anit": {
+            "kelas_kata": "n",
+            "arti": "kulit manusia dan hewan"
+        },
+        "anting": {
+            "kelas_kata": "n",
+            "arti": "anting;"
+        },
+        "antuk": {
+            "kelas_kata": "n",
+            "arti": "handuk"
+        },
+        "ao": {
+            "kelas_kata": "n",
+            "arti": "sendok nasi; centong"
+        },
+        "apak": {
+            "kelas_kata": "n",
+            "arti": "bapak"
+        },
+        "apan": {
+            "kelas_kata": "p",
+            "arti": "supaya; agar: pekalai ne apan ncem mencam belajarlah"
+        },
+        "apau": {
+            "kelas_kata": "n",
+            "arti": "apo ( perbukitan yg atasnya datar, dimanfaatkan sbg"
+        },
+        "aping": {
+            "kelas_kata": "n",
+            "arti": "kipas;"
+        },
+        "maping": {
+            "kelas_kata": "v",
+            "arti": "mengipasi: uweq ngen amai maping padai ibu"
+        },
+        "arum": {
+            "kelas_kata": "a",
+            "arti": "harum"
+        },
+        "asai": {
+            "kelas_kata": "n",
+            "arti": "kapak"
+        },
+        "asu": {
+            "kelas_kata": "n",
+            "arti": "anjing;"
+        },
+        "asuq": {
+            "kelas_kata": "n",
+            "arti": "lantai"
+        },
+        "atai": {
+            "kelas_kata": "n",
+            "arti": "hati"
+        },
+        "atang": {
+            "kelas_kata": "n",
+            "arti": "tungku"
+        },
+        "atip": {
+            "kelas_kata": "n",
+            "arti": "sepit api (capitan bara atau kayu bakar di tungku, dibuat"
+        },
+        "ato": {
+            "kelas_kata": "n",
+            "arti": "ratus;"
+        },
+        "atuk": {
+            "kelas_kata": "n",
+            "arti": "ikan;"
+        },
+        "aya": {
+            "kelas_kata": "num",
+            "arti": "delapan"
+        },
+        "baca": {
+            "kelas_kata": "v",
+            "arti": "baca, membaca: baca surat yaq ida ben naq milu baca surat"
+        },
+        "badaq": {
+            "kelas_kata": "v",
+            "arti": "beri tahu: badaq me pui huq oko sebayang dulu kanun le"
+        },
+        "baduq": {
+            "kelas_kata": "n",
+            "arti": "nangka"
+        },
+        "baha": {
+            "kelas_kata": "n",
+            "arti": "beras;"
+        },
+        "bahaq": {
+            "kelas_kata": "a",
+            "arti": "bengkak: taket amai bahaq kaki bapak bengkak"
+        },
+        "bahiu": {
+            "kelas_kata": "n",
+            "arti": "angin"
+        },
+        "bai": {
+            "kelas_kata": "n",
+            "arti": "hutan"
+        },
+        "bakun": {
+            "kelas_kata": "n",
+            "arti": "keranjang"
+        },
+        "bala": {
+            "kelas_kata": "n",
+            "arti": "merah;"
+        },
+        "bali": {
+            "kelas_kata": "n",
+            "arti": "hantu"
+        },
+        "balu": {
+            "kelas_kata": "n",
+            "arti": "1 janda ditinggal mati; 2 panggilan atau sapaan untuk"
+        },
+        "banga": {
+            "kelas_kata": "a",
+            "arti": "basi: buin kuman kanen bange babi makan nasi basi"
+        },
+        "bangini": {
+            "kelas_kata": "adv",
+            "arti": "hanya: kediut ini le yaq ilu petulat hanya sedikit yg"
+        },
+        "banit": {
+            "kelas_kata": "v",
+            "arti": "tergores: banit muo ne betehe betisnya tergores"
+        },
+        "baq": {
+            "kelas_kata": "n",
+            "arti": "gendongan bayi;"
+        },
+        "baran": {
+            "kelas_kata": "v",
+            "arti": "1 ceroboh: baran aleq seq koq kamu ceroboh sekali; 2"
+        },
+        "bareng": {
+            "kelas_kata": "a",
+            "arti": "sembarangan: ayen pisiu bareng le jangan bicara"
+        },
+        "barum": {
+            "kelas_kata": "a",
+            "arti": "1 kembung: barum kaq batek ke kembung perut ini; 2"
+        },
+        "basaq": {
+            "kelas_kata": "a",
+            "arti": "basah: basaq sapai hieq basah bajuku;"
+        },
+        "batang": {
+            "kelas_kata": "n",
+            "arti": "batang"
+        },
+        "batu": {
+            "kelas_kata": "n",
+            "arti": "batu;"
+        },
+        "batung": {
+            "kelas_kata": "n",
+            "arti": "korek;"
+        },
+        "batuq": {
+            "kelas_kata": "n",
+            "arti": "leher"
+        },
+        "bauq": {
+            "kelas_kata": "n",
+            "arti": "bau; aroma: me aleq kaq bauq sabun bau sabun ini sangat"
+        },
+        "1bawang": {
+            "kelas_kata": "n",
+            "arti": "rawa-rawa"
+        },
+        "2bawang": {
+            "kelas_kata": "n",
+            "arti": "bawang;"
+        },
+        "baya": {
+            "kelas_kata": "n",
+            "arti": "buaya"
+        },
+        "bayai": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk seseorang, baik laki -laki"
+        },
+        "billa": {
+            "kelas_kata": "n",
+            "arti": "tebing"
+        },
+        "bilut": {
+            "kelas_kata": "n",
+            "arti": "sigung"
+        },
+        "biuq": {
+            "kelas_kata": "a",
+            "arti": "besar: biuq aleq amin te rumah mereka besar sekali;"
+        },
+        "buang": {
+            "kelas_kata": "n",
+            "arti": "beruang"
+        },
+        "buaq": {
+            "kelas_kata": "n",
+            "arti": "buah;"
+        },
+        "bubu": {
+            "kelas_kata": "n",
+            "arti": "bubu"
+        },
+        "buhak": {
+            "kelas_kata": "a",
+            "arti": "pemurah; dermawan"
+        },
+        "buhan": {
+            "kelas_kata": "n",
+            "arti": "1 kandang ayam; 2 sangkar burung"
+        },
+        "1buku": {
+            "kelas_kata": "n",
+            "arti": "buku"
+        },
+        "2buku": {
+            "kelas_kata": "n",
+            "arti": "ruas; buku"
+        },
+        "bulan": {
+            "kelas_kata": "n",
+            "arti": "bulan;"
+        },
+        "bulaq": {
+            "kelas_kata": "v",
+            "arti": "pergi menetap di tempat lain"
+        },
+        "bulit": {
+            "kelas_kata": "n",
+            "arti": "bubur"
+        },
+        "buloq": {
+            "kelas_kata": "n",
+            "arti": "bambu;"
+        },
+        "bulu": {
+            "kelas_kata": "n",
+            "arti": "bulu;"
+        },
+        "bunga": {
+            "kelas_kata": "n",
+            "arti": "bunga"
+        },
+        "bungan": {
+            "kelas_kata": "n",
+            "arti": "dewa"
+        },
+        "bura": {
+            "kelas_kata": "a",
+            "arti": "1 boros; 2 mubazir: ayen bura pekuman jangan mubazir"
+        },
+        "burak": {
+            "kelas_kata": "n",
+            "arti": "tapai;"
+        },
+        "buraq": {
+            "kelas_kata": "n",
+            "arti": "kapas"
+        },
+        "burau": {
+            "kelas_kata": "a",
+            "arti": "1 katarak; 2 rabun: boq te tahop burau mata hieq sore"
+        },
+        "butaq": {
+            "kelas_kata": "a",
+            "arti": "buta: cen nai muno butaq mata na sejak lahir dia sudah"
+        },
+        "buu": {
+            "kelas_kata": "a",
+            "arti": "1 capai; lelah: buu pana tau lelah (krn) terlalu panas; 2"
+        },
+        "buwan": {
+            "kelas_kata": "n",
+            "arti": "wadah"
+        },
+        "buyuq": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk ibu yg anak keduanya"
+        },
+        "ca": {
+            "kelas_kata": "num",
+            "arti": "satu;"
+        },
+        "can": {
+            "kelas_kata": "n",
+            "arti": "tangga"
+        },
+        "cangkok": {
+            "kelas_kata": "n",
+            "arti": "daun katuk"
+        },
+        "coq": {
+            "kelas_kata": "a",
+            "arti": "jauh: coq aleq le jauh sekali;"
+        },
+        "cuq": {
+            "kelas_kata": "v",
+            "arti": "suruh, menyuruh: cuq kei uman suruh dia makan"
+        },
+        "cut": {
+            "kelas_kata": "v",
+            "arti": "injak, menginjak;"
+        },
+        "daa": {
+            "kelas_kata": "n",
+            "arti": "pandan"
+        },
+        "dahak": {
+            "kelas_kata": "n",
+            "arti": "darah"
+        },
+        "dapun": {
+            "kelas_kata": "n",
+            "arti": "dapur"
+        },
+        "daun": {
+            "kelas_kata": "n",
+            "arti": "daun"
+        },
+        "daya": {
+            "kelas_kata": "n",
+            "arti": "talam; baki"
+        },
+        "dian": {
+            "kelas_kata": "n",
+            "arti": "durian;"
+        },
+        "diham": {
+            "kelas_kata": "n",
+            "arti": "giram"
+        },
+        "dipa": {
+            "kelas_kata": "n",
+            "arti": "seberang sungai"
+        },
+        "dok": {
+            "kelas_kata": "n",
+            "arti": "1 kera; 2 monyet;"
+        },
+        "dua": {
+            "kelas_kata": "num",
+            "arti": "dua;"
+        },
+        "dudo": {
+            "kelas_kata": "a",
+            "arti": "dekat"
+        },
+        "duktun": {
+            "kelas_kata": "n",
+            "arti": "dokter"
+        },
+        "duku": {
+            "kelas_kata": "n",
+            "arti": "duku"
+        },
+        "1dulu": {
+            "kelas_kata": "n",
+            "arti": "orang: kaduq aleq nei dulu banyak sekali orang datang"
+        },
+        "2dulu": {
+            "kelas_kata": "n",
+            "arti": "dahulu: dulu cen naak dadoq udip orang zaman dahulu"
+        },
+        "garaq": {
+            "kelas_kata": "n",
+            "arti": "merpati"
+        },
+        "garip": {
+            "kelas_kata": "a",
+            "arti": "1 kering kerontang (tt tanah); 2 garing; renyah (tt"
+        },
+        "giwang": {
+            "kelas_kata": "n",
+            "arti": "anting"
+        },
+        "goq": {
+            "kelas_kata": "n",
+            "arti": "vas bunga"
+        },
+        "gulaq": {
+            "kelas_kata": "n",
+            "arti": "gula;"
+        },
+        "gut": {
+            "kelas_kata": "n",
+            "arti": "sisir rambut;"
+        },
+        "iba": {
+            "kelas_kata": "n",
+            "arti": "liur: sadin lunt oq nai iba ha kawang adik tertidur hingga"
+        },
+        "ida": {
+            "kelas_kata": "pron",
+            "arti": "mereka"
+        },
+        "ihang": {
+            "kelas_kata": "n",
+            "arti": "bukit"
+        },
+        "iko": {
+            "kelas_kata": "n",
+            "arti": "ekor"
+        },
+        "ikoq": {
+            "kelas_kata": "pron",
+            "arti": "1 ia; dia; 2 kamu: ikoq pesak lekai ni o kamu masak"
+        },
+        "ilang": {
+            "kelas_kata": "n",
+            "arti": "kutilang"
+        },
+        "ilu": {
+            "kelas_kata": "pron",
+            "arti": "kita: ilu mong cenganak usa kita semua bersaudara; ilu"
+        },
+        "imat": {
+            "kelas_kata": "n",
+            "arti": "1 pisau; 2 ani-ani;"
+        },
+        "impin": {
+            "kelas_kata": "n",
+            "arti": "ember"
+        },
+        "inan": {
+            "kelas_kata": "n",
+            "arti": "batang;"
+        },
+        "inat": {
+            "kelas_kata": "n",
+            "arti": "ingus"
+        },
+        "inoq": {
+            "kelas_kata": "n",
+            "arti": "manik-manik;"
+        },
+        "inu": {
+            "kelas_kata": "pron",
+            "arti": "1 apa: inu baancuk are apa yg kamu bilang tadi; 2"
+        },
+        "isau": {
+            "kelas_kata": "n",
+            "arti": "kelengkeng"
+        },
+        "isit": {
+            "kelas_kata": "n",
+            "arti": "kelebarau"
+        },
+        "isiu": {
+            "kelas_kata": "n",
+            "arti": "kabar; berita: ngelinga isiu cen Malaysia mendengar kabar"
+        },
+        "iting": {
+            "kelas_kata": "n",
+            "arti": "tangkai"
+        },
+        "iut": {
+            "kelas_kata": "a",
+            "arti": "kecil: iut aleq sentan ini sandal ini kecil sekali;"
+        },
+        "ngiut": {
+            "kelas_kata": "v",
+            "arti": "mengecilkan: akieq ngiut sapai aku mengecilkan"
+        },
+        "iya": {
+            "kelas_kata": "pron",
+            "arti": "dia: iya engkin belanyat biuq dia membawa anjat besar"
+        },
+        "iyap": {
+            "kelas_kata": "n",
+            "arti": "ayam;"
+        },
+        "iyu": {
+            "kelas_kata": "n",
+            "arti": "kepiting"
+        },
+        "jaa": {
+            "kelas_kata": "n",
+            "arti": "dagu"
+        },
+        "jaat": {
+            "kelas_kata": "n",
+            "arti": "nama panggilan atau sapaan untuk seseorang, baik laki-laki"
+        },
+        "jagun": {
+            "kelas_kata": "v",
+            "arti": "tinju;"
+        },
+        "nyagun": {
+            "kelas_kata": "v",
+            "arti": "meninju; menghantam: inu ikoq nyagun ia"
+        },
+        "jakan": {
+            "kelas_kata": "n",
+            "arti": "arak"
+        },
+        "jakit": {
+            "kelas_kata": "n",
+            "arti": "bambu atau kayu untuk membantu memanjat pohon"
+        },
+        "jamuk": {
+            "kelas_kata": "n",
+            "arti": "nyamuk"
+        },
+        "janan": {
+            "kelas_kata": "n",
+            "arti": "jalan"
+        },
+        "jat": {
+            "kelas_kata": "n",
+            "arti": "peraut rotan;"
+        },
+        "julaq": {
+            "kelas_kata": "n",
+            "arti": "ludah;"
+        },
+        "nemulaq": {
+            "kelas_kata": "v",
+            "arti": "meludah: ayen nemulaq ngelaho jangan"
+        },
+        "julung": {
+            "kelas_kata": "n",
+            "arti": "haluan perahu"
+        },
+        "kabaq": {
+            "kelas_kata": "n",
+            "arti": "hilir"
+        },
+        "kabok": {
+            "kelas_kata": "n",
+            "arti": "biawak"
+        },
+        "kacang": {
+            "kelas_kata": "n",
+            "arti": "kacang;"
+        },
+        "kadai": {
+            "kelas_kata": "n",
+            "arti": "sendok;"
+        },
+        "kaduq": {
+            "kelas_kata": "a",
+            "arti": "banyak: kaq dalem amin kaduq sui di dalam rumah"
+        },
+        "kak": {
+            "kelas_kata": "n",
+            "arti": "gagak"
+        },
+        "kakau": {
+            "kelas_kata": "n",
+            "arti": "kakao"
+        },
+        "kalkun": {
+            "kelas_kata": "n",
+            "arti": "kalkun"
+        },
+        "kalung": {
+            "kelas_kata": "n",
+            "arti": "seni ukir, motif, dan lukisan pd lamin suku Dayak"
+        },
+        "ngalung": {
+            "kelas_kata": "v",
+            "arti": "mengukir"
+        },
+        "kamang": {
+            "kelas_kata": "n",
+            "arti": "walang sangit"
+        },
+        "kangkung": {
+            "kelas_kata": "n",
+            "arti": "kangkung"
+        },
+        "kapan": {
+            "kelas_kata": "a",
+            "arti": "tebal: apieq sapai kapan kain baju tebal;"
+        },
+        "ngapan": {
+            "kelas_kata": "v",
+            "arti": "menebalkan"
+        },
+        "kasa": {
+            "kelas_kata": "a",
+            "arti": "1 deras: tau ni hujan kasa hari ini hujan deras; 2 kencang;"
+        },
+        "kasau": {
+            "kelas_kata": "n",
+            "arti": "kasau"
+        },
+        "kasip": {
+            "kelas_kata": "a",
+            "arti": "miskin: kasip aleq le amieq kami miskin sekali"
+        },
+        "katap": {
+            "kelas_kata": "v",
+            "arti": "menirukan suara binatang (msl suara burung) ketika"
+        },
+        "kati": {
+            "kelas_kata": "n",
+            "arti": "lele"
+        },
+        "kayaq": {
+            "kelas_kata": "a",
+            "arti": "kaya: kayaq aleq amai ina bapak itu sangat kaya"
+        },
+        "kayu": {
+            "kelas_kata": "n",
+            "arti": "kayu;"
+        },
+        "kayusan": {
+            "kelas_kata": "n",
+            "arti": "nanas"
+        },
+        "kiba": {
+            "kelas_kata": "n",
+            "arti": "tas punggung dr anyaman rotan, digunakan laki -laki dan"
+        },
+        "kihan": {
+            "kelas_kata": "n",
+            "arti": "buah tarap"
+        },
+        "kina": {
+            "kelas_kata": "pron",
+            "arti": "1 situ; 2 sini"
+        },
+        "kip": {
+            "kelas_kata": "n",
+            "arti": "kurap"
+        },
+        "kiran": {
+            "kelas_kata": "n",
+            "arti": "tempat penyimpanan berbentuk kotak;"
+        },
+        "kirip": {
+            "kelas_kata": "n",
+            "arti": "hiasan tangan dr bulu burung enggang sbg properti tari"
+        },
+        "kiyut": {
+            "kelas_kata": "n",
+            "arti": "piring;"
+        },
+        "klanok": {
+            "kelas_kata": "a",
+            "arti": "ramah: uweq ngen amai tai klanok amin pui ibu dan"
+        },
+        "kokkoo": {
+            "kelas_kata": "n",
+            "arti": "tokek"
+        },
+        "kuda": {
+            "kelas_kata": "n",
+            "arti": "kuda"
+        },
+        "kudaq": {
+            "kelas_kata": "pron",
+            "arti": "berapa: kudaq anak koq berapa anakmu;"
+        },
+        "kujat": {
+            "kelas_kata": "n",
+            "arti": "kudapan (penganan yang dimakan di luar waktu makan,"
+        },
+        "ngujat": {
+            "kelas_kata": "v",
+            "arti": "mengudap (makan kudapan)"
+        },
+        "kujau": {
+            "kelas_kata": "n",
+            "arti": "sayur-sayuran;"
+        },
+        "mujau": {
+            "kelas_kata": "v",
+            "arti": "1 potong, memotong sayur: mujau lekai"
+        },
+        "kuju": {
+            "kelas_kata": "n",
+            "arti": "bangau"
+        },
+        "kula": {
+            "kelas_kata": "v",
+            "arti": "peras;"
+        },
+        "kulat": {
+            "kelas_kata": "n",
+            "arti": "jamur;"
+        },
+        "ngulat": {
+            "kelas_kata": "v",
+            "arti": "berjamur: ngulat sieq silung kuq berjamur"
+        },
+        "kulit": {
+            "kelas_kata": "n",
+            "arti": "kulit kayu"
+        },
+        "kumpin": {
+            "kelas_kata": "pron",
+            "arti": "bagaimana: kumpin denga hoq bagaimana kabarmu"
+        },
+        "kundur": {
+            "kelas_kata": "n",
+            "arti": "labu putih"
+        },
+        "kupi": {
+            "kelas_kata": "n",
+            "arti": "kopi"
+        },
+        "kursi": {
+            "kelas_kata": "n",
+            "arti": "kursi"
+        },
+        "kuta": {
+            "kelas_kata": "n",
+            "arti": "kota"
+        },
+        "kutang": {
+            "kelas_kata": "n",
+            "arti": "1 beha; kutang; 2 singlet"
+        },
+        "kutu": {
+            "kelas_kata": "n",
+            "arti": "kutu"
+        },
+        "kuwa": {
+            "kelas_kata": "n",
+            "arti": "cacing: biuq batek anak na kaduq kuwa besar perut anak"
+        },
+        "kuwai": {
+            "kelas_kata": "n",
+            "arti": "merak"
+        },
+        "kuyat": {
+            "kelas_kata": "n",
+            "arti": "kera"
+        },
+        "laboq": {
+            "kelas_kata": "v",
+            "arti": "jatuh: ayen laboq koq o jangan, nanti kamu jatuh;"
+        },
+        "lagaq": {
+            "kelas_kata": "n",
+            "arti": "1 rak; 2 perancah"
+        },
+        "lait": {
+            "kelas_kata": "a",
+            "arti": "asin"
+        },
+        "laki": {
+            "kelas_kata": "n",
+            "arti": "1 laki-laki; 2 suami;"
+        },
+        "lalat": {
+            "kelas_kata": "n",
+            "arti": "telapak;"
+        },
+        "lalut": {
+            "kelas_kata": "n",
+            "arti": "anak sungai; sungai kecil"
+        },
+        "lanak": {
+            "kelas_kata": "n",
+            "arti": "nanah;"
+        },
+        "langau": {
+            "kelas_kata": "n",
+            "arti": "lalat"
+        },
+        "langit": {
+            "kelas_kata": "n",
+            "arti": "langit"
+        },
+        "langkau": {
+            "kelas_kata": "a",
+            "arti": "tinggi (tt postur tubuh): langkau aleq sieq demanai na"
+        },
+        "lanting": {
+            "kelas_kata": "n",
+            "arti": "batang sungai"
+        },
+        "lanya": {
+            "kelas_kata": "a",
+            "arti": "licin: lanya aleq asoq ni licin sekali lantai ini;"
+        },
+        "lapi": {
+            "kelas_kata": "n",
+            "arti": "cacing"
+        },
+        "larai": {
+            "kelas_kata": "a",
+            "arti": "cepat: uman ne larai makanlah (dng) cepat;"
+        },
+        "1lasan": {
+            "kelas_kata": "n",
+            "arti": "halaman"
+        },
+        "2lasan": {
+            "kelas_kata": "a",
+            "arti": "botak;"
+        },
+        "latak": {
+            "kelas_kata": "a",
+            "arti": "besar: latak aleq atuk na ikan itu besar sekali;"
+        },
+        "lati": {
+            "kelas_kata": "n",
+            "arti": "cacing"
+        },
+        "lau": {
+            "kelas_kata": "a",
+            "arti": "lapar: uman n yelarai lau kaq le cepatlah makan , lapar"
+        },
+        "laung": {
+            "kelas_kata": "n",
+            "arti": "keladi"
+        },
+        "laut": {
+            "kelas_kata": "n",
+            "arti": "laut"
+        },
+        "lawat": {
+            "kelas_kata": "n",
+            "arti": "jembatan"
+        },
+        "layap": {
+            "kelas_kata": "v",
+            "arti": "banjir: amin mieq sihuq layap rumah kami kena banjir"
+        },
+        "layuq": {
+            "kelas_kata": "n",
+            "arti": "1 madu; 2 lebah"
+        },
+        "liip": {
+            "kelas_kata": "n",
+            "arti": "bahu"
+        },
+        "lia": {
+            "kelas_kata": "n",
+            "arti": "telur kutu"
+        },
+        "liang": {
+            "kelas_kata": "n",
+            "arti": "kuburan"
+        },
+        "libaq": {
+            "kelas_kata": "a",
+            "arti": "rendah: lepau meq libaq pondok kami rendah;"
+        },
+        "ngelibaq": {
+            "kelas_kata": "v",
+            "arti": "1 merendahkan; 2 rendahkan: ngelibaq"
+        },
+        "libau": {
+            "kelas_kata": "a",
+            "arti": "dangkal: sungai tai meti libau sungai kalau surut"
+        },
+        "ligit": {
+            "kelas_kata": "n",
+            "arti": "uang"
+        },
+        "likau": {
+            "kelas_kata": "n",
+            "arti": "alis"
+        },
+        "likut": {
+            "kelas_kata": "n",
+            "arti": "punggung;"
+        },
+        "liliang": {
+            "kelas_kata": "v",
+            "arti": "putar;"
+        },
+        "lilin": {
+            "kelas_kata": "n",
+            "arti": "lilin"
+        },
+        "lingu": {
+            "kelas_kata": "a",
+            "arti": "bingung; sesat: lingu kaq keq ketiye aku bingung mau"
+        },
+        "lipa": {
+            "kelas_kata": "n",
+            "arti": "kecoa"
+        },
+        "lipan": {
+            "kelas_kata": "n",
+            "arti": "lipan"
+        },
+        "litaq": {
+            "kelas_kata": "n",
+            "arti": "panau"
+        },
+        "litut": {
+            "kelas_kata": "a",
+            "arti": "keruh;"
+        },
+        "liwa": {
+            "kelas_kata": "n",
+            "arti": "pelangi"
+        },
+        "liwang": {
+            "kelas_kata": "n",
+            "arti": "1 pagar; 2 kandang;"
+        },
+        "lo": {
+            "kelas_kata": "n",
+            "arti": "jarum"
+        },
+        "lu": {
+            "kelas_kata": "n",
+            "arti": "alu"
+        },
+        "lubang": {
+            "kelas_kata": "n",
+            "arti": "lubang"
+        },
+        "luk": {
+            "kelas_kata": "n",
+            "arti": "telinga panjang suku Dayak Kenyah"
+        },
+        "luko": {
+            "kelas_kata": "n",
+            "arti": "bubur nasi yg dimasak di dalam bambu, dicampur pati"
+        },
+        "luluq": {
+            "kelas_kata": "n",
+            "arti": "air mata;"
+        },
+        "ngeluluq": {
+            "kelas_kata": "v",
+            "arti": "berair mata, msl saat mengiris bawang:"
+        },
+        "lulut": {
+            "kelas_kata": "n",
+            "arti": "tulang kering"
+        },
+        "lumai": {
+            "kelas_kata": "a",
+            "arti": "lelah: lumai kaq lei uman taban lelah rasanya saya makan"
+        },
+        "lumo": {
+            "kelas_kata": "n",
+            "arti": "pakaian berkabung"
+        },
+        "lung": {
+            "kelas_kata": "n",
+            "arti": "muara sungai"
+        },
+        "lungun": {
+            "kelas_kata": "n",
+            "arti": "peti jenazah"
+        },
+        "luntoq": {
+            "kelas_kata": "v",
+            "arti": "tidur: luntoq tahup ne tidurlah (krn) sudah malam;"
+        },
+        "lunuk": {
+            "kelas_kata": "n",
+            "arti": "beringin"
+        },
+        "luput": {
+            "kelas_kata": "v",
+            "arti": "meluap: sungai nuboq upaq luput airnya meluap (ketika)"
+        },
+        "luung": {
+            "kelas_kata": "n",
+            "arti": "rotan utuh"
+        },
+        "luwa": {
+            "kelas_kata": "a",
+            "arti": "mandul: sadin abeq un anak moo luwa adik tidak punya"
+        },
+        "mabau": {
+            "kelas_kata": "v",
+            "arti": "menyiangi rumput di ladang"
+        },
+        "mabi": {
+            "kelas_kata": "a",
+            "arti": "bodoh: mabi aleq akieq pekalai pecap aku bodoh sekali"
+        },
+        "mabuk": {
+            "kelas_kata": "a",
+            "arti": "mabuk"
+        },
+        "madang": {
+            "kelas_kata": "v",
+            "arti": "terbang: sui temengang madang kempau burung"
+        },
+        "madung": {
+            "kelas_kata": "v",
+            "arti": "duduk: madung ne kini duduk di sini;"
+        },
+        "majan": {
+            "kelas_kata": "a",
+            "arti": "lama: majan aleq le amieq pekena ikoq kami menunggu"
+        },
+        "majau": {
+            "kelas_kata": "v",
+            "arti": "panen padi; ketam: amai ngen uweq te majau bapak dan"
+        },
+        "makan": {
+            "kelas_kata": "v",
+            "arti": "suap;"
+        },
+        "makang": {
+            "kelas_kata": "a",
+            "arti": "berani: makang aleq iko te dalo bai kamu berani sekali"
+        },
+        "malat": {
+            "kelas_kata": "n",
+            "arti": "besi"
+        },
+        "malun": {
+            "kelas_kata": "a",
+            "arti": "lambat: malun aleq si kok masat kamu jalan lambat sekali"
+        },
+        "mana": {
+            "kelas_kata": "v",
+            "arti": "menanak: uweq mana kanen ibu menanak nasi"
+        },
+        "mancan": {
+            "kelas_kata": "n",
+            "arti": "pepaya"
+        },
+        "manggis": {
+            "kelas_kata": "n",
+            "arti": "manggis"
+        },
+        "mano": {
+            "kelas_kata": "a",
+            "arti": "kotor: buhan iyap pui laki mano kandang ayam kakek"
+        },
+        "ngano": {
+            "kelas_kata": "v",
+            "arti": "mengotori"
+        },
+        "manuk": {
+            "kelas_kata": "n",
+            "arti": "burung;"
+        },
+        "manyoq": {
+            "kelas_kata": "a",
+            "arti": "gurih: uweq uyan kue manyoq ibu membuat kue gurih"
+        },
+        "masat": {
+            "kelas_kata": "v",
+            "arti": "jalan, berjalan: tai le masat ka anun Bungan te kita pergi"
+        },
+        "mat": {
+            "kelas_kata": "n",
+            "arti": "emas"
+        },
+        "mata": {
+            "kelas_kata": "n",
+            "arti": "mata"
+        },
+        "matai": {
+            "kelas_kata": "v",
+            "arti": "mati; meninggal: tai huq kata dulu yaq matai pergi kau"
+        },
+        "mataq": {
+            "kelas_kata": "a",
+            "arti": "mentah (tt nasi atau buah): buaq mancan ini mataq buah"
+        },
+        "matatau": {
+            "kelas_kata": "n",
+            "arti": "matahari"
+        },
+        "matung": {
+            "kelas_kata": "v",
+            "arti": "hanyut: kaduq aleq ne kayu matung banyak sekali kayu"
+        },
+        "mauq": {
+            "kelas_kata": "v",
+            "arti": "1 cium (tt bibir); 2 cium (tt aroma): mauq buaq na mesak"
+        },
+        "mawai": {
+            "kelas_kata": "a",
+            "arti": "lancip (tt senjata)"
+        },
+        "mawaq": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk orang tua yg anak"
+        },
+        "mawat": {
+            "kelas_kata": "n",
+            "arti": "kelelawar"
+        },
+        "mayau": {
+            "kelas_kata": "v",
+            "arti": "garuk;"
+        },
+        "mepa": {
+            "kelas_kata": "v",
+            "arti": "mengiris: ngeluloq kaq kieq mepa bawang berair mataku"
+        },
+        "mia": {
+            "kelas_kata": "a",
+            "arti": "marah: uweq mia anak tai ngelau buaq ibu marah (krn)"
+        },
+        "miboi": {
+            "kelas_kata": "v",
+            "arti": "mengekor: su hieq bang miboi akieq cucuku sering"
+        },
+        "midan": {
+            "kelas_kata": "pron",
+            "arti": "kapan: midan cem ketai kaq daya kapan kamu pergi"
+        },
+        "mihang": {
+            "kelas_kata": "a",
+            "arti": "terjal: mihang aleq mudong ina gunung itu terjal sekali"
+        },
+        "mii": {
+            "kelas_kata": "a",
+            "arti": "benci; jengkel: mii kaq keq ikoq mok koq lawen aku benci"
+        },
+        "miit": {
+            "kelas_kata": "v",
+            "arti": "1 mencolek; 2 mengelap; 3 membersihkan: uweq keq miit"
+        },
+        "mimum": {
+            "kelas_kata": "v",
+            "arti": "permak: uweq mimum sapai amai iyak berit ibu permak"
+        },
+        "miu": {
+            "kelas_kata": "n",
+            "arti": "jeruk;"
+        },
+        "mpui": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk bapak yg anak keduanya"
+        },
+        "mua": {
+            "kelas_kata": "a",
+            "arti": "sakit ringan: Budi tai suhiq ujan kasa mua ni yao Budi kena"
+        },
+        "muau": {
+            "kelas_kata": "v",
+            "arti": "tak acuh"
+        },
+        "mudip": {
+            "kelas_kata": "v",
+            "arti": "hidup: mudip ne ilu ngan tiga tawai hidup dgn damai"
+        },
+        "mudong": {
+            "kelas_kata": "n",
+            "arti": "gunung"
+        },
+        "mudoq": {
+            "kelas_kata": "v",
+            "arti": "mendaki (tt gunung)"
+        },
+        "muhang": {
+            "kelas_kata": "a",
+            "arti": "haus;"
+        },
+        "mula": {
+            "kelas_kata": "v",
+            "arti": "tanam, menanam: tau ni meq ketai mula ubi kayu hari ini"
+        },
+        "mulit": {
+            "kelas_kata": "v",
+            "arti": "1 kupas, mengupas: uweq mulit buaq mancan ibu"
+        },
+        "mulo": {
+            "kelas_kata": "v",
+            "arti": "lempar;"
+        },
+        "mumat": {
+            "kelas_kata": "v",
+            "arti": "urut; pijat: akieq cuq tua empeq mumat usa hieq saya"
+        },
+        "munung": {
+            "kelas_kata": "v",
+            "arti": "menyelamatkan pohon buah untuk tidak ditebas dan"
+        },
+        "muq": {
+            "kelas_kata": "n",
+            "arti": "gelas"
+        },
+        "murut": {
+            "kelas_kata": "a",
+            "arti": "mancung"
+        },
+        "musa": {
+            "kelas_kata": "v",
+            "arti": "tumpah: baha meq musa uun ngiu beras kami tumpah krn"
+        },
+        "1musang": {
+            "kelas_kata": "n",
+            "arti": "pulau"
+        },
+        "2musang": {
+            "kelas_kata": "n",
+            "arti": "musang"
+        },
+        "musoq": {
+            "kelas_kata": "v",
+            "arti": "hapus: muso yaq kaq entieng hapus tulisanmu di"
+        },
+        "1mutun": {
+            "kelas_kata": "v",
+            "arti": "potong, memotong (tt dahan atau ranting): mutun kayu"
+        },
+        "2mutun": {
+            "kelas_kata": "n",
+            "arti": "motor"
+        },
+        "muwaq": {
+            "kelas_kata": "v",
+            "arti": "muntah: anak bala muwaq barung batek ne anak bayi"
+        },
+        "naaq": {
+            "kelas_kata": "n",
+            "arti": "senja; sore"
+        },
+        "nahoq": {
+            "kelas_kata": "v",
+            "arti": "pergi ke ladang: amieq pana tai nahoq nempam kami"
+        },
+        "1nai": {
+            "kelas_kata": "pron",
+            "arti": "mereka: nai te cen Samarinda mereka datang dr"
+        },
+        "2nai": {
+            "kelas_kata": "v",
+            "arti": "1 datang; 2 silakan"
+        },
+        "nakan": {
+            "kelas_kata": "n",
+            "arti": "cempedak"
+        },
+        "nampun": {
+            "kelas_kata": "v",
+            "arti": "kubur, mengubur: seken ceq nampun iyap matai"
+        },
+        "napu": {
+            "kelas_kata": "n",
+            "arti": "tepung yg terbuat dr singkong kering"
+        },
+        "naq": {
+            "kelas_kata": "v",
+            "arti": "beri, memberi: amai naq ligit men uweq bapak memberi"
+        },
+        "nasap": {
+            "kelas_kata": "n",
+            "arti": "pepes"
+        },
+        "naun": {
+            "kelas_kata": "adv",
+            "arti": "1 tidak; 2 belum"
+        },
+        "nawa": {
+            "kelas_kata": "a",
+            "arti": "luas: pui uma nawa aleq nenek membuat ladang luas"
+        },
+        "ngab": {
+            "kelas_kata": "n",
+            "arti": "jurang"
+        },
+        "ngadan": {
+            "kelas_kata": "n",
+            "arti": "nama"
+        },
+        "ngalai": {
+            "kelas_kata": "adv",
+            "arti": "1 pernah; 2 biasa: ngalai nida laket buaq nyo mereka"
+        },
+        "ngalo": {
+            "kelas_kata": "v",
+            "arti": "mengalir: tiga aleq sek enai sungai na ngalo ka enta"
+        },
+        "ngan": {
+            "kelas_kata": "p",
+            "arti": "dengan"
+        },
+        "ngasa": {
+            "kelas_kata": "v",
+            "arti": "lari, berlari: sadin ceq ngasa pakumpin adikku lari sekuat"
+        },
+        "ngasu": {
+            "kelas_kata": "v",
+            "arti": "berburu dng bantuan anjing: amai hieq ngasu mita cen"
+        },
+        "ngejuung": {
+            "kelas_kata": "v",
+            "arti": "jongkok"
+        },
+        "ngilap": {
+            "kelas_kata": "v",
+            "arti": "lirik, melirik: naet seq uweq na ngilap ikoq lihat ibu itu"
+        },
+        "ngimpang": {
+            "kelas_kata": "a",
+            "arti": "cemburu: akieq ngimpang ngen lakihieq aku"
+        },
+        "ngiu": {
+            "kelas_kata": "n",
+            "arti": "kucing"
+        },
+        "nguu": {
+            "kelas_kata": "v",
+            "arti": "berteriak untuk memanggil makan di pondok ketika"
+        },
+        "nidau": {
+            "kelas_kata": "v",
+            "arti": "berkidung saat berduka"
+        },
+        "ntung": {
+            "kelas_kata": "n",
+            "arti": "hidung;"
+        },
+        "nuboq": {
+            "kelas_kata": "v",
+            "arti": "rebus, merebus: nuboq lekai tung timun ni rebus sayur"
+        },
+        "nujoq": {
+            "kelas_kata": "v",
+            "arti": "tunjuk: inu ikoq nujoq kempau apa yg kau tunjuk di atas"
+        },
+        "nusuq": {
+            "kelas_kata": "v",
+            "arti": "tusuk: nusuq si iyap uya sihai tusuk daging ayam untuk"
+        },
+        "nutung": {
+            "kelas_kata": "v",
+            "arti": "bakar, membakar;"
+        },
+        "nuwat": {
+            "kelas_kata": "a",
+            "arti": "sebentar: Rudi tai nuwat nemesi kaq sungai Rudi pergi"
+        },
+        "nyamat": {
+            "kelas_kata": "v",
+            "arti": "berburu secara berkelompok lebih sering dilakukan"
+        },
+        "nyamuk": {
+            "kelas_kata": "n",
+            "arti": "nyamuk"
+        },
+        "nyaq": {
+            "kelas_kata": "n",
+            "arti": "lemak"
+        },
+        "nyara": {
+            "kelas_kata": "a",
+            "arti": "capai; lelah: amai tai lemada pula nyara aleq bapak pergi"
+        },
+        "nyatap": {
+            "kelas_kata": "n",
+            "arti": "tombak"
+        },
+        "nyatung": {
+            "kelas_kata": "v",
+            "arti": "renang, berenang: anak sekula tai nyatung kaq tuhun"
+        },
+        "nyawa": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk seseorang, baik laki -laki"
+        },
+        "nyian": {
+            "kelas_kata": "a",
+            "arti": "ringan: nyian lini abeq bahet ini ringan, tidak berat"
+        },
+        "nyibun": {
+            "kelas_kata": "n",
+            "arti": "jambu biji"
+        },
+        "nyilak": {
+            "kelas_kata": "v",
+            "arti": "jilat"
+        },
+        "nyingan": {
+            "kelas_kata": "a",
+            "arti": "sakti: pui ce n naaq nyingan aleq dahulu nenek sakti"
+        },
+        "nyo": {
+            "kelas_kata": "n",
+            "arti": "kelapa"
+        },
+        "nyubuq": {
+            "kelas_kata": "v",
+            "arti": "intai, mengintai: amai hieq tai nyubuq mita cen kaq"
+        },
+        "nyurat": {
+            "kelas_kata": "v",
+            "arti": "nulis, menulis"
+        },
+        "nyuun": {
+            "kelas_kata": "v",
+            "arti": "pikul"
+        },
+        "nyuwaq": {
+            "kelas_kata": "v",
+            "arti": "saling membantu pd saat menyelenggarakan acara"
+        },
+        "pa": {
+            "kelas_kata": "n",
+            "arti": "sapu"
+        },
+        "paa": {
+            "kelas_kata": "n",
+            "arti": "paha"
+        },
+        "pacun": {
+            "kelas_kata": "n",
+            "arti": "cangkul"
+        },
+        "padai": {
+            "kelas_kata": "n",
+            "arti": "padi;"
+        },
+        "padan": {
+            "kelas_kata": "a",
+            "arti": "mau menang sendiri; egois: Sulau anak kelunan tiga"
+        },
+        "pahu": {
+            "kelas_kata": "n",
+            "arti": "belalang;"
+        },
+        "pahun": {
+            "kelas_kata": "n",
+            "arti": "tumpukan kayu di ladang yg akan dibakar"
+        },
+        "pait": {
+            "kelas_kata": "a",
+            "arti": "pahit: lekai peria ni pait sayur peria ini pahit"
+        },
+        "pajaq": {
+            "kelas_kata": "v",
+            "arti": "gandeng"
+        },
+        "paku": {
+            "kelas_kata": "n",
+            "arti": "pakis"
+        },
+        "palaq": {
+            "kelas_kata": "p",
+            "arti": "kepada: amai naq ca beluieng palaq akieq bapak memberi"
+        },
+        "pali": {
+            "kelas_kata": "a",
+            "arti": "kuat: pali aleq ikoq mejung kayu na kuat sekali kamu"
+        },
+        "pana": {
+            "kelas_kata": "a",
+            "arti": "panas;"
+        },
+        "paq": {
+            "kelas_kata": "n",
+            "arti": "mulut"
+        },
+        "parip": {
+            "kelas_kata": "n",
+            "arti": "tulah; kutukan"
+        },
+        "1pat": {
+            "kelas_kata": "num",
+            "arti": "empat"
+        },
+        "2pat": {
+            "kelas_kata": "n",
+            "arti": "tikar;"
+        },
+        "payang": {
+            "kelas_kata": "n",
+            "arti": "1 terasi; 2 penganan dr fermentasi berupa kedelai,"
+        },
+        "payau": {
+            "kelas_kata": "n",
+            "arti": "rusa"
+        },
+        "payun": {
+            "kelas_kata": "v",
+            "arti": "rangkul: tiga seq tai anak dina petuya mentung tei payun"
+        },
+        "1piat": {
+            "kelas_kata": "v",
+            "arti": "ganggu, menganggu: bang ke p iat akieq ne ikoq kamu"
+        },
+        "2piat": {
+            "kelas_kata": "n",
+            "arti": "nama panggilan atau sapaan untuk seseorang, baik laki -"
+        },
+        "pido": {
+            "kelas_kata": "v",
+            "arti": "kempis"
+        },
+        "pilak": {
+            "kelas_kata": "n",
+            "arti": "bekas goresan pd kulit krn benda tajam"
+        },
+        "pilau": {
+            "kelas_kata": "v",
+            "arti": "berminyak: pilau lepe kak kiyut ni piring ni masih"
+        },
+        "pinga": {
+            "kelas_kata": "n",
+            "arti": "pipi"
+        },
+        "pinut": {
+            "kelas_kata": "a",
+            "arti": "hemat"
+        },
+        "pisiu": {
+            "kelas_kata": "n",
+            "arti": "bicara, berbicara: ayen nuboq pisiu bareng le jangan suka"
+        },
+        "piu": {
+            "kelas_kata": "n",
+            "arti": "kuncup"
+        },
+        "piung": {
+            "kelas_kata": "n",
+            "arti": "kemaluan wanita"
+        },
+        "pom": {
+            "kelas_kata": "n",
+            "arti": "guru"
+        },
+        "puhat": {
+            "kelas_kata": "v",
+            "arti": "istirahat: cen naaq nempam meq ilu pegayeng puhat le"
+        },
+        "puhu": {
+            "kelas_kata": "n",
+            "arti": "koreng;"
+        },
+        "pui": {
+            "kelas_kata": "n",
+            "arti": "nenek dan/atau kakek;"
+        },
+        "puk": {
+            "kelas_kata": "n",
+            "arti": "rambut;"
+        },
+        "puka": {
+            "kelas_kata": "v",
+            "arti": "mekar"
+        },
+        "pukat": {
+            "kelas_kata": "n",
+            "arti": "jaring"
+        },
+        "pula": {
+            "kelas_kata": "n",
+            "arti": "kebun"
+        },
+        "puloq": {
+            "kelas_kata": "num",
+            "arti": "sepuluh"
+        },
+        "1pulung": {
+            "kelas_kata": "n",
+            "arti": "1 kuburan; 2 liang kubur"
+        },
+        "2pulung": {
+            "kelas_kata": "n",
+            "arti": "hutan"
+        },
+        "punai": {
+            "kelas_kata": "n",
+            "arti": "burung punai"
+        },
+        "puso": {
+            "kelas_kata": "a",
+            "arti": "luntur: sapai hieq puso bajuku luntur"
+        },
+        "pusoq": {
+            "kelas_kata": "n",
+            "arti": "jantung"
+        },
+        "puto": {
+            "kelas_kata": "n",
+            "arti": "foto"
+        },
+        "puun": {
+            "kelas_kata": "n",
+            "arti": "pohon"
+        },
+        "ruk": {
+            "kelas_kata": "n",
+            "arti": "rok"
+        },
+        "sabai": {
+            "kelas_kata": "n",
+            "arti": "besan"
+        },
+        "sabaq": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk orang tua yg anak"
+        },
+        "sabun": {
+            "kelas_kata": "n",
+            "arti": "sabun"
+        },
+        "sadin": {
+            "kelas_kata": "n",
+            "arti": "adik"
+        },
+        "saga": {
+            "kelas_kata": "n",
+            "arti": "gorengan;"
+        },
+        "nyaga": {
+            "kelas_kata": "v",
+            "arti": "goreng, menggoreng: nyaga atuk na goreng ikan"
+        },
+        "sagan": {
+            "kelas_kata": "n",
+            "arti": "talenan"
+        },
+        "sahang": {
+            "kelas_kata": "n",
+            "arti": "lada; merica"
+        },
+        "sahu": {
+            "kelas_kata": "n",
+            "arti": "sawo"
+        },
+        "sai": {
+            "kelas_kata": "n",
+            "arti": "katak"
+        },
+        "sakit": {
+            "kelas_kata": "a",
+            "arti": "sakit berat"
+        },
+        "1salak": {
+            "kelas_kata": "a",
+            "arti": "salah;"
+        },
+        "2salak": {
+            "kelas_kata": "n",
+            "arti": "salak"
+        },
+        "saliu": {
+            "kelas_kata": "n",
+            "arti": "ganti;"
+        },
+        "nyaliu": {
+            "kelas_kata": "v",
+            "arti": "mengganti"
+        },
+        "saluq": {
+            "kelas_kata": "n",
+            "arti": "1 damak (anak sumpitan); 2 mata tombak dr besi; 3"
+        },
+        "sana": {
+            "kelas_kata": "n",
+            "arti": "keringat"
+        },
+        "sanam": {
+            "kelas_kata": "n",
+            "arti": "semut;"
+        },
+        "sang": {
+            "kelas_kata": "n",
+            "arti": "palma yg daunnya dimanfaatkan untuk membuat caping"
+        },
+        "sangat": {
+            "kelas_kata": "n",
+            "arti": "cabang"
+        },
+        "sanit": {
+            "kelas_kata": "a",
+            "arti": "pedas"
+        },
+        "sap": {
+            "kelas_kata": "n",
+            "arti": "asap;"
+        },
+        "sapai": {
+            "kelas_kata": "n",
+            "arti": "baju;"
+        },
+        "sapau": {
+            "kelas_kata": "n",
+            "arti": "atap"
+        },
+        "sapi": {
+            "kelas_kata": "n",
+            "arti": "sapi"
+        },
+        "sapuk": {
+            "kelas_kata": "n",
+            "arti": "bunga buah-buahan;"
+        },
+        "nyapuk": {
+            "kelas_kata": "v",
+            "arti": "berbunga: nyapuq buaq na kini pohon buah"
+        },
+        "sarung": {
+            "kelas_kata": "n",
+            "arti": "sarung"
+        },
+        "sau": {
+            "kelas_kata": "a",
+            "arti": "gugur;"
+        },
+        "saung": {
+            "kelas_kata": "n",
+            "arti": "caping"
+        },
+        "saup": {
+            "kelas_kata": "n",
+            "arti": "gagang (tt parang, dsb);"
+        },
+        "sawah": {
+            "kelas_kata": "n",
+            "arti": "sawah"
+        },
+        "sawang": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk orang tua yg anak"
+        },
+        "seruhen": {
+            "kelas_kata": "n",
+            "arti": "celana;"
+        },
+        "sigot": {
+            "kelas_kata": "a",
+            "arti": "jijik: mano aleq seq amin te sigot kaq leq keq cut te kotor"
+        },
+        "sihai": {
+            "kelas_kata": "n",
+            "arti": "abon dr daging asap;"
+        },
+        "nyihai": {
+            "kelas_kata": "v",
+            "arti": "mengasapi"
+        },
+        "siku": {
+            "kelas_kata": "n",
+            "arti": "siku"
+        },
+        "silu": {
+            "kelas_kata": "n",
+            "arti": "kuku"
+        },
+        "sin": {
+            "kelas_kata": "n",
+            "arti": "daging"
+        },
+        "sinong": {
+            "kelas_kata": "n",
+            "arti": "kamar"
+        },
+        "sirup": {
+            "kelas_kata": "n",
+            "arti": "sirup"
+        },
+        "siup": {
+            "kelas_kata": "v",
+            "arti": "pingsan"
+        },
+        "struk": {
+            "kelas_kata": "n",
+            "arti": "strok"
+        },
+        "su": {
+            "kelas_kata": "n",
+            "arti": "cucu"
+        },
+        "subut": {
+            "kelas_kata": "n",
+            "arti": "ubun-ubun"
+        },
+        "sugi": {
+            "kelas_kata": "n",
+            "arti": "sugi"
+        },
+        "suhat": {
+            "kelas_kata": "n",
+            "arti": "luka"
+        },
+        "sui": {
+            "kelas_kata": "n",
+            "arti": "burung"
+        },
+        "sukak": {
+            "kelas_kata": "n",
+            "arti": "tiang"
+        },
+        "sukang": {
+            "kelas_kata": "n",
+            "arti": "kuda-kuda rumah"
+        },
+        "sukun": {
+            "kelas_kata": "n",
+            "arti": "sukun"
+        },
+        "sunau": {
+            "kelas_kata": "n",
+            "arti": "ikan papuyu; ikan betok"
+        },
+        "sungai": {
+            "kelas_kata": "n",
+            "arti": "1 sungai; 2 air"
+        },
+        "sungkoq": {
+            "kelas_kata": "n",
+            "arti": "lampu minyak"
+        },
+        "susu": {
+            "kelas_kata": "n",
+            "arti": "susu (minuman)"
+        },
+        "taban": {
+            "kelas_kata": "n",
+            "arti": "obat;"
+        },
+        "naban": {
+            "kelas_kata": "v",
+            "arti": "mengobati: naban taket Ani iyaq suhat na beri"
+        },
+        "tabit": {
+            "kelas_kata": "n",
+            "arti": "celana khusus yg digunakan untuk menari"
+        },
+        "taga": {
+            "kelas_kata": "v",
+            "arti": "bangun: nempam ni ne meq taga ngen tiga pagi ini kami"
+        },
+        "tagaq": {
+            "kelas_kata": "n",
+            "arti": "kemarau"
+        },
+        "tahing": {
+            "kelas_kata": "n",
+            "arti": "alas jemur padi"
+        },
+        "tai": {
+            "kelas_kata": "n",
+            "arti": "tahi; kotoran;"
+        },
+        "tain": {
+            "kelas_kata": "pron",
+            "arti": "ya: kumpin tain bagaimana ya"
+        },
+        "tajau": {
+            "kelas_kata": "n",
+            "arti": "tempayan; guci"
+        },
+        "takung": {
+            "kelas_kata": "n",
+            "arti": "kubangan;"
+        },
+        "tali": {
+            "kelas_kata": "n",
+            "arti": "1 tali; 2 benang;"
+        },
+        "nali": {
+            "kelas_kata": "v",
+            "arti": "pintal; memintal"
+        },
+        "talung": {
+            "kelas_kata": "n",
+            "arti": "lumpur"
+        },
+        "tanaq": {
+            "kelas_kata": "n",
+            "arti": "tanah"
+        },
+        "tanyit": {
+            "kelas_kata": "n",
+            "arti": "pohon banggeris; pohon manggeris"
+        },
+        "tapan": {
+            "kelas_kata": "n",
+            "arti": "tampi;"
+        },
+        "napan": {
+            "kelas_kata": "v",
+            "arti": "menampi"
+        },
+        "taro": {
+            "kelas_kata": "v",
+            "arti": "berlaku tidak adil thd seseorang;"
+        },
+        "tat": {
+            "kelas_kata": "n",
+            "arti": "tas"
+        },
+        "tau": {
+            "kelas_kata": "n",
+            "arti": "hari;"
+        },
+        "tawai": {
+            "kelas_kata": "n",
+            "arti": "hati atau jiwa"
+        },
+        "tibum": {
+            "kelas_kata": "n",
+            "arti": "sepak bola"
+        },
+        "tiga": {
+            "kelas_kata": "a",
+            "arti": "1 baik; bagus; 2 cantik; 3 enak; lezat"
+        },
+        "tikung": {
+            "kelas_kata": "n",
+            "arti": "lekukan"
+        },
+        "1tilo": {
+            "kelas_kata": "n",
+            "arti": "telur;"
+        },
+        "nilo": {
+            "kelas_kata": "v",
+            "arti": "bertelur"
+        },
+        "2tilo": {
+            "kelas_kata": "n",
+            "arti": "kemaluan laki-laki"
+        },
+        "tilung": {
+            "kelas_kata": "n",
+            "arti": "ranjang"
+        },
+        "timun": {
+            "kelas_kata": "n",
+            "arti": "mentimum"
+        },
+        "tirung": {
+            "kelas_kata": "n",
+            "arti": "terung"
+        },
+        "tiyung": {
+            "kelas_kata": "n",
+            "arti": "beo"
+        },
+        "tua": {
+            "kelas_kata": "n",
+            "arti": "orang tua;"
+        },
+        "tuak": {
+            "kelas_kata": "n",
+            "arti": "tuak"
+        },
+        "tuang": {
+            "kelas_kata": "n",
+            "arti": "kamar mandi"
+        },
+        "tuba": {
+            "kelas_kata": "n",
+            "arti": "tuba (akar tumbuhan yg mengandung racun)"
+        },
+        "tubang": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk orang tua yg anaknya"
+        },
+        "tudo": {
+            "kelas_kata": "v",
+            "arti": "menginap; bermalam: alem ini amieq pana tudo ka uma"
+        },
+        "tugak": {
+            "kelas_kata": "n",
+            "arti": "musim kemarau: sieq dulu kenutung moo tugak orang"
+        },
+        "tuhun": {
+            "kelas_kata": "n",
+            "arti": "batang sungai"
+        },
+        "tujaq": {
+            "kelas_kata": "v",
+            "arti": "menanjak"
+        },
+        "tujuq": {
+            "kelas_kata": "num",
+            "arti": "tujuh"
+        },
+        "tukoq": {
+            "kelas_kata": "n",
+            "arti": "nanah"
+        },
+        "tukun": {
+            "kelas_kata": "n",
+            "arti": "palu;"
+        },
+        "nukun": {
+            "kelas_kata": "v",
+            "arti": "memalu: amai nukun tapeq na bapak memalu"
+        },
+        "tukuq": {
+            "kelas_kata": "n",
+            "arti": "bisul"
+        },
+        "tulang": {
+            "kelas_kata": "n",
+            "arti": "tulang;"
+        },
+        "tumat": {
+            "kelas_kata": "n",
+            "arti": "tomat"
+        },
+        "tumit": {
+            "kelas_kata": "n",
+            "arti": "tumit"
+        },
+        "tungun": {
+            "kelas_kata": "n",
+            "arti": "pohon kering dan mati yg hanya tersisa batangnya dan"
+        },
+        "turan": {
+            "kelas_kata": "a",
+            "arti": "tak acuh; cuek: turan aleq seq koq buoq lulu badaq inu"
+        },
+        "tutun": {
+            "kelas_kata": "n",
+            "arti": "perhitungan (tt perbuatan)"
+        },
+        "tuya": {
+            "kelas_kata": "v",
+            "arti": "main;"
+        },
+        "tuyau": {
+            "kelas_kata": "n",
+            "arti": "suara"
+        },
+        "ubi": {
+            "kelas_kata": "n",
+            "arti": "singkong;"
+        },
+        "uboq": {
+            "kelas_kata": "n",
+            "arti": "congek"
+        },
+        "ubut": {
+            "kelas_kata": "n",
+            "arti": "umbut;"
+        },
+        "udang": {
+            "kelas_kata": "n",
+            "arti": "udang;"
+        },
+        "udu": {
+            "kelas_kata": "n",
+            "arti": "rumput"
+        },
+        "2udun": {
+            "kelas_kata": "n",
+            "arti": "pasta gigi"
+        },
+        "uhat": {
+            "kelas_kata": "n",
+            "arti": "urat;"
+        },
+        "ujan": {
+            "kelas_kata": "n",
+            "arti": "hujan;"
+        },
+        "ulai": {
+            "kelas_kata": "n",
+            "arti": "ular"
+        },
+        "ulo": {
+            "kelas_kata": "n",
+            "arti": "siput sungai"
+        },
+        "ulu": {
+            "kelas_kata": "n",
+            "arti": "kepala"
+        },
+        "uma": {
+            "kelas_kata": "n",
+            "arti": "ladang;"
+        },
+        "1uman": {
+            "kelas_kata": "n",
+            "arti": "tahun;"
+        },
+        "2uman": {
+            "kelas_kata": "v",
+            "arti": "makan: nai-nai uman datanglah makan;"
+        },
+        "umaq": {
+            "kelas_kata": "n",
+            "arti": "rumah;"
+        },
+        "untat": {
+            "kelas_kata": "n",
+            "arti": "tepung"
+        },
+        "upaq": {
+            "kelas_kata": "n",
+            "arti": "keladi;"
+        },
+        "urung": {
+            "kelas_kata": "n",
+            "arti": "1 wadah untuk menaruh ikan hasil tangkapan di sungai"
+        },
+        "usa": {
+            "kelas_kata": "n",
+            "arti": "tubuh"
+        },
+        "usuq": {
+            "kelas_kata": "n",
+            "arti": "dada"
+        },
+        "utan": {
+            "kelas_kata": "n",
+            "arti": "anak yatim perempuan"
+        },
+        "utang": {
+            "kelas_kata": "n",
+            "arti": "tongkat untuk berjalan"
+        },
+        "uto": {
+            "kelas_kata": "n",
+            "arti": "mobil"
+        },
+        "uu": {
+            "kelas_kata": "n",
+            "arti": "papan"
+        },
+        "uwai": {
+            "kelas_kata": "n",
+            "arti": "rotan"
+        },
+        "uyan": {
+            "kelas_kata": "v",
+            "arti": "buat, membuat: uweq uyan kujat ibu membuat kue;"
+        },
+        "uyau": {
+            "kelas_kata": "n",
+            "arti": "anak yatim laki-laki"
+        },
+        "uyung": {
+            "kelas_kata": "n",
+            "arti": "panggilan atau sapaan untuk orang tua yg anak"
+        },
+        "wangkuk": {
+            "kelas_kata": "n",
+            "arti": "katak besar"
+        },
+        "yuma": {
+            "kelas_kata": "n",
+            "arti": "depan: amai hieq madong kaq juma amin meq bapakku"
+        }
+    }
+}
