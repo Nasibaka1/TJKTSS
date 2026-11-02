@@ -455,7 +455,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized. Accept orders from Transactions tab.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized. Remaining payment feature added.</div>
         </div>
     </div>
 </div>
@@ -573,7 +573,7 @@
 <!-- Modal: Checkout / Order Payment (DP or Full Payment after Accepted) -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
-        <div class="modal-title">PEMBAYARAN PESANAN</div>
+        <div class="modal-title" id="checkout-modal-title">PEMBAYARAN PESANAN</div>
         <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 4px; color: #fff;"></p>
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 15px; margin-bottom: 14px; font-weight: bold;"></p>
 
@@ -588,7 +588,7 @@
         </div>
 
         <div id="payment-details-wrapper">
-            <div class="modal-field">
+            <div class="modal-field" id="pay-type-wrapper">
                 <label>PILIH METODE PEMBAYARAN / DP</label>
                 <select id="pay-type" onchange="updatePaymentAmounts()">
                     <option value="DP50">Down Payment (DP) 50%</option>
@@ -1089,16 +1089,22 @@
                     statusInfoBox = `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffaa00;">⏳ Menunggu di-accept sama penjoki</div>`;
                 } else if (tx.status === 'ACCEPTED_WAITING_PAYMENT' && tx.amountPaid === 0) {
                     statusInfoBox = `<div style="background:#01241b; border:1px solid #00ffcc; padding:8px; margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:12px; color:#00ffcc; font-weight:bold;">✓ Diterima Penjoki! Silakan Lakukan Pembayaran</span>
-                        <button onclick="openCheckoutModal('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #000; padding: 6px 10px; font-size: 11px;">[BAYAR SEKARANG]</button>
+                        <span style="font-size:12px; color:#00ffcc; font-weight:bold;">✓ Diterima Penjoki! Silakan Bayar</span>
+                        <button onclick="openCheckoutModal('${tx.id}', false)" style="border-color: #00ffcc; color: #00ffcc; background: #000; padding: 6px 10px; font-size: 11px;">[BAYAR SEKARANG]</button>
+                    </div>`;
+                } else if (tx.status === 'PENDING_DP' && tx.amountPaid < tx.totalPrice) {
+                    const sisa = tx.totalPrice - tx.amountPaid;
+                    statusInfoBox = `<div style="background:#011b24; border:1px solid #00ffcc; padding:8px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                        <span style="font-size:11px; color:#00ffcc; font-weight:bold;">Sisa Tagihan: ${formatRupiah(sisa)}</span>
+                        <button onclick="openCheckoutModal('${tx.id}', true)" style="border-color: #00ffcc; color: #00ffcc; background: #000; padding: 6px 10px; font-size: 11px;">[BAYAR SISA / LUNASI]</button>
                     </div>`;
                 } else if (tx.isCompleted) {
-                    statusInfoBox = `<div style="background:#032b20; border:1px solid #00ffcc; padding:6px; margin-top:8px; font-size:12px; color:#00ffcc; font-weight:bold;">✓ TUGAS SELESAI DIKERJAKAN OLEH PEKERJA</div>`;
+                    statusInfoBox = `<div style="background:#032b20; border:1px solid #00ffcc; padding:6px; margin-top:8px; font-size:12px; color:#00ffcc; font-weight:bold;">✓ TUGAS SELESAI DIKERJAKAN</div>`;
                 } else {
                     statusInfoBox = `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffffff;">⏳ Sedang Dikerjakan</div>`;
                 }
 
-                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Est. Harga: ${formatRupiah(tx.totalPrice || 0)}</div>`;
+                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid (Total: ${formatRupiah(tx.totalPrice)})</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Est. Harga: ${formatRupiah(tx.totalPrice || 0)}</div>`;
 
                 card.innerHTML = `
                     <div>
@@ -1271,39 +1277,57 @@
     }
 
     let activeCheckoutTx = null;
-    window.openCheckoutModal = function(txId) {
+    let isRemainingPayment = false;
+
+    window.openCheckoutModal = function(txId, remaining = false) {
         activeCheckoutTx = window.transactionsList.find(t => t.id === txId);
         if (!activeCheckoutTx) return;
+        isRemainingPayment = remaining;
 
         document.getElementById('checkout-item-title').innerText = activeCheckoutTx.jobTitle;
         document.getElementById('order-phone').value = activeCheckoutTx.phone || '';
         document.getElementById('order-task-link').value = activeCheckoutTx.taskLink || '';
-        document.getElementById('pay-type').value = 'DP50';
-        document.getElementById('custom-dp-amount').value = '';
         document.getElementById('pay-proof-img').value = '';
+
+        if (isRemainingPayment) {
+            document.getElementById('checkout-modal-title').innerText = "PELUNASAN SISA PEMBAYARAN";
+            document.getElementById('pay-type-wrapper').style.display = 'none';
+            document.getElementById('custom-dp-field').style.display = 'none';
+        } else {
+            document.getElementById('checkout-modal-title').innerText = "PEMBAYARAN PESANAN";
+            document.getElementById('pay-type-wrapper').style.display = 'block';
+            document.getElementById('pay-type').value = 'DP50';
+            document.getElementById('custom-dp-amount').value = '';
+        }
         
         updatePaymentAmounts();
         document.getElementById('checkout-modal').style.display = 'flex';
     };
 
     window.updatePaymentAmounts = function() {
-        const payType = document.getElementById('pay-type').value;
-        const customField = document.getElementById('custom-dp-field');
         const totalPrice = activeCheckoutTx ? activeCheckoutTx.totalPrice : 0;
         let calculatedAmount = totalPrice;
 
-        if (payType === 'DP50') {
-            customField.style.display = 'none';
-            calculatedAmount = totalPrice / 2;
-        } else if (payType === 'CUSTOM') {
-            customField.style.display = 'block';
-            calculatedAmount = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0;
+        if (isRemainingPayment) {
+            const alreadyPaid = activeCheckoutTx.amountPaid || 0;
+            calculatedAmount = Math.max(0, totalPrice - alreadyPaid);
+            document.getElementById('checkout-item-price').innerText = `SISA TAGIHAN PELUNASAN: ${formatRupiah(calculatedAmount)} (Total: ${formatRupiah(totalPrice)})`;
         } else {
-            customField.style.display = 'none';
-            calculatedAmount = totalPrice;
+            const payType = document.getElementById('pay-type').value;
+            const customField = document.getElementById('custom-dp-field');
+            if (payType === 'DP50') {
+                customField.style.display = 'none';
+                calculatedAmount = totalPrice / 2;
+            } else if (payType === 'CUSTOM') {
+                customField.style.display = 'block';
+                calculatedAmount = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0;
+            } else {
+                customField.style.display = 'none';
+                calculatedAmount = totalPrice;
+            }
+            document.getElementById('checkout-item-price').innerText = `TOTAL TAGIHAN: ${formatRupiah(calculatedAmount)} (Dari Total: ${formatRupiah(totalPrice)})`;
         }
 
-        document.getElementById('checkout-item-price').innerText = `TOTAL TAGIHAN: ${formatRupiah(calculatedAmount)} (Dari Total: ${formatRupiah(totalPrice)})`;
         document.getElementById('qris-amount').innerText = formatRupiah(calculatedAmount);
         document.getElementById('ewallet-amount').innerText = formatRupiah(calculatedAmount);
     };
@@ -1323,14 +1347,22 @@
         const phone = document.getElementById('order-phone').value.trim();
         if (!phone) { alert('Nomor telepon wajib diisi!'); return; }
 
-        const payType = document.getElementById('pay-type').value;
         let amountToPay = activeCheckoutTx.totalPrice;
-        if (payType === 'DP50') amountToPay = activeCheckoutTx.totalPrice / 2;
-        if (payType === 'CUSTOM') amountToPay = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0;
+        let payTypeDesc = 'FULL';
+
+        if (isRemainingPayment) {
+            amountToPay = Math.max(0, activeCheckoutTx.totalPrice - (activeCheckoutTx.amountPaid || 0));
+            payTypeDesc = 'LUNAS (SISA)';
+        } else {
+            const payType = document.getElementById('pay-type').value;
+            if (payType === 'DP50') { amountToPay = activeCheckoutTx.totalPrice / 2; payTypeDesc = 'DP 50%'; }
+            else if (payType === 'CUSTOM') { amountToPay = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0; payTypeDesc = 'DP CUSTOM'; }
+            else { amountToPay = activeCheckoutTx.totalPrice; payTypeDesc = 'FULL'; }
+        }
 
         const proofInput = document.getElementById('pay-proof-img');
         if (!proofInput.files[0]) {
-            finalizePayment(amountToPay, payType, null);
+            finalizePayment(amountToPay, payTypeDesc, null);
             return;
         }
 
@@ -1341,26 +1373,29 @@
                 const canvas = document.createElement('canvas');
                 canvas.width = 800; canvas.height = 800 * (img.height / img.width);
                 canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                finalizePayment(amountToPay, payType, canvas.toDataURL('image/jpeg', 0.7));
+                finalizePayment(amountToPay, payTypeDesc, canvas.toDataURL('image/jpeg', 0.7));
             };
             img.src = e.target.result;
         };
         reader.readAsDataURL(proofInput.files[0]);
     };
 
-    async function finalizePayment(amountPaid, payType, proofData) {
+    async function finalizePayment(amountPaidNow, payTypeDesc, proofData) {
+        let newTotalPaid = (isRemainingPayment ? (activeCheckoutTx.amountPaid || 0) : 0) + amountPaidNow;
+        let newStatus = (newTotalPaid >= activeCheckoutTx.totalPrice) ? 'PAID_FULL' : 'PENDING_DP';
+
         await updateDoc(doc(db, "transactions", activeCheckoutTx.id), {
             phone: document.getElementById('order-phone').value.trim(),
             taskLink: document.getElementById('order-task-link').value.trim(),
-            paymentMethod: document.getElementById('pay-method').value + ` (${payType})`,
-            amountPaid,
-            proofImage: proofData || '',
-            status: payType === 'FULL' ? 'PAID_FULL' : 'PENDING_DP',
+            paymentMethod: document.getElementById('pay-method').value + ` (${payTypeDesc})`,
+            amountPaid: newTotalPaid,
+            proofImage: proofData || activeCheckoutTx.proofImage || '',
+            status: newStatus,
         });
 
         window.closeModal('checkout-modal');
         window.switchTab('ORDERS');
-        addLog(`[PAYMENT] Pembayaran pesanan ${activeCheckoutTx.id} dikonfirmasi.`);
+        addLog(`[PAYMENT] Pembayaran pesanan ${activeCheckoutTx.id} berhasil diperbarui.`);
     }
 
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
