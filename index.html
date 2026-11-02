@@ -77,10 +77,25 @@
         .ascii-container::-webkit-scrollbar { height: 3px; }
         .ascii-container::-webkit-scrollbar-thumb { background: #444; }
 
+        /* ShinyText Integration (React Bits inspired) */
+        .shiny-text {
+            display: inline-block;
+            background: linear-gradient(120deg, #ffffff 0%, #ffffff 40%, #00ffcc 50%, #ffffff 60%, #ffffff 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shinyTextSweep 3s linear infinite;
+        }
+
+        @keyframes shinyTextSweep {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
         pre.ascii-title {
             font-size: 11px;
             line-height: 1.1;
-            color: #ffffff;
             white-space: pre;
             display: inline-block;
         }
@@ -333,10 +348,12 @@
 <div class="terminal">
     <header>
         <div class="ascii-container">
-            <pre class="ascii-title">                           
-██████   ██ ██ ▄█▀ ██████ ▄█████ ▄█████ 
-  ██     ██ ████     ██   ▀▀▀▄▄▄ ▀▀▀▄▄▄ 
-  ██  ████▀ ██ ▀█▄   ██   █████▀ █████▀                                                                              
+            <pre class="ascii-title shiny-text"> 
+▄▄▄▄▄▄▄   ▄▄▄  ▄    ▄▄▄▄▄▄▄▄  ▄▄▄▄   ▄▄▄▄ 
+   █      █  █  ▄▀    █     █▀    ▀ █▀    ▀
+   █      █  █▄█      █     ▀█▄▄▄   ▀█▄▄▄  
+   █      █  █  █▄    █         ▀█     ▀█
+   █    ▀▄▄▄▀  █   ▀▄    █     ▀▄▄▄█▀ ▀▄▄▄█▀                                                                            
             </pre>
         </div>
         <div class="sys-info">
