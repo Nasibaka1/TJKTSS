@@ -645,7 +645,7 @@
 
     // Background Animation Loop Variables
     let bgGameAnimId = null;
-    window.activeBgGame = null; // 'tetris', 'snake', or null
+    window.activeBgGame = null;
 
     const translations = {
         id: {
@@ -942,6 +942,8 @@
                     <div>
                         <div class="card-meta">
                             <span>BUYER: ${escapeHtml(tx.customerName)}</span>
+                            <span style="color: #00ffcc; font-weight: bold;">TELP/WA: ${escapeHtml(tx.phone || 'Tidak diisi')}</span>
+                            ${tx.taskLink ? '<span>FILE/LINK: ' + escapeHtml(tx.taskLink) + '</span>' : ''}
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
@@ -988,6 +990,7 @@
                     <div>
                         <div class="card-meta">
                             <span>BUYER: ${escapeHtml(tx.customerName)}</span>
+                            <span>TELP/WA: ${escapeHtml(tx.phone || 'Tidak diisi')}</span>
                             <span>REQUESTED: ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span>TX ID: ${tx.id}</span>
                         </div>
@@ -1024,6 +1027,7 @@
                 <div>
                     <div class="card-meta">
                         <span>BY: ${escapeHtml(job.authorName)}</span>
+                        ${job.phone ? '<span style="color: #00ffcc;">TELP/WA: ' + escapeHtml(job.phone) + '</span>' : ''}
                         <span>REQUESTED: ${escapeHtml(job.requestedAt || 'N/A')}</span>
                     </div>
                     <div style="margin-top: 10px; text-align: right; display: flex; justify-content: flex-end; align-items: center;">
@@ -1309,7 +1313,6 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             snakes.forEach(s => {
-                // Food
                 ctx.fillStyle = '#ff5555';
                 ctx.fillRect(s.food.x, s.food.y, 8, 8);
 
