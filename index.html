@@ -587,7 +587,7 @@
             <input type="text" id="order-task-link" placeholder="cth., Link Google Drive">
         </div>
 
-        <p style="font-size: 11px; color: #aaa; margin-top: 10px; font-style: italic;">*Catatan: Anda tidak perlu membayar sekarang. Pembayaran baru dapat dilakukan setelah pekerja menerima dan mulai mengerjakan tugas Anda.</p>
+        <p style="font-size: 11px; color: #aaa; margin-top: 10px; font-style: italic;">*Catatan: Anda tidak perlu membayar sekarang. Pesanan akan masuk ke status menunggu pekerja menerima (*accept*), dan pembayaran baru dapat dilakukan setelah tugas diterima pekerja.</p>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
             <button onclick="closeModal('checkout-modal')">BATAL</button>
@@ -990,11 +990,13 @@
                     </div>
                 `;
 
+                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">⏳ Menunggu Diterima & Dibayar (${formatRupiah(tx.totalPrice || 0)})</div>`;
+
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
-                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>
-                        <p class="card-desc" style="margin-top:4px;">Method: ${escapeHtml(tx.paymentMethod)} | Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
+                        ${priceDisplay}
+                        <p class="card-desc" style="margin-top:4px;">Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
                         ${taskCheckboxHtml}
                         ${proofsHtml}
                     </div>
@@ -1035,12 +1037,14 @@
 
                 let statusPekerjaanBadge = tx.isCompleted ? 
                     `<div style="background:#032b20; border:1px solid #00ffcc; padding:6px; margin-top:8px; font-size:12px; color:#00ffcc; font-weight:bold;">✓ TUGAS SELESAI DIKERJAKAN OLEH PEKERJA (${escapeHtml(tx.completedBy || 'Admin')})</div>` : 
-                    `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffffff;">⏳ Status: Sedang Dikerjakan oleh Pekerja</div>`;
+                    `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffaa00;">⏳ Menunggu di-accept sama penjoki / belum dibayar</div>`;
+
+                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Est. Harga: ${formatRupiah(tx.totalPrice || 0)}</div>`;
 
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
-                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>
+                        ${priceDisplay}
                         <p class="card-desc" style="margin-top:4px;">Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
                         ${statusPekerjaanBadge}
                         ${proofsHtml}
@@ -1210,7 +1214,7 @@
             phone,
             taskLink: document.getElementById('order-task-link').value.trim(),
             totalPrice: selectedCheckoutJob.price,
-            paymentMethod: 'MENUNGGU PEKERJA',
+            paymentMethod: 'MENUNGGU PEKERJA MENERIMA',
             amountPaid: 0,
             proofImage: '',
             status: 'ORDERED_WAITING_WORKER',
@@ -1222,7 +1226,7 @@
 
         window.closeModal('checkout-modal');
         window.switchTab('ORDERS');
-        addLog(`[ORDER] Pesanan dikirim tanpa pembayaran di awal.`);
+        addLog(`[ORDER] Pesanan dikirim. Menunggu pekerja menerima tugas.`);
     };
 
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
