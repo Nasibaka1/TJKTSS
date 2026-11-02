@@ -67,18 +67,15 @@
             margin-bottom: 16px;
         }
 
-        .ascii-container {
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: hidden;
-            margin-bottom: 10px;
-            padding-bottom: 4px;
+        .title-container {
+            margin-bottom: 12px;
         }
-        .ascii-container::-webkit-scrollbar { height: 3px; }
-        .ascii-container::-webkit-scrollbar-thumb { background: #444; }
 
-        /* ShinyText Integration (React Bits inspired) */
-        .shiny-text {
+        /* ShinyText Integration (React Bits inspired) for Big Text */
+        .shiny-text-big {
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 4px;
             display: inline-block;
             background: linear-gradient(120deg, #ffffff 0%, #ffffff 40%, #00ffcc 50%, #ffffff 60%, #ffffff 100%);
             background-size: 200% 100%;
@@ -91,13 +88,6 @@
         @keyframes shinyTextSweep {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
-        }
-
-        pre.ascii-title {
-            font-size: 11px;
-            line-height: 1.1;
-            white-space: pre;
-            display: inline-block;
         }
 
         .sys-info {
@@ -316,7 +306,7 @@
 
         @media screen and (max-width: 768px) {
             body { padding: 10px; }
-            pre.ascii-title { font-size: 8px; }
+            .shiny-text-big { font-size: 2.2rem; }
             .sys-info { font-size: 11px; flex-direction: column; align-items: flex-start; gap: 6px; }
             .stats-bar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 11px; padding: 8px; }
             .controls .btn-group { display: flex; flex-direction: column; width: 100%; }
@@ -347,14 +337,8 @@
 
 <div class="terminal">
     <header>
-        <div class="ascii-container">
-            <pre class="ascii-title shiny-text"> 
-▄▄▄▄▄▄▄   ▄▄▄  ▄    ▄▄▄▄▄▄▄▄  ▄▄▄▄   ▄▄▄▄ 
-   █      █  █  ▄▀    █     █▀    ▀ █▀    ▀
-   █      █  █▄█      █     ▀█▄▄▄   ▀█▄▄▄  
-   █      █  █  █▄    █         ▀█     ▀█
-   █    ▀▄▄▄▀  █   ▀▄    █     ▀▄▄▄█▀ ▀▄▄▄█▀                                                                            
-            </pre>
+        <div class="title-container">
+            <h1 class="shiny-text-big">TJKTSS</h1>
         </div>
         <div class="sys-info">
             <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Klik untuk ubah nama">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
