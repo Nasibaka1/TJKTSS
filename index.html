@@ -462,7 +462,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi (Custom DP & Staff Approval Active).</div>
+            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi (Worker Acceptance Required Before Payment).</div>
         </div>
     </div>
 </div>
@@ -530,7 +530,7 @@
     </div>
 </div>
 
-<!-- Modal: Custom Request -->
+<!-- Modal: Custom Request (Langsung masuk ke sistem, menunggu worker terima dulu sebelum bayar) -->
 <div class="modal-overlay" id="custom-modal">
     <div class="modal-box">
         <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM</div>
@@ -580,7 +580,7 @@
 <!-- Modal: Checkout / Order Payment (Custom DP Supported) -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
-        <div class="modal-title">CHECKOUT PESANAN & PEMBAYARAN</div>
+        <div class="modal-title">CHECKOUT PEMBAYARAN ORDER (SETELAH DITERIMA PEKERJA)</div>
         <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px; color: #fff;"></p>
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 14px; margin-bottom: 12px; font-weight: bold;"></p>
 
@@ -641,7 +641,7 @@
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
             <button onclick="closeModal('checkout-modal')">BATAL</button>
-            <button onclick="confirmOrder()">KONFIRMASI PESANAN</button>
+            <button onclick="confirmOrder()">KONFIRMASI PEMBAYARAN</button>
         </div>
     </div>
 </div>
@@ -981,15 +981,10 @@
         document.getElementById('img-viewer-modal').style.display = 'flex';
     };
 
-    // Staff Acceptance Actions
-    window.acceptFeedJob = async function(jobId) {
-        await updateDoc(doc(db, "joki", jobId), { status: 'accepted', assignedTo: window.currentUser });
-        addLog(`[STAFF] Feed joki diterima oleh ${window.currentUser}. Pembayaran sekarang diaktifkan untuk customer.`);
-    };
-
-    window.acceptCustomJob = async function(jobId) {
-        await updateDoc(doc(db, "joki", jobId), { status: 'accepted', assignedTo: window.currentUser });
-        addLog(`[STAFF] Request kustom diterima oleh ${window.currentUser}. Customer sekarang dapat melakukan checkout/pembayaran.`);
+    // Staff Acceptance Actions (Pekerja / Admin Menerima Job)
+    window.acceptJob = async function(jobId) {
+        await updateDoc(doc(db, "joki", jobId), { status: 'accepted', assignedWorker: window.currentUser });
+        addLog(`[STAFF] Order diterima oleh ${window.currentUser}. Tombol bayar diaktifkan untuk customer.`);
     };
 
     window.renderGrid = function() {
@@ -1105,8 +1100,8 @@
                 let cancelBtn = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - (Date.now() - (tx.createdAt || 0)) / (1000 * 60)) > 0 ? `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL</button>` : '';
 
                 let statusPekerjaanBadge = tx.isCompleted ? 
-                    `<div style="background:#032b20; border:1px solid #00ffcc; padding:6px; margin-top:8px; font-size:12px; color:#00ffcc; font-weight:bold;">✓ TUGAS SELESAI DIKERJAKAN OLEH STAFF (${escapeHtml(tx.completedBy || 'Admin')})</div>` : 
-                    `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffffff;">⏳ Status: Sedang Diproses / Dikerjakan</div>`;
+                    `<div style="background:#032b20; border:1px solid #00ffcc; padding:6px; margin-top:8px; font-size:12px; color:#00ffcc; font-weight:bold;">✓ TUGAS SELESAI DIKERJAKAN OLEH PEKERJA (${escapeHtml(tx.completedBy || 'Admin')})</div>` : 
+                    `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffffff;">⏳ Status: Sedang Dikerjakan oleh Pekerja</div>`;
 
                 card.innerHTML = `
                     <div>
@@ -1145,29 +1140,19 @@
             card.className = 'card';
             
             let actionBtn = '';
-            if (window.currentTab === 'FEED') {
-                if (job.status === 'accepted') {
-                    actionBtn = `<button onclick="openCheckoutModal('${job.id}')">ORDER NOW (DITERIMA)</button>`;
+            if (job.status === 'accepted') {
+                // Joki sudah diterima pekerja -> Customer boleh bayar DP / Full
+                const alreadyOrdered = window.transactionsList.some(t => t.customerName === window.currentUser && t.jobId === job.id);
+                if (alreadyOrdered) {
+                    actionBtn = `<span style="color:#00ffcc; font-size:12px; font-weight:bold;">[DIPROSES DI TRANSAKSI SAYA]</span>`;
                 } else {
-                    actionBtn = isStaff ? 
-                        `<button onclick="acceptFeedJob('${job.id}')" style="border-color: #00ffcc; color: #00ffcc;">[TERIMA JOKI INI]</button>` : 
-                        `<span style="color:#ffaa00; font-size:12px; font-weight:bold;">[MENUNGGU DITERIMA STAFF]</span>`;
+                    actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b;">[TERIMA & BAYAR (DP / FULL)]</button>`;
                 }
             } else {
-                // Tab Custom
-                if (job.status === 'accepted') {
-                    // Cek apakah user sudah bayar atau belum
-                    const alreadyOrdered = window.transactionsList.some(t => t.customerName === window.currentUser && t.jobId === job.id);
-                    if (alreadyOrdered) {
-                        actionBtn = `<span style="color:#00ffcc; font-size:12px; font-weight:bold;">[DIPROSES DI TRANSAKSI]</span>`;
-                    } else {
-                        actionBtn = `<button onclick="openCheckoutModal('${job.id}')">BAYAR DP / FULL</button>`;
-                    }
-                } else {
-                    actionBtn = isStaff ? 
-                        `<button onclick="acceptCustomJob('${job.id}')" style="border-color: #00ffcc; color: #00ffcc;">[TERIMA CUSTOM JOB]</button>` : 
-                        `<span style="color:#ffaa00; font-size:12px; font-weight:bold;">[MENUNGGU DITERIMA STAFF]</span>`;
-                }
+                // Status open -> Belum ada pekerja yang menerima
+                actionBtn = isStaff ? 
+                    `<button onclick="acceptJob('${job.id}')" style="border-color: #00ffcc; color: #00ffcc;">[TERIMA JOKI INI & MULAI KERJAKAN]</button>` : 
+                    `<span style="color:#ffaa00; font-size:12px; font-weight:bold;">⏳ MENUNGGU PEKERJA / ADMIN MENERIMA ORDER</span>`;
             }
 
             let delBtn = isStaff || job.authorName === window.currentUser ? `<button class="btn-del" onclick="deleteJoki('${job.id}')">DEL</button>` : '';
@@ -1183,7 +1168,7 @@
                     <div class="card-meta">
                         <span><span class="meta-label">BY:</span> ${escapeHtml(job.authorName)}</span>
                         ${job.phone ? '<span><span class="meta-label">TELP/WA:</span> <b style="color: #00ffcc;">' + escapeHtml(job.phone) + '</b></span>' : ''}
-                        <span><span class="meta-label">STATUS JOKI:</span> <b style="color: #00ffcc;">${escapeHtml(job.status.toUpperCase())}</b> ${job.assignedTo ? '(' + escapeHtml(job.assignedTo) + ')' : ''}</span>
+                        <span><span class="meta-label">STATUS:</span> <b style="color: #00ffcc;">${escapeHtml(job.status.toUpperCase())}</b> ${job.assignedWorker ? '(Pekerja: ' + escapeHtml(job.assignedWorker) + ')' : ''}</span>
                         <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(job.requestedAt || 'N/A')}</span>
                     </div>
                     <div style="margin-top: 12px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 6px; flex-wrap: wrap;">
@@ -1200,7 +1185,7 @@
     window.openCustomRequestModal = function() { document.getElementById('custom-modal').style.display = 'flex'; };
     window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
-    // Submit Custom Request Only (Tanpa bayar di awal, menunggu staff terima dulu)
+    // Submit Custom Request atau Post Layanan (Masuk status 'open', menunggu pekerja terima dulu)
     window.submitCustomRequestOnly = async function() {
         const title = document.getElementById('custom-title').value.trim();
         const budget = window.parseAmountToNumber(document.getElementById('custom-budget').value);
@@ -1218,7 +1203,7 @@
             phone,
             taskLink: document.getElementById('custom-file-link').value.trim(),
             type: 'custom_request',
-            status: 'open', // Menunggu staff klik terima
+            status: 'open', // Menunggu pekerja/admin menerima
             authorName: window.currentUser,
             createdAt: Date.now(),
             requestedAt: window.getCurrentFormattedTimestamp()
@@ -1226,7 +1211,7 @@
 
         window.closeModal('custom-modal');
         window.switchTab('CUSTOM');
-        addLog(`[CUSTOM] Tugas kustom diajukan, menunggu staff menerima.`);
+        addLog(`[CUSTOM] Tugas kustom diajukan, menunggu pekerja menerima.`);
     };
 
     window.submitPost = function() {
@@ -1398,7 +1383,7 @@
 
                     window.closeModal('checkout-modal');
                     window.switchTab('ORDERS');
-                    addLog(`[ORDER] Pesanan & pembayaran berhasil dikirim.`);
+                    addLog(`[ORDER] Pembayaran order berhasil dikirim.`);
                 }
             };
             img.src = e.target.result;
