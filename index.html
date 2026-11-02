@@ -430,18 +430,22 @@
         </div>
     </div>
 
-    <!-- Advanced Sorting & Filtering Bar -->
+    <!-- Advanced Sorting & Filtering Bar (Dengan Filter DP & Filter Staff/Pekerja) -->
     <div class="sorting-bar">
         <div class="sorting-group">
             <span style="color: #00ffcc; font-weight: bold;">[ SORT WAKTU ]:</span>
             <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc;">[ TERBARU ]</button>
         </div>
         <div class="sorting-group" id="filter-container">
-            <span style="color: #00ffcc; font-weight: bold;">[ FILTER STATUS ]:</span>
+            <span style="color: #00ffcc; font-weight: bold;">[ FILTER ]:</span>
             <select id="filter-status-select" onchange="window.renderGrid()">
-                <option value="ALL">SEMUA</option>
+                <option value="ALL">SEMUA STATUS</option>
+                <option value="DP">PENDING DP (BELUM LUNAS)</option>
                 <option value="COMPLETED">SELESAI DIKERJAKAN</option>
                 <option value="PENDING">BELUM SELESAI</option>
+            </select>
+            <select id="filter-staff-select" onchange="window.renderGrid()">
+                <option value="ALL">SEMUA PEKERJA</option>
             </select>
         </div>
     </div>
@@ -455,7 +459,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized. Terminal-themed order modal ready.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized. Staff worker filter added.</div>
         </div>
     </div>
 </div>
@@ -559,7 +563,7 @@
     </div>
 </div>
 
-<!-- Modal: Order From Feed (Modal Kustom Terminal) -->
+<!-- Modal: Order From Feed -->
 <div class="modal-overlay" id="feed-order-modal">
     <div class="modal-box">
         <div class="modal-title">[ PESAN LAYANAN JOKI ]</div>
@@ -593,7 +597,7 @@
     </div>
 </div>
 
-<!-- Modal: Checkout / Order Payment (DP or Full Payment after Accepted) -->
+<!-- Modal: Checkout / Order Payment -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
         <div class="modal-title" id="checkout-modal-title">PEMBAYARAN PESANAN</div>
@@ -806,6 +810,7 @@
 
     onSnapshot(collection(db, "transactions"), (snapshot) => {
         window.transactionsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        window.updateStaffFilterDropdown();
         window.renderGrid();
     });
 
@@ -889,6 +894,30 @@
 
         const showTransactionFilters = (window.currentTab === 'ALL_ORDERS' || window.currentTab === 'ORDERS');
         document.getElementById('filter-container').style.display = showTransactionFilters ? 'flex' : 'none';
+    };
+
+    window.updateStaffFilterDropdown = function() {
+        const select = document.getElementById('filter-staff-select');
+        if (!select) return;
+        const currentVal = select.value;
+        
+        // Ambil daftar unik staff yang pernah meng-accept transaksi
+        const staffSet = new Set();
+        window.transactionsList.forEach(tx => {
+            if (tx.acceptedBy) staffSet.add(tx.acceptedBy);
+        });
+
+        select.innerHTML = `<option value="ALL">SEMUA PEKERJA</option>`;
+        staffSet.forEach(staff => {
+            const opt = document.createElement('option');
+            opt.value = staff;
+            opt.innerText = staff;
+            select.appendChild(opt);
+        });
+
+        if (staffSet.has(currentVal)) {
+            select.value = currentVal;
+        }
     };
 
     window.toggleRole = function() {
@@ -1067,9 +1096,23 @@
 
         const filterTransactions = (list) => {
             const statusFilter = document.getElementById('filter-status-select').value;
+            const staffFilter = document.getElementById('filter-staff-select').value;
+
             return list.filter(tx => {
-                if (statusFilter === 'COMPLETED' && !tx.isCompleted) return false;
-                if (statusFilter === 'PENDING' && tx.isCompleted) return false;
+                // Filter status
+                if (statusFilter === 'DP') {
+                    if (!(tx.status === 'PENDING_DP' || (tx.amountPaid > 0 && tx.amountPaid < tx.totalPrice))) return false;
+                } else if (statusFilter === 'COMPLETED') {
+                    if (!tx.isCompleted) return false;
+                } else if (statusFilter === 'PENDING') {
+                    if (tx.isCompleted) return false;
+                }
+
+                // Filter staff / pekerja
+                if (staffFilter && staffFilter !== 'ALL') {
+                    if (tx.acceptedBy !== staffFilter) return false;
+                }
+
                 return true;
             });
         };
@@ -1182,6 +1225,7 @@
                         <div class="card-meta">
                             <span><span class="meta-label">BUYER:</span> ${escapeHtml(tx.customerName)}</span>
                             <span><span class="meta-label">TELP/WA:</span> ${escapeHtml(tx.phone || 'Tidak diisi')}</span>
+                            ${tx.acceptedBy ? '<span><span class="meta-label">PEKERJA:</span> <b style="color:#00ffcc;">' + escapeHtml(tx.acceptedBy) + '</b></span>' : ''}
                             <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
                         </div>
