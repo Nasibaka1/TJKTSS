@@ -455,7 +455,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized. Multi-proof collapsible feature active.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized. Terminal-themed order modal ready.</div>
         </div>
     </div>
 </div>
@@ -555,6 +555,29 @@
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
             <button onclick="closeModal('custom-modal')">BATAL</button>
             <button onclick="submitCustomRequestOnly()">AJUKAN TUGAS SEKARANG</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Order From Feed (Modal Kustom Terminal) -->
+<div class="modal-overlay" id="feed-order-modal">
+    <div class="modal-box">
+        <div class="modal-title">[ PESAN LAYANAN JOKI ]</div>
+        <p id="feed-order-title" style="font-weight: bold; margin-bottom: 4px; color: #fff;"></p>
+        <p id="feed-order-price" style="color: #00ffcc; font-size: 14px; margin-bottom: 14px; font-weight: bold;"></p>
+
+        <div class="modal-field">
+            <label>NOMOR TELEPON / WHATSAPP</label>
+            <input type="text" id="feed-order-phone" placeholder="cth., 081234567890">
+        </div>
+        <div class="modal-field">
+            <label>LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
+            <input type="text" id="feed-order-link" placeholder="cth., Link Google Drive / Catatan">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+            <button onclick="closeModal('feed-order-modal')">BATAL</button>
+            <button onclick="submitOrderFromFeed()" style="border-color: #00ffcc; color: #00ffcc; background: #01241b;">KIRIM PESANAN</button>
         </div>
     </div>
 </div>
@@ -691,7 +714,7 @@
     window.jobsList = [];
     window.transactionsList = [];
     window.authorizedEmployees = [];
-    window.collapsedProofs = {}; // Menyimpan state toggle collapse bukti pembayaran per transaksi
+    window.collapsedProofs = {};
 
     let bgGameAnimId = null;
     window.activeBgGame = null;
@@ -985,9 +1008,8 @@
 
     function renderProofsHtml(tx) {
         let proofs = tx.proofs || [];
-        // Fallback untuk transaksi lama yang hanya punya 1 proofImage
         if (proofs.length === 0 && tx.proofImage) {
-            proofs = [{ title: tx.paymentMethod || 'Bukti Pembayaran', image: tx.proofImage, time: tx.requestedAt || '' }];
+            proofs = [{ title: tx.paymentMethod || 'Bukti Pembayaran', image: tx.proofImage, amount: tx.amountPaid || 0, time: tx.requestedAt || '' }];
         }
         if (proofs.length === 0) return '';
 
@@ -1288,23 +1310,26 @@
             return;
         }
 
-        const phoneInput = prompt("Masukkan Nomor Telepon / WhatsApp Anda:", "08");
-        if (!phoneInput) return;
-
-        const taskLinkInput = prompt("Masukkan Link atau Catatan File Tugas (Opsional):", "");
-
-        createInitialOrder(selectedFeedJob.title, selectedFeedJob.price, phoneInput, taskLinkInput || '');
+        document.getElementById('feed-order-title').innerText = selectedFeedJob.title;
+        document.getElementById('feed-order-price').innerText = `HARGA: ${formatRupiah(selectedFeedJob.price)}`;
+        document.getElementById('feed-order-phone').value = selectedFeedJob.phone || '';
+        document.getElementById('feed-order-link').value = selectedFeedJob.taskLink || '';
+        document.getElementById('feed-order-modal').style.display = 'flex';
     };
 
-    async function createInitialOrder(title, price, phone, taskLink) {
+    window.submitOrderFromFeed = async function() {
+        const phone = document.getElementById('feed-order-phone').value.trim();
+        if (!phone) { alert('Nomor telepon wajib diisi!'); return; }
+        const taskLink = document.getElementById('feed-order-link').value.trim();
+
         const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
         await setDoc(doc(db, "transactions", txId), {
             id: txId,
-            jobTitle: title,
+            jobTitle: selectedFeedJob.title,
             customerName: window.currentUser,
             phone,
             taskLink,
-            totalPrice: price,
+            totalPrice: selectedFeedJob.price,
             paymentMethod: 'MENUNGGU ACCEPT',
             amountPaid: 0,
             proofs: [],
@@ -1314,9 +1339,11 @@
             createdAt: Date.now(),
             requestedAt: window.getCurrentFormattedTimestamp()
         });
+
+        window.closeModal('feed-order-modal');
         window.switchTab('ORDERS');
         addLog(`[ORDER] Pesanan berhasil dibuat. Menunggu penjoki accept.`);
-    }
+    };
 
     let activeCheckoutTx = null;
     let isRemainingPayment = false;
