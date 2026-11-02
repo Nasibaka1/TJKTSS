@@ -105,7 +105,6 @@
 
         .user-badge:hover { background-color: #00ffcc; color: #000; }
 
-        /* Main App Layout with Sidebar */
         .app-layout {
             display: grid;
             grid-template-columns: 260px 1fr;
@@ -460,6 +459,7 @@
                 <button id="btn-action-request" onclick="openCustomRequestModal()" class="btn-accent">+ AJUKAN KUSTOM</button>
                 <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
                 <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none;" class="btn-accent">+ KELOLA PEGAWAI</button>
+                <button onclick="openKenyahTranslatorModal()" class="btn-accent">+ DAYAK KENYAH TRANSLATOR</button>
             </div>
         </aside>
 
@@ -505,6 +505,49 @@
         </div>
         <div class="log-box" id="log-box">
             <div class="log-entry">[SYS] TJKTSS Initialized with Sidebar Layout.</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Dayak Kenyah Translator -->
+<div class="modal-overlay" id="kenyah-translator-modal">
+    <div class="modal-box" style="max-width: 800px; border-color: #00ffcc;">
+        <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>[ KAMUS & TRANSLATOR BAHASA KENYAH ]</span>
+            <button onclick="closeModal('kenyah-translator-modal')" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; padding: 2px 8px; font-size:12px; cursor:pointer;">[X]</button>
+        </div>
+        <div style="font-size: 11px; color: #00ffcc; margin-bottom: 12px;">Dialek Lepoq Jalan & Lepoq Tau — Balai Bahasa Kaltim</div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <button class="btn-mode active" id="btn-mode-id" onclick="setTranslatorMode('id_to_kenyah')" style="flex:1; background:#00ffcc; color:#000; border:1px solid #00ffcc; padding:6px; font-family:inherit; font-size:11px; font-weight:bold; cursor:pointer;">Indonesian ➔ Kenyah</button>
+            <button class="btn-mode" id="btn-mode-kenyah" onclick="setTranslatorMode('kenyah_to_id')" style="flex:1; background:#000; color:#00ffcc; border:1px solid #00ffcc; padding:6px; font-family:inherit; font-size:11px; font-weight:bold; cursor:pointer;">Kenyah ➔ Indonesian</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <label id="lbl-trans-source" style="font-size:11px; color:#00ffcc; font-weight:bold;">SUMBER (Indonesia):</label>
+                <textarea id="trans-source-text" placeholder="Ketik kata/kalimat..." oninput="translateKenyahText()" style="background:#000; border:1px solid #444; color:#fff; padding:8px; font-family:inherit; font-size:12px; height:90px; resize:vertical;"></textarea>
+                <select id="trans-dialect-select" onchange="translateKenyahText()" style="background:#000; border:1px solid #00ffcc; color:#00ffcc; padding:6px; font-family:inherit; font-size:11px;">
+                    <option value="dialek_lepoq_jalan">Dialek Lepoq Jalan</option>
+                    <option value="dialek_lepoq_tau">Dialek Lepoq Tau</option>
+                </select>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <label style="font-size:11px; color:#00ffcc; font-weight:bold;">HASIL TERJEMAHAN:</label>
+                <div id="trans-target-output" style="background:#020805; border:1px dashed #00ffcc; padding:8px; height:124px; overflow-y:auto; color:#fff; font-size:12px; white-space:pre-wrap;"></div>
+            </div>
+        </div>
+
+        <div style="border-top:1px dashed #444; padding-top:10px;">
+            <label style="font-size:11px; color:#00ffcc; font-weight:bold;">PENCARIAN KOSAKATA (Kamus Interaktif):</label>
+            <input type="text" id="trans-search-input" placeholder="Cari kata (cth: rumah, alut, asu)..." oninput="searchKenyahDictionary()" style="background:#000; border:1px solid #444; color:#fff; padding:8px; font-family:inherit; font-size:12px; width:100%; margin-top:6px; margin-bottom:8px;">
+            <div id="trans-search-results" style="max-height: 140px; overflow-y: auto; border: 1px solid #333; background: #000;">
+                <div style="padding: 10px; color: #888; text-align: center; font-size: 11px;">Ketik kata untuk mencari di kamus...</div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+            <button onclick="closeModal('kenyah-translator-modal')" style="background:#000; color:#fff; border:1px solid #fff; padding: 6px 14px; font-size:12px;">TUTUP</button>
         </div>
     </div>
 </div>
@@ -764,9 +807,131 @@
     window.transactionsList = [];
     window.authorizedEmployees = [];
     window.collapsedProofs = {};
+    window.kamusData = null;
+    window.translatorMode = 'id_to_kenyah';
 
     let bgGameAnimId = null;
     window.activeBgGame = null;
+
+    // Load Kenyah Dictionary data automatically on startup
+    async function initKenyahDictionary() {
+        try {
+            const res = await fetch('kamus_web.json');
+            window.kamusData = await res.json();
+        } catch(e) {
+            console.log("Kamus web.json not found or loaded via fallback.");
+        }
+    }
+    initKenyahDictionary();
+
+    window.openKenyahTranslatorModal = function() {
+        document.getElementById('kenyah-translator-modal').style.display = 'flex';
+    };
+
+    window.setTranslatorMode = function(mode) {
+        window.translatorMode = mode;
+        const btnId = document.getElementById('btn-mode-id');
+        const btnKenyah = document.getElementById('btn-mode-kenyah');
+        const lblSource = document.getElementById('lbl-trans-source');
+        const sourceText = document.getElementById('trans-source-text');
+
+        if (mode === 'id_to_kenyah') {
+            btnId.style.background = '#00ffcc'; btnId.style.color = '#000';
+            btnKenyah.style.background = '#000'; btnKenyah.style.color = '#00ffcc';
+            lblSource.innerText = "SUMBER (Indonesia):";
+            sourceText.placeholder = "Ketik kata Indonesia (misal: rumah, air)...";
+        } else {
+            btnKenyah.style.background = '#00ffcc'; btnKenyah.style.color = '#000';
+            btnId.style.background = '#000'; btnId.style.color = '#00ffcc';
+            lblSource.innerText = "SUMBER (Kenyah):";
+            sourceText.placeholder = "Ketik kata Kenyah (misal: amin, sungai)...";
+        }
+        translateKenyahText();
+    };
+
+    window.translateKenyahText = function() {
+        if (!window.kamusData) {
+            document.getElementById('trans-target-output').innerText = "[INFO]: Memuat kamus_web.json...";
+            return;
+        }
+        const text = document.getElementById('trans-source-text').value.trim();
+        const dialect = document.getElementById('trans-dialect-select').value;
+        const outputDiv = document.getElementById('trans-target-output');
+
+        if (!text) {
+            outputDiv.innerText = "";
+            return;
+        }
+
+        const dict = window.kamusData[dialect] || {};
+        const words = text.split(/\s+/);
+        let translatedWords = [];
+
+        if (window.translatorMode === 'id_to_kenyah') {
+            for (let w of words) {
+                let cleanW = w.toLowerCase().replace(/[^a-zà-ÿ0-9]/g, '');
+                let matches = [];
+                for (let [kenyahWord, info] of Object.entries(dict)) {
+                    if (info.arti.toLowerCase().includes(cleanW)) {
+                        matches.push(`${kenyahWord} (${info.arti})`);
+                    }
+                }
+                if (matches.length > 0) {
+                    translatedWords.push(`[${w} ➔ ${matches.slice(0, 3).join(', ')}]`);
+                } else {
+                    translatedWords.push(`[${w} ?]`);
+                }
+            }
+            outputDiv.innerText = translatedWords.join(' ');
+        } else {
+            for (let w of words) {
+                let cleanW = w.toLowerCase().replace(/[^a-zà-ÿ0-9'\-]/g, '');
+                if (dict[cleanW]) {
+                    translatedWords.push(`${w} ➔ ${dict[cleanW].arti} [${dict[cleanW].kelas_kata}]`);
+                } else {
+                    translatedWords.push(`${w} ➔ [Tidak ditemukan]`);
+                }
+            }
+            outputDiv.innerText = translatedWords.join('\n');
+        }
+    };
+
+    window.searchKenyahDictionary = function() {
+        if (!window.kamusData) return;
+        const query = document.getElementById('trans-search-input').value.trim().toLowerCase();
+        const dialect = document.getElementById('trans-dialect-select').value;
+        const resultsDiv = document.getElementById('trans-search-results');
+        const dict = window.kamusData[dialect] || {};
+
+        if (!query) {
+            resultsDiv.innerHTML = '<div style="padding: 10px; color: #888; text-align: center; font-size: 11px;">Ketik kata untuk mencari di kamus...</div>';
+            return;
+        }
+
+        let results = [];
+        for (let [word, info] of Object.entries(dict)) {
+            if (word.toLowerCase().includes(query) || info.arti.toLowerCase().includes(query)) {
+                results.push({ word, ...info });
+            }
+            if (results.length >= 30) break;
+        }
+
+        if (results.length === 0) {
+            resultsDiv.innerHTML = '<div style="padding: 10px; color: #00ffcc; text-align: center; font-size: 11px;">Kosakata tidak ditemukan.</div>';
+            return;
+        }
+
+        let html = '';
+        for (let item of results) {
+            html += `
+                <div style="padding: 8px 12px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+                    <div><span style="color: #00ffcc; font-weight: bold;">${item.word}</span> <span style="color: #888; font-style: italic;">[${item.kelas_kata}]</span></div>
+                    <div style="color: #fff; text-align: right; max-width: 55%;">${item.arti}</div>
+                </div>
+            `;
+        }
+        resultsDiv.innerHTML = html;
+    };
 
     const translations = {
         id: {
