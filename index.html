@@ -172,9 +172,29 @@
             align-items: center;
             background: #111;
             border: 1px solid #444;
-            padding: 8px 14px;
+            padding: 10px 14px;
             margin-bottom: 16px;
             font-size: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group select {
+            background: #000;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            padding: 4px 8px;
+            font-family: inherit;
+            font-size: 11px;
+            outline: none;
+            cursor: pointer;
         }
 
         .grid-container {
@@ -356,6 +376,7 @@
             .controls .btn-group { display: flex; flex-direction: column; width: 100%; }
             .controls .btn-group button { width: 100%; text-align: center; padding: 10px; font-size: 13px; }
             .grid-container { grid-template-columns: 1fr; }
+            .sorting-bar { flex-direction: column; align-items: flex-start; }
             .cli-prompt-line { flex-direction: column; align-items: stretch; }
             .cli-prompt-line button { width: 100%; padding: 8px; }
         }
@@ -410,10 +431,27 @@
         </div>
     </div>
 
-    <!-- Sorting Bar -->
+    <!-- Sorting & Filtering Bar -->
     <div class="sorting-bar">
-        <span id="sort-info-label" style="color: #00ffcc;">URUTAN TAMPILAN: TERBARU</span>
-        <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc;">[ SWITCH: TERLAMA ]</button>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span id="sort-info-label" style="color: #00ffcc; font-weight: bold;">URUTAN: TERBARU</span>
+            <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc;">[ SWITCH: TERLAMA ]</button>
+        </div>
+        
+        <!-- Filter khusus Staff / Semua Transaksi -->
+        <div class="filter-group" id="staff-filter-panel" style="display: none;">
+            <span style="color: #aaa; font-size: 11px;">FILTER STAFF:</span>
+            <select id="filter-task-status" onchange="renderGrid()">
+                <option value="ALL">Semua Status Tugas</option>
+                <option value="COMPLETED">Saja Selesai ✓</option>
+                <option value="PENDING">Belum Dikerjakan ⏳</option>
+            </select>
+            <select id="filter-pay-type" onchange="renderGrid()">
+                <option value="ALL">Semua Jenis Bayar</option>
+                <option value="DP50">DP 50%</option>
+                <option value="FULL">Bayar Penuh (FULL)</option>
+            </select>
+        </div>
     </div>
 
     <div id="feed-grid" class="grid-container"></div>
@@ -425,7 +463,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi (Sorting & Checklist Active).</div>
+            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi (Advanced Sorting & Filtering Active).</div>
         </div>
     </div>
 </div>
@@ -685,7 +723,7 @@
     window.userRole = 'CUSTOMER';
     window.currentTab = 'FEED';
     window.currentLang = 'id';
-    window.sortNewest = true; // State Sorting (true = Terbaru, false = Terlama)
+    window.sortNewest = true; 
 
     window.jobsList = [];
     window.transactionsList = [];
@@ -766,12 +804,11 @@
         document.getElementById('exec-btn').innerText = t.cliExec;
     }
 
-    // Fungsi Toggle Urutan Sortir (Terbaru vs Terlama)
     window.toggleSortingOrder = function() {
         window.sortNewest = !window.sortNewest;
         const label = window.sortNewest ? "TERBARU" : "TERLAMA";
         const switchLabel = window.sortNewest ? "TERLAMA" : "TERBARU";
-        document.getElementById('sort-info-label').innerText = `URUTAN TAMPILAN: ${label}`;
+        document.getElementById('sort-info-label').innerText = `URUTAN: ${label}`;
         document.getElementById('sort-toggle-btn').innerText = `[ SWITCH: ${switchLabel} ]`;
         window.renderGrid();
         addLog(`[SORT] Urutan diubah ke ${label}.`);
@@ -864,6 +901,10 @@
         document.getElementById('btn-action-manage-emp').style.display = window.userRole === 'ADMIN' ? 'inline-block' : 'none';
         document.getElementById('tab-all-orders').style.display = isStaff ? 'inline-block' : 'none';
         document.getElementById('btn-action-request').style.display = 'inline-block';
+        
+        // Tampilkan filter panel khusus di tab SEMUA TRANSAKSI (STAFF)
+        const staffFilterPanel = document.getElementById('staff-filter-panel');
+        staffFilterPanel.style.display = (window.currentTab === 'ALL_ORDERS' && isStaff) ? 'flex' : 'none';
     };
 
     window.toggleRole = function() {
@@ -922,6 +963,7 @@
         document.getElementById('tab-orders').classList.toggle('active', tab === 'ORDERS');
         const tabAll = document.getElementById('tab-all-orders');
         if (tabAll) tabAll.classList.toggle('active', tab === 'ALL_ORDERS');
+        window.updateUserInterface();
         window.renderGrid();
     };
 
@@ -983,7 +1025,6 @@
         let customRequests = window.jobsList.filter(j => j.type === 'custom_request' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
         let allTransactions = [...window.transactionsList];
 
-        // Terapkan Sorting berdasarkan timestamp (createdAt atau ID berbasis waktu)
         const sortFn = (a, b) => {
             let timeA = a.createdAt || parseInt((a.id || '').replace(/[^0-9]/g, '')) || 0;
             let timeB = b.createdAt || parseInt((b.id || '').replace(/[^0-9]/g, '')) || 0;
@@ -999,11 +1040,29 @@
         document.getElementById('stat-orders').innerText = window.transactionsList.length;
 
         if (window.currentTab === 'ALL_ORDERS' && isStaff) {
-            if (allTransactions.length === 0) {
+            // Ambil nilai filter staff
+            const taskFilter = document.getElementById('filter-task-status').value;
+            const payFilter = document.getElementById('filter-pay-type').value;
+
+            // Terapkan filter tambahan
+            let filteredTransactions = allTransactions.filter(tx => {
+                let matchTask = true;
+                if (taskFilter === 'COMPLETED') matchTask = tx.isCompleted === true;
+                if (taskFilter === 'PENDING') matchTask = !tx.isCompleted;
+
+                let matchPay = true;
+                if (payFilter === 'DP50') matchPay = tx.paymentType === 'DP50';
+                if (payFilter === 'FULL') matchPay = tx.paymentType === 'FULL';
+
+                return matchTask && matchPay;
+            });
+
+            if (filteredTransactions.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #fff; padding: 40px; font-weight: bold;">${translations[window.currentLang].noTrans}</div>`;
                 return;
             }
-            allTransactions.forEach(tx => {
+            
+            filteredTransactions.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
                 let proofsHtml = '';
@@ -1025,7 +1084,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
-                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${tx.paymentType})</div>
+                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${escapeHtml(tx.paymentType)})</div>
                         <p class="card-desc" style="margin-top:4px;">Method: ${escapeHtml(tx.paymentMethod)} | Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
                         ${taskCheckboxHtml}
                         ${proofsHtml}
