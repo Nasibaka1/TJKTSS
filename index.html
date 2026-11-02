@@ -166,6 +166,17 @@
             color: #000000;
         }
 
+        .sorting-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111;
+            border: 1px solid #444;
+            padding: 8px 14px;
+            margin-bottom: 16px;
+            font-size: 12px;
+        }
+
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -173,7 +184,6 @@
             margin-bottom: 20px;
         }
 
-        /* Improved High-Contrast Card UI */
         .card {
             border: 1.5px solid #666;
             background: #0d0d0d;
@@ -196,7 +206,6 @@
         .card-price { color: #00ffcc; font-weight: bold; font-size: 14px; }
         .card-desc { font-size: 13px; color: #e0e0e0; line-height: 1.4; }
         
-        /* High Contrast Meta Info */
         .card-meta { 
             font-size: 12px; 
             color: #ffffff; 
@@ -226,7 +235,6 @@
             border-color: #00ffcc;
         }
 
-        /* Checkbox Task Control for Staff */
         .task-status-box {
             display: flex;
             align-items: center;
@@ -402,6 +410,12 @@
         </div>
     </div>
 
+    <!-- Sorting Bar -->
+    <div class="sorting-bar">
+        <span id="sort-info-label" style="color: #00ffcc;">URUTAN TAMPILAN: TERBARU</span>
+        <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc;">[ SWITCH: TERLAMA ]</button>
+    </div>
+
     <div id="feed-grid" class="grid-container"></div>
 
     <div class="cli-section">
@@ -411,7 +425,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi (High Contrast UI & Task Checklist Active).</div>
+            <div class="log-entry">[SYS] Mesin TJKTSS Berhasil Diinisialisasi (Sorting & Checklist Active).</div>
         </div>
     </div>
 </div>
@@ -671,6 +685,7 @@
     window.userRole = 'CUSTOMER';
     window.currentTab = 'FEED';
     window.currentLang = 'id';
+    window.sortNewest = true; // State Sorting (true = Terbaru, false = Terlama)
 
     window.jobsList = [];
     window.transactionsList = [];
@@ -750,6 +765,17 @@
         document.getElementById('cli-input').placeholder = t.cliPlaceholder;
         document.getElementById('exec-btn').innerText = t.cliExec;
     }
+
+    // Fungsi Toggle Urutan Sortir (Terbaru vs Terlama)
+    window.toggleSortingOrder = function() {
+        window.sortNewest = !window.sortNewest;
+        const label = window.sortNewest ? "TERBARU" : "TERLAMA";
+        const switchLabel = window.sortNewest ? "TERLAMA" : "TERBARU";
+        document.getElementById('sort-info-label').innerText = `URUTAN TAMPILAN: ${label}`;
+        document.getElementById('sort-toggle-btn').innerText = `[ SWITCH: ${switchLabel} ]`;
+        window.renderGrid();
+        addLog(`[SORT] Urutan diubah ke ${label}.`);
+    };
 
     onSnapshot(collection(db, "joki"), (snapshot) => {
         window.jobsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -920,7 +946,6 @@
         }
     };
 
-    // Fungsi Centang Tugas Joki oleh Staff / Admin
     window.toggleTaskCompletion = async function(txId, isChecked) {
         const staffName = window.currentUser;
         await updateDoc(doc(db, "transactions", txId), {
@@ -953,19 +978,32 @@
         const grid = document.getElementById('feed-grid');
         grid.innerHTML = '';
         const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
-        const activeServices = window.jobsList.filter(j => j.type === 'marketplace' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
-        const customRequests = window.jobsList.filter(j => j.type === 'custom_request' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
+        
+        let activeServices = window.jobsList.filter(j => j.type === 'marketplace' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
+        let customRequests = window.jobsList.filter(j => j.type === 'custom_request' && (isStaff || j.status === 'open' || j.authorName === window.currentUser));
+        let allTransactions = [...window.transactionsList];
+
+        // Terapkan Sorting berdasarkan timestamp (createdAt atau ID berbasis waktu)
+        const sortFn = (a, b) => {
+            let timeA = a.createdAt || parseInt((a.id || '').replace(/[^0-9]/g, '')) || 0;
+            let timeB = b.createdAt || parseInt((b.id || '').replace(/[^0-9]/g, '')) || 0;
+            return window.sortNewest ? (timeB - timeA) : (timeA - timeB);
+        };
+
+        activeServices.sort(sortFn);
+        customRequests.sort(sortFn);
+        allTransactions.sort(sortFn);
 
         document.getElementById('stat-active').innerText = activeServices.length;
         document.getElementById('stat-custom').innerText = customRequests.length;
         document.getElementById('stat-orders').innerText = window.transactionsList.length;
 
         if (window.currentTab === 'ALL_ORDERS' && isStaff) {
-            if (window.transactionsList.length === 0) {
+            if (allTransactions.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #fff; padding: 40px; font-weight: bold;">${translations[window.currentLang].noTrans}</div>`;
                 return;
             }
-            window.transactionsList.forEach(tx => {
+            allTransactions.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
                 let proofsHtml = '';
@@ -974,7 +1012,6 @@
                 
                 let staffBtn = tx.status === 'PENDING_REMAINING_APPROVAL' ? `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>` : '';
 
-                // Checkbox Staff untuk Centang Pekerjaan
                 let taskCheckboxHtml = `
                     <div class="task-status-box">
                         <input type="checkbox" ${tx.isCompleted ? 'checked' : ''} onchange="toggleTaskCompletion('${tx.id}', this.checked)">
@@ -1013,7 +1050,9 @@
         }
 
         if (window.currentTab === 'ORDERS') {
-            const userTransactions = window.transactionsList.filter(t => t.customerName === window.currentUser);
+            let userTransactions = window.transactionsList.filter(t => t.customerName === window.currentUser);
+            userTransactions.sort(sortFn);
+
             if (userTransactions.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #fff; padding: 40px; font-weight: bold;">${translations[window.currentLang].noTrans}</div>`;
                 return;
@@ -1124,7 +1163,7 @@
         const fileInput = document.getElementById('post-img');
         const process = async (imgStr) => {
             const jobId = 'job-' + Date.now();
-            await setDoc(doc(db, "joki", jobId), { id: jobId, title, price, description: document.getElementById('post-desc').value.trim(), image: imgStr, type: 'marketplace', status: 'open', authorName: window.currentUser, requestedAt: window.getCurrentFormattedTimestamp() });
+            await setDoc(doc(db, "joki", jobId), { id: jobId, title, price, description: document.getElementById('post-desc').value.trim(), image: imgStr, type: 'marketplace', status: 'open', authorName: window.currentUser, createdAt: Date.now(), requestedAt: window.getCurrentFormattedTimestamp() });
             window.closeModal('post-modal');
             addLog(`[MARKETPLACE] Published service '${title}'.`);
         };
@@ -1167,7 +1206,7 @@
                 const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
                 const payType = document.getElementById('custom-pay-type').value;
 
-                await setDoc(doc(db, "joki", jobId), { id: jobId, title, price: budget, deadline: document.getElementById('custom-deadline').value.trim(), description: document.getElementById('custom-desc').value.trim(), phone, taskLink: document.getElementById('custom-file-link').value.trim(), type: 'custom_request', status: 'in_progress', assignedTo: window.currentUser, authorName: window.currentUser, requestedAt: window.getCurrentFormattedTimestamp() });
+                await setDoc(doc(db, "joki", jobId), { id: jobId, title, price: budget, deadline: document.getElementById('custom-deadline').value.trim(), description: document.getElementById('custom-desc').value.trim(), phone, taskLink: document.getElementById('custom-file-link').value.trim(), type: 'custom_request', status: 'in_progress', assignedTo: window.currentUser, authorName: window.currentUser, createdAt: Date.now(), requestedAt: window.getCurrentFormattedTimestamp() });
                 await setDoc(doc(db, "transactions", txId), { id: txId, jobId, jobTitle: title, customerName: window.currentUser, phone, taskLink: document.getElementById('custom-file-link').value.trim(), totalPrice: budget, paymentType: payType, paymentMethod: document.getElementById('custom-pay-method').value, amountPaid: payType === 'DP50' ? budget * 0.5 : budget, proofImage: proofData, status: payType === 'DP50' ? 'PENDING_DP' : 'PENDING_VERIFICATION', isCompleted: false, completedBy: null, createdAt: Date.now(), requestedAt: window.getCurrentFormattedTimestamp() });
 
                 window.closeModal('custom-modal');
