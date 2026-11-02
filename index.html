@@ -443,13 +443,6 @@
                 <option value="COMPLETED">SELESAI DIKERJAKAN</option>
                 <option value="PENDING">BELUM SELESAI</option>
             </select>
-            <span style="color: #00ffcc; font-weight: bold; margin-left: 6px;">[ PEMBAYARAN ]:</span>
-            <select id="filter-payment-select" onchange="window.renderGrid()">
-                <option value="ALL">SEMUA</option>
-                <option value="DP">CUSTOM DP</option>
-                <option value="DP50">DP 50%</option>
-                <option value="FULL">FULL 100%</option>
-            </select>
         </div>
     </div>
 
@@ -462,7 +455,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized. No upfront payment on request. Payment options appear after worker accepts.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized. Payment unlocks after worker accepts.</div>
         </div>
     </div>
 </div>
@@ -530,10 +523,10 @@
     </div>
 </div>
 
-<!-- Modal: Custom Request (Tanpa Pembayaran di Awal) -->
+<!-- Modal: Custom Request -->
 <div class="modal-overlay" id="custom-modal">
     <div class="modal-box">
-        <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM (TANPA PEMBAYARAN DI AWAL)</div>
+        <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM</div>
         <div class="modal-field">
             <label id="m-label-cust-title">JUDUL TUGAS</label>
             <input type="text" id="custom-title" placeholder="cth., Konfigurasi Debian 12 BIND9 DNS">
@@ -577,12 +570,12 @@
     </div>
 </div>
 
-<!-- Modal: Checkout / Order Payment (Hanya muncul saat pekerja sudah ACCEPT) -->
+<!-- Modal: Checkout / Order Payment (Bersih Tanpa Opsi DP) -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
-        <div class="modal-title">PEMBAYARAN / DP (MUNCUL SETELAH DITERIMA PEKERJA)</div>
-        <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 8px; color: #fff;"></p>
-        <p id="checkout-item-price" style="color: #00ffcc; font-size: 14px; margin-bottom: 12px; font-weight: bold;"></p>
+        <div class="modal-title">PEMBAYARAN PESANAN</div>
+        <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 4px; color: #fff;"></p>
+        <p id="checkout-item-price" style="color: #00ffcc; font-size: 15px; margin-bottom: 14px; font-weight: bold;"></p>
 
         <div class="modal-field">
             <label>NOMOR TELEPON / WHATSAPP</label>
@@ -592,20 +585,6 @@
         <div class="modal-field">
             <label>LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
             <input type="text" id="order-task-link" placeholder="cth., Link Google Drive">
-        </div>
-
-        <div class="modal-field" id="pay-type-container">
-            <label>PILIH METODE PEMBAYARAN / DP</label>
-            <select id="pay-type" onchange="onPaymentTypeChange()">
-                <option value="DP50">Down Payment (DP) 50%</option>
-                <option value="DP">Custom DP (Masukkan Nominal Sendiri)</option>
-                <option value="FULL">Bayar Penuh (100% / Pelunasan)</option>
-            </select>
-        </div>
-
-        <div class="modal-field" id="custom-dp-input-container" style="display: none;">
-            <label>JUMLAH NOMINAL CUSTOM DP</label>
-            <input type="text" id="custom-dp-amount" placeholder="cth., 10000 atau 10rb" oninput="calculateCheckout()">
         </div>
 
         <div id="payment-details-wrapper">
@@ -635,15 +614,15 @@
                 <button onclick="copyNumber('08977246853')" style="font-size: 10px; padding: 3px 8px;">[SALIN NOMOR]</button>
             </div>
 
-            <div class="modal-field" style="margin-top: 12px;" id="proof-img-container">
-                <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (OPSIONAL / BISA DIKIRIM NANTI)</label>
+            <div class="modal-field" style="margin-top: 12px;">
+                <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (OPSIONAL)</label>
                 <input type="file" id="pay-proof-img" accept="image/*">
             </div>
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
             <button onclick="closeModal('checkout-modal')">BATAL</button>
-            <button onclick="confirmOrder()">SIMPAN / KONFIRMASI PEMBAYARAN</button>
+            <button onclick="confirmOrder()">KONFIRMASI PEMBAYARAN</button>
         </div>
     </div>
 </div>
@@ -983,7 +962,6 @@
         document.getElementById('img-viewer-modal').style.display = 'flex';
     };
 
-    // Staff Acceptance Actions (Pekerja / Admin Menerima Job)
     window.acceptJob = async function(jobId) {
         await updateDoc(doc(db, "joki", jobId), { status: 'accepted', assignedWorker: window.currentUser });
         addLog(`[STAFF] Order diterima oleh ${window.currentUser}. Tugas sedang dikerjakan.`);
@@ -1014,12 +992,9 @@
 
         const filterTransactions = (list) => {
             const statusFilter = document.getElementById('filter-status-select').value;
-            const paymentFilter = document.getElementById('filter-payment-select').value;
-
             return list.filter(tx => {
                 if (statusFilter === 'COMPLETED' && !tx.isCompleted) return false;
                 if (statusFilter === 'PENDING' && tx.isCompleted) return false;
-                if (paymentFilter !== 'ALL' && tx.paymentType !== paymentFilter) return false;
                 return true;
             });
         };
@@ -1035,10 +1010,7 @@
                 card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
                 let proofsHtml = '';
                 if (tx.proofImage) proofsHtml += `<div style="font-size:11px; color:#00ffcc; margin-top:6px; font-weight:bold;">BUKTI PEMBAYARAN:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')">`;
-                if (tx.proofImageRemaining) proofsHtml += `<div style="font-size:11px; color:#00ffcc; margin-top:6px; font-weight:bold;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" style="border-color:#00ffcc;">`;
                 
-                let staffBtn = tx.status === 'PENDING_REMAINING_APPROVAL' ? `<button onclick="confirmRemainingPaymentStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">KONFIRMASI LUNAS</button>` : '';
-
                 let taskCheckboxHtml = `
                     <div class="task-status-box">
                         <input type="checkbox" ${tx.isCompleted ? 'checked' : ''} onchange="toggleTaskCompletion('${tx.id}', this.checked)">
@@ -1052,7 +1024,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
-                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${escapeHtml(tx.paymentType)})</div>
+                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>
                         <p class="card-desc" style="margin-top:4px;">Method: ${escapeHtml(tx.paymentMethod)} | Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
                         ${taskCheckboxHtml}
                         ${proofsHtml}
@@ -1066,7 +1038,6 @@
                             <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
                         </div>
                         <div style="margin-top: 12px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
-                            ${staffBtn}
                             <button class="btn-del" onclick="deleteTransaction('${tx.id}')">DEL TX</button>
                         </div>
                     </div>
@@ -1090,14 +1061,6 @@
                 card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
                 let proofsHtml = '';
                 if (tx.proofImage) proofsHtml += `<div style="font-size:11px; color:#00ffcc; margin-top:6px; font-weight:bold;">BUKTI PEMBAYARAN:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')">`;
-                if (tx.proofImageRemaining) proofsHtml += `<div style="font-size:11px; color:#00ffcc; margin-top:6px; font-weight:bold;">BUKTI PELUNASAN:</div><img src="${tx.proofImageRemaining}" class="card-img-preview" onclick="viewFullImage('${tx.proofImageRemaining}')" style="border-color:#00ffcc;">`;
-                
-                let payRemBtn = '';
-                if ((tx.paymentType === 'DP50' || tx.paymentType === 'DP') && tx.status !== 'PAID_FULL' && tx.status !== 'PENDING_REMAINING_APPROVAL') {
-                    payRemBtn = `<button onclick="openRemainingCheckout('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; margin-right: 6px;">BAYAR SISA PELUNASAN</button>`;
-                } else if (tx.status === 'PENDING_REMAINING_APPROVAL') {
-                    payRemBtn = `<span style="color:#00ffcc; font-size:12px; margin-right:6px; font-weight:bold;">[MENUNGGU KONFIRMASI]</span>`;
-                }
 
                 let cancelBtn = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - (Date.now() - (tx.createdAt || 0)) / (1000 * 60)) > 0 ? `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL</button>` : '';
 
@@ -1108,7 +1071,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
-                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid (${escapeHtml(tx.paymentType)})</div>
+                        <div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>
                         <p class="card-desc" style="margin-top:4px;">Method: ${escapeHtml(tx.paymentMethod)} | Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
                         ${statusPekerjaanBadge}
                         ${proofsHtml}
@@ -1121,7 +1084,6 @@
                             <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
                         </div>
                         <div style="margin-top: 12px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
-                            ${payRemBtn}
                             ${cancelBtn}
                         </div>
                     </div>
@@ -1143,15 +1105,13 @@
             
             let actionBtn = '';
             if (job.status === 'accepted') {
-                // Begitu di-accept pekerja, muncul tombol pembayaran opsional bagi customer
                 const alreadyOrdered = window.transactionsList.some(t => t.customerName === window.currentUser && t.jobId === job.id);
                 if (alreadyOrdered) {
                     actionBtn = `<span style="color:#00ffcc; font-size:12px; font-weight:bold;">[TRANSAKSI TERCATAT - SEDANG DIKERJAKAN]</span>`;
                 } else {
-                    actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b;">[BAYAR DP / FULL SEKARANG]</button>`;
+                    actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b;">[BAYAR SEKARANG]</button>`;
                 }
             } else {
-                // Status open -> Menunggu pekerja menerima
                 actionBtn = isStaff ? 
                     `<button onclick="acceptJob('${job.id}')" style="border-color: #00ffcc; color: #00ffcc;">[TERIMA JOKI & MULAI KERJAKAN]</button>` : 
                     `<span style="color:#ffaa00; font-size:12px; font-weight:bold;">⏳ MENUNGGU PEKERJA / ADMIN MENERIMA ORDER</span>`;
@@ -1187,7 +1147,6 @@
     window.openCustomRequestModal = function() { document.getElementById('custom-modal').style.display = 'flex'; };
     window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
 
-    // Submit Custom Request TANPA pembayaran di awal (murni mendaftarkan tugas ke status 'open')
     window.submitCustomRequestOnly = async function() {
         const title = document.getElementById('custom-title').value.trim();
         const budget = window.parseAmountToNumber(document.getElementById('custom-budget').value);
@@ -1205,7 +1164,7 @@
             phone,
             taskLink: document.getElementById('custom-file-link').value.trim(),
             type: 'custom_request',
-            status: 'open', // Murni open menunggu pekerja accept, TIDAK ADA PEMBAYARAN DI AWAL
+            status: 'open',
             authorName: window.currentUser,
             createdAt: Date.now(),
             requestedAt: window.getCurrentFormattedTimestamp()
@@ -1213,7 +1172,7 @@
 
         window.closeModal('custom-modal');
         window.switchTab('CUSTOM');
-        addLog(`[CUSTOM] Tugas kustom diajukan tanpa pembayaran di awal. Menunggu pekerja menerima.`);
+        addLog(`[CUSTOM] Tugas kustom diajukan tanpa pembayaran di awal. Menunggu pekerja.`);
     };
 
     window.submitPost = function() {
@@ -1251,7 +1210,6 @@
     };
 
     let selectedCheckoutJob = null;
-    let activeRemainingTxId = null;
 
     window.openCheckoutModal = function(jobId) {
         selectedCheckoutJob = window.jobsList.find(j => j.id === jobId);
@@ -1262,66 +1220,15 @@
             return;
         }
 
-        activeRemainingTxId = null;
         document.getElementById('checkout-item-title').innerText = selectedCheckoutJob.title;
-        document.getElementById('pay-type-container').style.display = 'block';
+        document.getElementById('checkout-item-price').innerText = `TOTAL PEMBAYARAN: ${formatRupiah(selectedCheckoutJob.price)}`;
+        document.getElementById('qris-amount').innerText = formatRupiah(selectedCheckoutJob.price);
+        document.getElementById('ewallet-amount').innerText = formatRupiah(selectedCheckoutJob.price);
+
         document.getElementById('order-phone').value = selectedCheckoutJob.phone || '';
         document.getElementById('order-task-link').value = selectedCheckoutJob.taskLink || '';
         document.getElementById('pay-proof-img').value = '';
-        document.getElementById('pay-type').value = 'DP50'; // Default DP 50%
-        document.getElementById('custom-dp-input-container').style.display = 'none';
-        window.onPaymentTypeChange();
-        window.calculateCheckout();
         document.getElementById('checkout-modal').style.display = 'flex';
-    };
-
-    window.openRemainingCheckout = function(txId) {
-        const tx = window.transactionsList.find(t => t.id === txId);
-        if (!tx) return;
-        activeRemainingTxId = tx.id;
-        selectedCheckoutJob = { id: tx.jobId, title: tx.jobTitle, price: tx.totalPrice };
-        document.getElementById('checkout-item-title').innerText = `PELUNASAN SISA: ${tx.jobTitle}`;
-        document.getElementById('pay-type-container').style.display = 'none';
-        document.getElementById('custom-dp-input-container').style.display = 'none';
-        document.getElementById('payment-details-wrapper').style.display = 'block';
-        document.getElementById('pay-proof-img').value = '';
-        const rem = tx.totalPrice - tx.amountPaid;
-        document.getElementById('checkout-item-price').innerText = `TOTAL SISA PELUNASAN: ${formatRupiah(rem)}`;
-        document.getElementById('qris-amount').innerText = formatRupiah(rem);
-        document.getElementById('ewallet-amount').innerText = formatRupiah(rem);
-        document.getElementById('checkout-modal').style.display = 'flex';
-    };
-
-    window.onPaymentTypeChange = function() {
-        const payType = document.getElementById('pay-type').value;
-        const customContainer = document.getElementById('custom-dp-input-container');
-        if (payType === 'DP') {
-            customContainer.style.display = 'block';
-        } else {
-            customContainer.style.display = 'none';
-        }
-        window.calculateCheckout();
-    };
-
-    window.calculateCheckout = function() {
-        if (!selectedCheckoutJob || activeRemainingTxId) return;
-        const payType = document.getElementById('pay-type').value;
-        let finalAmt = selectedCheckoutJob.price;
-
-        if (payType === 'DP50') {
-            finalAmt = selectedCheckoutJob.price * 0.5;
-        } else if (payType === 'DP') {
-            const customInput = document.getElementById('custom-dp-amount').value;
-            finalAmt = window.parseAmountToNumber(customInput);
-            if (finalAmt <= 0) finalAmt = 0;
-            if (finalAmt >= selectedCheckoutJob.price) {
-                finalAmt = selectedCheckoutJob.price;
-            }
-        }
-
-        document.getElementById('checkout-item-price').innerText = `TOTAL PEMBAYARAN SEKARANG: ${formatRupiah(finalAmt)}`;
-        document.getElementById('qris-amount').innerText = formatRupiah(finalAmt);
-        document.getElementById('ewallet-amount').innerText = formatRupiah(finalAmt);
     };
 
     window.togglePaymentInstructions = function() {
@@ -1336,12 +1243,10 @@
     };
 
     window.confirmOrder = function() {
-        const payType = document.getElementById('pay-type').value;
         const phone = document.getElementById('order-phone').value.trim();
         if (!phone) { alert('Nomor telepon wajib diisi!'); return; }
 
         const proofInput = document.getElementById('pay-proof-img');
-        
         if (!proofInput.files[0]) {
             proceedWithProof(null);
             return;
@@ -1362,31 +1267,6 @@
     };
 
     async function proceedWithProof(proofData) {
-        const payType = document.getElementById('pay-type').value;
-        if (activeRemainingTxId) {
-            await updateDoc(doc(db, "transactions", activeRemainingTxId), { status: 'PENDING_REMAINING_APPROVAL', proofImageRemaining: proofData || '' });
-            window.closeModal('checkout-modal');
-            addLog(`[PAYMENT] Bukti pelunasan dikirim.`);
-        } else {
-            let paidAmount = selectedCheckoutJob.price;
-            if (payType === 'DP50') {
-                paidAmount = selectedCheckoutJob.price * 0.5;
-            } else if (payType === 'DP') {
-                paidAmount = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value);
-                if (paidAmount <= 0) paidAmount = selectedCheckoutJob.price * 0.5;
-            }
-
-            saveTransactionData({
-                payType,
-                amountPaid: paidAmount,
-                paymentMethod: document.getElementById('pay-method').value,
-                proofImage: proofData || '',
-                status: (payType === 'FULL') ? 'PENDING_VERIFICATION' : 'PENDING_DP'
-            });
-        }
-    }
-
-    async function saveTransactionData(txData) {
         const phone = document.getElementById('order-phone').value.trim();
         const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
 
@@ -1398,11 +1278,10 @@
             phone,
             taskLink: document.getElementById('order-task-link').value.trim(),
             totalPrice: selectedCheckoutJob.price,
-            paymentType: txData.payType,
-            paymentMethod: txData.paymentMethod,
-            amountPaid: txData.amountPaid,
-            proofImage: txData.proofImage,
-            status: txData.status,
+            paymentMethod: document.getElementById('pay-method').value,
+            amountPaid: selectedCheckoutJob.price,
+            proofImage: proofData || '',
+            status: 'PENDING_VERIFICATION',
             isCompleted: false,
             completedBy: null,
             createdAt: Date.now(),
@@ -1411,7 +1290,7 @@
 
         window.closeModal('checkout-modal');
         window.switchTab('ORDERS');
-        addLog(`[ORDER] Transaksi tercatat (${txData.payType}).`);
+        addLog(`[ORDER] Pembayaran tercatat.`);
     }
 
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
@@ -1444,22 +1323,146 @@
 
     function startBgAnimation(type) {
         window.activeBgGame = type;
+        const canvas = document.getElementById('game-bg-layer');
+        canvas.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+
+        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+
+        if (type === 'tetris') {
+            runBgTetrisLoop(ctx, canvas);
+        } else {
+            runBgSnakeLoop(ctx, canvas);
+        }
     }
 
     window.stopBgAnimation = function() {
         window.activeBgGame = null;
+        const canvas = document.getElementById('game-bg-layer');
+        canvas.style.display = 'none';
+        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
+        bgGameAnimId = null;
+    };
+
+    function runBgTetrisLoop(ctx, canvas) {
+        let blocks = Array.from({length: 25}, () => ({
+            x: Math.floor(Math.random() * (canvas.width / 30)) * 30,
+            y: Math.random() * -canvas.height,
+            size: 28,
+            speed: Math.random() * 1.5 + 0.8,
+            color: '#00ffcc'
+        }));
+
+        function loop() {
+            if (window.activeBgGame !== 'tetris') return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            blocks.forEach(b => {
+                b.y += b.speed;
+                if (b.y > canvas.height) {
+                    b.y = -30;
+                    b.x = Math.floor(Math.random() * (canvas.width / 30)) * 30;
+                }
+                ctx.fillStyle = b.color;
+                ctx.fillRect(b.x, b.y, b.size, b.size);
+            });
+            bgGameAnimId = requestAnimationFrame(loop);
+        }
+        loop();
+    }
+
+    function runBgSnakeLoop(ctx, canvas) {
+        let snakes = [
+            { snake: [{x:100, y:100}, {x:90, y:100}, {x:80, y:100}], dx: 10, dy: 0, food: {x: 300, y: 300}, color: '#00ffcc' },
+            { snake: [{x:400, y:200}, {x:390, y:200}, {x:380, y:200}], dx: 0, dy: 10, food: {x: 200, y: 400}, color: '#00aa88' },
+            { snake: [{x:200, y:500}, {x:200, y:510}, {x:200, y:520}], dx: -10, dy: 0, food: {x: 500, y: 100}, color: '#55ffcc' }
+        ];
+        let frame = 0;
+
+        function loop() {
+            if (window.activeBgGame !== 'snake') return;
+            frame++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            snakes.forEach(s => {
+                ctx.fillStyle = '#ff5555';
+                ctx.fillRect(s.food.x, s.food.y, 8, 8);
+
+                if (frame % 12 === 0) {
+                    let head = {x: s.snake[0].x + s.dx, y: s.snake[0].y + s.dy};
+                    if (head.x >= canvas.width) head.x = 0;
+                    if (head.x < 0) head.x = canvas.width - 10;
+                    if (head.y >= canvas.height) head.y = 0;
+                    if (head.y < 0) head.y = canvas.height - 10;
+
+                    s.snake.unshift(head);
+
+                    if (Math.abs(head.x - s.food.x) < 8 && Math.abs(head.y - s.food.y) < 8) {
+                        s.food = { x: Math.floor(Math.random()*(canvas.width/20))*20, y: Math.floor(Math.random()*(canvas.height/20))*20 };
+                    } else {
+                        s.snake.pop();
+                    }
+
+                    if (Math.random() < 0.15) {
+                        let dirs = [{dx:10,dy:0}, {dx:-10,dy:0}, {dx:0,dy:10}, {dx:0,dy:-10}];
+                        let d = dirs[Math.floor(Math.random()*dirs.length)];
+                        s.dx = d.dx; s.dy = d.dy;
+                    }
+                }
+
+                s.snake.forEach((p, idx) => {
+                    ctx.fillStyle = idx === 0 ? s.color : '#006655';
+                    ctx.fillRect(p.x, p.y, 8, 8);
+                });
+            });
+
+            bgGameAnimId = requestAnimationFrame(loop);
+        }
+        loop();
     }
 
     function addLog(msg) {
         const logBox = document.getElementById('log-box');
-        const div = document.createElement('div');
-        div.className = 'log-entry'; div.innerText = msg;
-        logBox.appendChild(div);
+        const dt = document.createElement('div');
+        dt.className = 'log-entry'; dt.innerText = msg;
+        logBox.appendChild(dt);
         logBox.scrollTop = logBox.scrollHeight;
     }
 
     function formatRupiah(num) { return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num) + " Rp"; }
     function escapeHtml(text) { return (text || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+    function initParticles() {
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize(); window.addEventListener('resize', resize);
+        const particles = Array.from({length: 45}, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 + 0.3
+        }));
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    }
+    initParticles();
 </script>
+
 </body>
 </html>
