@@ -186,7 +186,7 @@
             flex-wrap: wrap;
         }
 
-        .sorting-group select {
+        .sorting-group select, .sorting-group input {
             background: #000;
             color: #00ffcc;
             border: 1px solid #00ffcc;
@@ -194,7 +194,10 @@
             font-family: inherit;
             font-size: 12px;
             outline: none;
-            cursor: pointer;
+        }
+
+        .sorting-group input::placeholder {
+            color: #008866;
         }
 
         .grid-container {
@@ -430,7 +433,7 @@
         </div>
     </div>
 
-    <!-- Advanced Sorting & Filtering Bar (Dengan Filter DP & Filter Staff/Pekerja) -->
+    <!-- Advanced Sorting & Filtering Bar (Dengan Search Customer) -->
     <div class="sorting-bar">
         <div class="sorting-group">
             <span style="color: #00ffcc; font-weight: bold;">[ SORT WAKTU ]:</span>
@@ -447,6 +450,7 @@
             <select id="filter-staff-select" onchange="window.renderGrid()">
                 <option value="ALL">SEMUA PEKERJA</option>
             </select>
+            <input type="text" id="filter-customer-input" placeholder="Cari nama customer..." oninput="window.renderGrid()">
         </div>
     </div>
 
@@ -459,7 +463,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized. Staff worker filter added.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized. Customer name search filter added.</div>
         </div>
     </div>
 </div>
@@ -817,6 +821,7 @@
     onSnapshot(collection(db, "settings"), (snapshot) => {
         const empDoc = snapshot.docs.find(d => d.id === 'employees');
         if (empDoc) { window.authorizedEmployees = empDoc.data().list || []; }
+        window.updateStaffFilterDropdown();
         determineUserRole();
         window.updateUserInterface();
     });
@@ -901,11 +906,16 @@
         if (!select) return;
         const currentVal = select.value;
         
-        // Ambil daftar unik staff yang pernah meng-accept transaksi
         const staffSet = new Set();
         window.transactionsList.forEach(tx => {
             if (tx.acceptedBy) staffSet.add(tx.acceptedBy);
+            if (tx.completedBy) staffSet.add(tx.completedBy);
         });
+        window.authorizedEmployees.forEach(email => {
+            let namePart = email.split('@')[0];
+            staffSet.add(namePart);
+        });
+        staffSet.add('Randa');
 
         select.innerHTML = `<option value="ALL">SEMUA PEKERJA</option>`;
         staffSet.forEach(staff => {
@@ -1097,6 +1107,7 @@
         const filterTransactions = (list) => {
             const statusFilter = document.getElementById('filter-status-select').value;
             const staffFilter = document.getElementById('filter-staff-select').value;
+            const customerSearch = (document.getElementById('filter-customer-input').value || '').toLowerCase().trim();
 
             return list.filter(tx => {
                 // Filter status
@@ -1110,7 +1121,13 @@
 
                 // Filter staff / pekerja
                 if (staffFilter && staffFilter !== 'ALL') {
-                    if (tx.acceptedBy !== staffFilter) return false;
+                    if (tx.acceptedBy !== staffFilter && tx.completedBy !== staffFilter) return false;
+                }
+
+                // Filter customer name search
+                if (customerSearch) {
+                    const custName = (tx.customerName || '').toLowerCase();
+                    if (!custName.includes(customerSearch)) return false;
                 }
 
                 return true;
