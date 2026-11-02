@@ -43,7 +43,7 @@
         }
 
         .terminal {
-            max-width: 1100px;
+            max-width: 1300px;
             margin: 0 auto;
             width: 100%;
             flex-grow: 1;
@@ -56,7 +56,7 @@
         header {
             border-bottom: 2px solid #00ffcc;
             padding-bottom: 14px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .title-container {
@@ -65,7 +65,7 @@
 
         .shiny-text-big {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 800;
             letter-spacing: -1px;
             display: inline-block;
@@ -105,12 +105,85 @@
 
         .user-badge:hover { background-color: #00ffcc; color: #000; }
 
+        /* Main App Layout with Sidebar */
+        .app-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 20px;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .sidebar {
+            background: #080808;
+            border: 1px solid #333;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            color: #00ffcc;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 6px;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar button {
+            width: 100%;
+            text-align: left;
+            background-color: #000000;
+            color: #ffffff;
+            border: 1px solid #444;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .sidebar button:hover, .sidebar button.active {
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+        }
+
+        .sidebar button.btn-accent {
+            border-color: #00ffcc;
+            color: #00ffcc;
+        }
+
+        .sidebar button.btn-accent:hover {
+            background-color: #00ffcc;
+            color: #000000;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+
         .stats-bar {
             display: flex;
-            gap: 20px;
+            gap: 16px;
             border: 1px solid #ffffff;
             padding: 10px 14px;
-            margin-bottom: 16px;
             font-size: 13px;
             flex-wrap: wrap;
             background: rgba(15, 15, 15, 0.95);
@@ -126,46 +199,6 @@
             cursor: pointer;
         }
 
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-
-        button {
-            background-color: #000000;
-            color: #ffffff;
-            border: 1px solid #ffffff;
-            padding: 8px 14px;
-            font-family: inherit;
-            font-size: 12px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-            min-height: 38px;
-        }
-
-        button:hover, button.active {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-        button.btn-del {
-            border-color: #ff5555;
-            color: #ff5555;
-            margin-left: 6px;
-        }
-
-        button.btn-del:hover {
-            background-color: #ff5555;
-            color: #000000;
-        }
-
         .sorting-bar {
             display: flex;
             justify-content: space-between;
@@ -173,7 +206,6 @@
             background: #111;
             border: 1px solid #444;
             padding: 8px 14px;
-            margin-bottom: 16px;
             font-size: 12px;
             flex-wrap: wrap;
             gap: 10px;
@@ -202,9 +234,8 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 18px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
         }
 
         .card {
@@ -351,7 +382,7 @@
         .cli-section {
             border: 1px solid #ffffff;
             padding: 12px;
-            margin-top: auto;
+            margin-top: 10px;
             background-color: rgba(10, 10, 10, 0.95);
         }
 
@@ -371,14 +402,13 @@
             font-size: 11px; color: #666; pointer-events: none;
         }
 
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 860px) {
             body { padding: 10px; }
-            .shiny-text-big { font-size: 2.4rem; }
+            .shiny-text-big { font-size: 2.2rem; }
+            .app-layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
             .sys-info { font-size: 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
             .stats-bar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 12px; padding: 10px; }
-            .controls .btn-group { display: flex; flex-direction: column; width: 100%; }
-            .controls .btn-group button { width: 100%; text-align: center; padding: 10px; font-size: 13px; }
-            .grid-container { grid-template-columns: 1fr; }
             .cli-prompt-line { flex-direction: column; align-items: stretch; }
             .cli-prompt-line button { width: 100%; padding: 8px; }
         }
@@ -408,62 +438,73 @@
         <div class="sys-info">
             <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Klik untuk ubah nama">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <button onclick="toggleLanguage()" id="lang-btn" style="font-size: 10px; padding: 6px 10px; border-color: #00ffcc; color: #00ffcc;">[EN]</button>
-                <button onclick="logoutSession()" id="logout-btn" style="font-size: 10px; padding: 6px 10px;">[X] KELUAR</button>
+                <button onclick="toggleLanguage()" id="lang-btn" style="font-size: 10px; padding: 6px 10px; border-color: #00ffcc; color: #00ffcc; background:#000;">[EN]</button>
+                <button onclick="logoutSession()" id="logout-btn" style="font-size: 10px; padding: 6px 10px; background:#000; color:#fff; border:1px solid #fff;">[X] KELUAR</button>
             </div>
         </div>
     </header>
 
-    <div class="stats-bar">
-        <div><span id="label-stat-active">LAYANAN AKTIF</span>: <span id="stat-active">0</span></div>
-        <div><span id="label-stat-custom">PERMINTAAN KUSTOM</span>: <span id="stat-custom">0</span></div>
-        <div><span id="label-stat-orders">TOTAL TRANSAKSI</span>: <span id="stat-orders">0</span></div>
-        <div>ROLE: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
-    </div>
+    <div class="app-layout">
+        <!-- Sidebar Navigation & Actions -->
+        <aside class="sidebar">
+            <div class="sidebar-section-title">[ NAVIGASI ]</div>
+            <div class="sidebar-nav-group">
+                <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
+                <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUEST KUSTOM</button>
+                <button id="tab-orders" onclick="switchTab('ORDERS')">[3] TRANSAKSI SAYA</button>
+                <button id="tab-all-orders" onclick="switchTab('ALL_ORDERS')" style="display:none;" class="btn-accent">[4] SEMUA TRANSAKSI</button>
+            </div>
 
-    <div class="controls">
-        <div class="btn-group" style="width: 100%;">
-            <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
-            <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUEST KUSTOM</button>
-            <button id="tab-orders" onclick="switchTab('ORDERS')">[3] TRANSAKSI SAYA</button>
-            <button id="tab-all-orders" onclick="switchTab('ALL_ORDERS')" style="display:none; border-color: #00ffcc; color: #00ffcc;">[4] SEMUA TRANSAKSI (STAFF)</button>
-            <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none; border-color: #00ffcc; color: #00ffcc;">+ KELOLA PEGAWAI</button>
-            <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
-            <button id="btn-action-request" onclick="openCustomRequestModal()">+ AJUKAN TUGAS KUSTOM</button>
-        </div>
-    </div>
+            <div class="sidebar-section-title" style="margin-top: 10px;">[ AKSI / MENU ]</div>
+            <div class="sidebar-nav-group">
+                <button id="btn-action-request" onclick="openCustomRequestModal()" class="btn-accent">+ AJUKAN KUSTOM</button>
+                <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
+                <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none;" class="btn-accent">+ KELOLA PEGAWAI</button>
+            </div>
+        </aside>
 
-    <!-- Advanced Sorting & Filtering Bar (Dengan Search Customer) -->
-    <div class="sorting-bar">
-        <div class="sorting-group">
-            <span style="color: #00ffcc; font-weight: bold;">[ SORT WAKTU ]:</span>
-            <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc;">[ TERBARU ]</button>
-        </div>
-        <div class="sorting-group" id="filter-container">
-            <span style="color: #00ffcc; font-weight: bold;">[ FILTER ]:</span>
-            <select id="filter-status-select" onchange="window.renderGrid()">
-                <option value="ALL">SEMUA STATUS</option>
-                <option value="DP">PENDING DP (BELUM LUNAS)</option>
-                <option value="COMPLETED">SELESAI DIKERJAKAN</option>
-                <option value="PENDING">BELUM SELESAI</option>
-            </select>
-            <select id="filter-staff-select" onchange="window.renderGrid()">
-                <option value="ALL">SEMUA PEKERJA</option>
-            </select>
-            <input type="text" id="filter-customer-input" placeholder="Cari nama customer..." oninput="window.renderGrid()">
-        </div>
-    </div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="stats-bar">
+                <div><span id="label-stat-active">LAYANAN AKTIF</span>: <span id="stat-active">0</span></div>
+                <div><span id="label-stat-custom">PERMINTAAN KUSTOM</span>: <span id="stat-custom">0</span></div>
+                <div><span id="label-stat-orders">TOTAL TRANSAKSI</span>: <span id="stat-orders">0</span></div>
+                <div>ROLE: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
+            </div>
 
-    <div id="feed-grid" class="grid-container"></div>
+            <!-- Advanced Sorting & Filtering Bar -->
+            <div class="sorting-bar">
+                <div class="sorting-group">
+                    <span style="color: #00ffcc; font-weight: bold;">[ SORT ]:</span>
+                    <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc; background:#000;">[ TERBARU ]</button>
+                </div>
+                <div class="sorting-group" id="filter-container">
+                    <span style="color: #00ffcc; font-weight: bold;">[ FILTER ]:</span>
+                    <select id="filter-status-select" onchange="window.renderGrid()">
+                        <option value="ALL">SEMUA STATUS</option>
+                        <option value="DP">PENDING DP (BELUM LUNAS)</option>
+                        <option value="COMPLETED">SELESAI</option>
+                        <option value="PENDING">BELUM SELESAI</option>
+                    </select>
+                    <select id="filter-staff-select" onchange="window.renderGrid()">
+                        <option value="ALL">SEMUA PEKERJA</option>
+                    </select>
+                    <input type="text" id="filter-customer-input" placeholder="Cari customer..." oninput="window.renderGrid()">
+                </div>
+            </div>
+
+            <div id="feed-grid" class="grid-container"></div>
+        </main>
+    </div>
 
     <div class="cli-section">
         <div class="cli-prompt-line">
             <span id="cli-user-prompt">guest@tjkt:~#</span>
             <input type="text" id="cli-input" placeholder="Ketik perintah (cth: '/tetris', '/snake', '/bg off', 'help')" onkeydown="handleCliKeyDown(event)">
-            <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
+            <button onclick="executeCliCommand()" id="exec-btn" style="background:#000; color:#fff; border:1px solid #fff;">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized. Customer name search filter added.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized with Sidebar Layout.</div>
         </div>
     </div>
 </div>
@@ -477,8 +518,8 @@
             <input type="text" id="new-username-input" placeholder="cth., Turner">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('username-modal')" id="m-btn-cancel1">BATAL</button>
-            <button onclick="saveCustomUsername()" id="m-btn-save1">SIMPAN</button>
+            <button onclick="closeModal('username-modal')" id="m-btn-cancel1" style="background:#000; color:#fff; border:1px solid #fff;">BATAL</button>
+            <button onclick="saveCustomUsername()" id="m-btn-save1" style="background:#000; color:#00ffcc; border:1px solid #00ffcc;">SIMPAN</button>
         </div>
     </div>
 </div>
@@ -491,7 +532,7 @@
             <label id="m-label-emp">TAMBAHKAN ALAMAT EMAIL GOOGLE</label>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <input type="email" id="new-employee-email" placeholder="cth., pegawai@gmail.com" style="flex: 1; min-width: 200px;">
-                <button onclick="addEmployeeEmail()" id="m-btn-auth">OTORISASI</button>
+                <button onclick="addEmployeeEmail()" id="m-btn-auth" style="background:#000; color:#00ffcc; border:1px solid #00ffcc;">OTORISASI</button>
             </div>
         </div>
         <div style="margin-top: 15px;">
@@ -499,7 +540,7 @@
             <div id="employee-list-container"></div>
         </div>
         <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-            <button onclick="closeModal('employee-modal')" id="m-btn-close1">TUTUP</button>
+            <button onclick="closeModal('employee-modal')" id="m-btn-close1" style="background:#000; color:#fff; border:1px solid #fff;">TUTUP</button>
         </div>
     </div>
 </div>
@@ -525,8 +566,8 @@
             <input type="file" id="post-img" accept="image/*">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('post-modal')" id="m-btn-cancel2">BATAL</button>
-            <button onclick="submitPost()" id="m-btn-publish">PUBLIKASIKAN</button>
+            <button onclick="closeModal('post-modal')" id="m-btn-cancel2" style="background:#000; color:#fff; border:1px solid #fff;">BATAL</button>
+            <button onclick="submitPost()" id="m-btn-publish" style="background:#000; color:#00ffcc; border:1px solid #00ffcc;">PUBLIKASIKAN</button>
         </div>
     </div>
 </div>
@@ -561,8 +602,8 @@
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('custom-modal')">BATAL</button>
-            <button onclick="submitCustomRequestOnly()">AJUKAN TUGAS SEKARANG</button>
+            <button onclick="closeModal('custom-modal')" style="background:#000; color:#fff; border:1px solid #fff;">BATAL</button>
+            <button onclick="submitCustomRequestOnly()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc;">AJUKAN TUGAS</button>
         </div>
     </div>
 </div>
@@ -584,7 +625,7 @@
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('feed-order-modal')">BATAL</button>
+            <button onclick="closeModal('feed-order-modal')" style="background:#000; color:#fff; border:1px solid #fff;">BATAL</button>
             <button onclick="submitOrderFromFeed()" style="border-color: #00ffcc; color: #00ffcc; background: #01241b;">KIRIM PESANAN</button>
         </div>
     </div>
@@ -596,7 +637,7 @@
         <div class="modal-title">[ PREVIEW LAMPIRAN ]</div>
         <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 70vh; border: 1px solid #444; margin: 10px 0;">
         <div style="text-align: right;">
-            <button onclick="closeModal('img-viewer-modal')">TUTUP</button>
+            <button onclick="closeModal('img-viewer-modal')" style="background:#000; color:#fff; border:1px solid #fff;">TUTUP</button>
         </div>
     </div>
 </div>
@@ -656,7 +697,7 @@
                     <p style="font-size: 11px; color: #ccc;">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">08977246853</span></p>
                     <p style="font-size: 11px; color: #ccc; margin-top: 4px;">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
                 </div>
-                <button onclick="copyNumber('08977246853')" style="font-size: 10px; padding: 3px 8px;">[SALIN NOMOR]</button>
+                <button onclick="copyNumber('08977246853')" style="font-size: 10px; padding: 3px 8px; background:#000; color:#fff; border:1px solid #fff;">[SALIN NOMOR]</button>
             </div>
 
             <div class="modal-field" style="margin-top: 12px;">
@@ -666,8 +707,8 @@
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('checkout-modal')">BATAL</button>
-            <button onclick="confirmOrderPayment()">KONFIRMASI PEMBAYARAN</button>
+            <button onclick="closeModal('checkout-modal')" style="background:#000; color:#fff; border:1px solid #fff;">BATAL</button>
+            <button onclick="confirmOrderPayment()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc;">KONFIRMASI</button>
         </div>
     </div>
 </div>
@@ -739,10 +780,10 @@
             tabFeed: "[1] FEED LAYANAN",
             tabCustom: "[2] REQUEST KUSTOM",
             tabOrders: "[3] TRANSAKSI SAYA",
-            tabAllOrders: "[4] SEMUA TRANSAKSI (STAFF)",
+            tabAllOrders: "[4] SEMUA TRANSAKSI",
             manageEmp: "+ KELOLA PEGAWAI",
             postJoki: "+ POST JOKI",
-            reqCustom: "+ AJUKAN TUGAS KUSTOM",
+            reqCustom: "+ AJUKAN KUSTOM",
             cliPlaceholder: "Ketik perintah (cth: '/tetris', '/snake', '/bg off', 'help')",
             cliExec: "EKSEKUSI",
             noTrans: "[ TIDAK ADA TRANSAKSI DITEMUKAN ]",
@@ -760,10 +801,10 @@
             tabFeed: "[1] SERVICE FEED",
             tabCustom: "[2] CUSTOM REQUESTS",
             tabOrders: "[3] MY TRANSACTIONS",
-            tabAllOrders: "[4] ALL TRANSACTIONS (STAFF)",
+            tabAllOrders: "[4] ALL TRANSACTIONS",
             manageEmp: "+ MANAGE EMPLOYEES",
             postJoki: "+ POST A JOKI",
-            reqCustom: "+ SUBMIT CUSTOM ASSIGNMENT",
+            reqCustom: "+ SUBMIT CUSTOM",
             cliPlaceholder: "Type command (e.g., '/tetris', '/snake', '/bg off', 'help')",
             cliExec: "EXEC",
             noTrans: "[ NO TRANSACTIONS FOUND ]",
@@ -892,10 +933,10 @@
         document.getElementById('stat-role-text').innerText = window.userRole;
 
         const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
-        document.getElementById('btn-action-post').style.display = isStaff ? 'inline-block' : 'none';
-        document.getElementById('btn-action-manage-emp').style.display = window.userRole === 'ADMIN' ? 'inline-block' : 'none';
-        document.getElementById('tab-all-orders').style.display = isStaff ? 'inline-block' : 'none';
-        document.getElementById('btn-action-request').style.display = 'inline-block';
+        document.getElementById('btn-action-post').style.display = isStaff ? 'block' : 'none';
+        document.getElementById('btn-action-manage-emp').style.display = window.userRole === 'ADMIN' ? 'block' : 'none';
+        document.getElementById('tab-all-orders').style.display = isStaff ? 'block' : 'none';
+        document.getElementById('btn-action-request').style.display = 'block';
 
         const showTransactionFilters = (window.currentTab === 'ALL_ORDERS' || window.currentTab === 'ORDERS');
         document.getElementById('filter-container').style.display = showTransactionFilters ? 'flex' : 'none';
@@ -1110,7 +1151,6 @@
             const customerSearch = (document.getElementById('filter-customer-input').value || '').toLowerCase().trim();
 
             return list.filter(tx => {
-                // Filter status
                 if (statusFilter === 'DP') {
                     if (!(tx.status === 'PENDING_DP' || (tx.amountPaid > 0 && tx.amountPaid < tx.totalPrice))) return false;
                 } else if (statusFilter === 'COMPLETED') {
@@ -1119,12 +1159,10 @@
                     if (tx.isCompleted) return false;
                 }
 
-                // Filter staff / pekerja
                 if (staffFilter && staffFilter !== 'ALL') {
                     if (tx.acceptedBy !== staffFilter && tx.completedBy !== staffFilter) return false;
                 }
 
-                // Filter customer name search
                 if (customerSearch) {
                     const custName = (tx.customerName || '').toLowerCase();
                     if (!custName.includes(customerSearch)) return false;
