@@ -455,7 +455,7 @@
             <button onclick="executeCliCommand()" id="exec-btn">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized. Remaining payment feature added.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized. Multi-proof collapsible feature active.</div>
         </div>
     </div>
 </div>
@@ -629,7 +629,7 @@
             </div>
 
             <div class="modal-field" style="margin-top: 12px;">
-                <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (OPSIONAL)</label>
+                <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN</label>
                 <input type="file" id="pay-proof-img" accept="image/*">
             </div>
         </div>
@@ -691,6 +691,7 @@
     window.jobsList = [];
     window.transactionsList = [];
     window.authorizedEmployees = [];
+    window.collapsedProofs = {}; // Menyimpan state toggle collapse bukti pembayaran per transaksi
 
     let bgGameAnimId = null;
     window.activeBgGame = null;
@@ -977,6 +978,48 @@
         document.getElementById('img-viewer-modal').style.display = 'flex';
     };
 
+    window.toggleProofCollapse = function(txId) {
+        window.collapsedProofs[txId] = !window.collapsedProofs[txId];
+        window.renderGrid();
+    };
+
+    function renderProofsHtml(tx) {
+        let proofs = tx.proofs || [];
+        // Fallback untuk transaksi lama yang hanya punya 1 proofImage
+        if (proofs.length === 0 && tx.proofImage) {
+            proofs = [{ title: tx.paymentMethod || 'Bukti Pembayaran', image: tx.proofImage, time: tx.requestedAt || '' }];
+        }
+        if (proofs.length === 0) return '';
+
+        const isCollapsed = !!window.collapsedProofs[tx.id];
+        const arrowSymbol = isCollapsed ? '[▶]' : '[▼]';
+
+        let html = `
+            <div style="margin-top: 10px; border: 1px solid #444; background: #121212; padding: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleProofCollapse('${tx.id}')">
+                    <span style="font-size: 11px; color: #00ffcc; font-weight: bold;">BUKTI PEMBAYARAN (${proofs.length})</span>
+                    <button style="background: transparent; border: none; color: #00ffcc; font-size: 12px; cursor: pointer; padding: 0;">${arrowSymbol}</button>
+                </div>
+        `;
+
+        if (!isCollapsed) {
+            html += `<div style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">`;
+            proofs.forEach((p, idx) => {
+                html += `
+                    <div style="border-top: 1px dashed #333; padding-top: 6px;">
+                        <div style="font-size: 10px; color: #fff; font-weight: bold;">#${idx + 1} - ${escapeHtml(p.title || 'Pembayaran')} (${formatRupiah(p.amount || 0)})</div>
+                        <div style="font-size: 9px; color: #aaa; margin-bottom: 4px;">${escapeHtml(p.time || '')}</div>
+                        <img src="${p.image}" class="card-img-preview" onclick="viewFullImage('${p.image}')" alt="Bukti">
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        html += `</div>`;
+        return html;
+    }
+
     window.renderGrid = function() {
         const grid = document.getElementById('feed-grid');
         grid.innerHTML = '';
@@ -1018,8 +1061,8 @@
             filteredTrans.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
-                let proofsHtml = '';
-                if (tx.proofImage) proofsHtml += `<div style="font-size:11px; color:#00ffcc; margin-top:6px; font-weight:bold;">BUKTI PEMBAYARAN:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')">`;
+                
+                let proofsHtml = renderProofsHtml(tx);
                 
                 let taskCheckboxHtml = `
                     <div class="task-status-box">
@@ -1038,7 +1081,7 @@
                     actionStaffBtn = `<span style="color: #00ffcc; font-size: 12px; font-weight: bold;">✓ Diterima oleh ${escapeHtml(tx.acceptedBy || 'Staff')}</span>`;
                 }
 
-                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Total: ${formatRupiah(tx.totalPrice || 0)}</div>`;
+                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid (Total: ${formatRupiah(tx.totalPrice)})</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Total: ${formatRupiah(tx.totalPrice || 0)}</div>`;
 
                 card.innerHTML = `
                     <div>
@@ -1079,9 +1122,8 @@
             filteredUserTrans.forEach(tx => {
                 const card = document.createElement('div');
                 card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
-                let proofsHtml = '';
-                if (tx.proofImage) proofsHtml += `<div style="font-size:11px; color:#00ffcc; margin-top:6px; font-weight:bold;">BUKTI PEMBAYARAN:</div><img src="${tx.proofImage}" class="card-img-preview" onclick="viewFullImage('${tx.proofImage}')">`;
-
+                
+                let proofsHtml = renderProofsHtml(tx);
                 let cancelBtn = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - (Date.now() - (tx.createdAt || 0)) / (1000 * 60)) > 0 ? `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')">CANCEL</button>` : '';
 
                 let statusInfoBox = '';
@@ -1189,7 +1231,7 @@
             totalPrice: budget,
             paymentMethod: 'MENUNGGU ACCEPT',
             amountPaid: 0,
-            proofImage: '',
+            proofs: [],
             status: 'ORDERED_WAITING_WORKER',
             isCompleted: false,
             completedBy: null,
@@ -1265,7 +1307,7 @@
             totalPrice: price,
             paymentMethod: 'MENUNGGU ACCEPT',
             amountPaid: 0,
-            proofImage: '',
+            proofs: [],
             status: 'ORDERED_WAITING_WORKER',
             isCompleted: false,
             completedBy: null,
@@ -1352,17 +1394,17 @@
 
         if (isRemainingPayment) {
             amountToPay = Math.max(0, activeCheckoutTx.totalPrice - (activeCheckoutTx.amountPaid || 0));
-            payTypeDesc = 'LUNAS (SISA)';
+            payTypeDesc = 'Pelunasan';
         } else {
             const payType = document.getElementById('pay-type').value;
             if (payType === 'DP50') { amountToPay = activeCheckoutTx.totalPrice / 2; payTypeDesc = 'DP 50%'; }
-            else if (payType === 'CUSTOM') { amountToPay = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0; payTypeDesc = 'DP CUSTOM'; }
-            else { amountToPay = activeCheckoutTx.totalPrice; payTypeDesc = 'FULL'; }
+            else if (payType === 'CUSTOM') { amountToPay = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0; payTypeDesc = 'DP Custom'; }
+            else { amountToPay = activeCheckoutTx.totalPrice; payTypeDesc = 'Full Payment'; }
         }
 
         const proofInput = document.getElementById('pay-proof-img');
         if (!proofInput.files[0]) {
-            finalizePayment(amountToPay, payTypeDesc, null);
+            alert('Bukti screenshot pembayaran wajib dilampirkan!');
             return;
         }
 
@@ -1381,7 +1423,19 @@
     };
 
     async function finalizePayment(amountPaidNow, payTypeDesc, proofData) {
-        let newTotalPaid = (isRemainingPayment ? (activeCheckoutTx.amountPaid || 0) : 0) + amountPaidNow;
+        let existingProofs = activeCheckoutTx.proofs || [];
+        if (existingProofs.length === 0 && activeCheckoutTx.proofImage) {
+            existingProofs.push({ title: activeCheckoutTx.paymentMethod || 'Pembayaran', image: activeCheckoutTx.proofImage, amount: activeCheckoutTx.amountPaid || 0, time: activeCheckoutTx.requestedAt || '' });
+        }
+
+        existingProofs.push({
+            title: payTypeDesc,
+            image: proofData,
+            amount: amountPaidNow,
+            time: window.getCurrentFormattedTimestamp()
+        });
+
+        let newTotalPaid = (activeCheckoutTx.amountPaid || 0) + amountPaidNow;
         let newStatus = (newTotalPaid >= activeCheckoutTx.totalPrice) ? 'PAID_FULL' : 'PENDING_DP';
 
         await updateDoc(doc(db, "transactions", activeCheckoutTx.id), {
@@ -1389,13 +1443,13 @@
             taskLink: document.getElementById('order-task-link').value.trim(),
             paymentMethod: document.getElementById('pay-method').value + ` (${payTypeDesc})`,
             amountPaid: newTotalPaid,
-            proofImage: proofData || activeCheckoutTx.proofImage || '',
+            proofs: existingProofs,
             status: newStatus,
         });
 
         window.closeModal('checkout-modal');
         window.switchTab('ORDERS');
-        addLog(`[PAYMENT] Pembayaran pesanan ${activeCheckoutTx.id} berhasil diperbarui.`);
+        addLog(`[PAYMENT] Pembayaran pesanan ${activeCheckoutTx.id} berhasil ditambahkan.`);
     }
 
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
