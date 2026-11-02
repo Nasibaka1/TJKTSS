@@ -570,10 +570,10 @@
     </div>
 </div>
 
-<!-- Modal: Checkout / Order Payment (Bersih Tanpa Opsi DP) -->
+<!-- Modal: Checkout / Order Form (Tanpa QRIS / Metode Pembayaran di Awal) -->
 <div class="modal-overlay" id="checkout-modal">
     <div class="modal-box">
-        <div class="modal-title">PEMBAYARAN PESANAN</div>
+        <div class="modal-title">PESAN LAYANAN JOKI</div>
         <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 4px; color: #fff;"></p>
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 15px; margin-bottom: 14px; font-weight: bold;"></p>
 
@@ -587,42 +587,11 @@
             <input type="text" id="order-task-link" placeholder="cth., Link Google Drive">
         </div>
 
-        <div id="payment-details-wrapper">
-            <div class="modal-field">
-                <label>METODE PEMBAYARAN</label>
-                <select id="pay-method" onchange="togglePaymentInstructions()">
-                    <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
-                    <option value="EWALLET">Transfer Langsung E-Wallet</option>
-                </select>
-            </div>
-
-            <div id="qris-display" class="qris-box">
-                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
-                <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
-                <img src="qris.jpg" class="qris-img-render" alt="QRIS">
-                <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
-                <p style="font-size: 10px; color: #ccc;">NMID: ID1026546274972</p>
-            </div>
-
-            <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
-                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
-                <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
-                <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
-                    <p style="font-size: 11px; color: #ccc;">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">08977246853</span></p>
-                    <p style="font-size: 11px; color: #ccc; margin-top: 4px;">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
-                </div>
-                <button onclick="copyNumber('08977246853')" style="font-size: 10px; padding: 3px 8px;">[SALIN NOMOR]</button>
-            </div>
-
-            <div class="modal-field" style="margin-top: 12px;">
-                <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN (OPSIONAL)</label>
-                <input type="file" id="pay-proof-img" accept="image/*">
-            </div>
-        </div>
+        <p style="font-size: 11px; color: #aaa; margin-top: 10px; font-style: italic;">*Catatan: Anda tidak perlu membayar sekarang. Pembayaran baru dapat dilakukan setelah pekerja menerima dan mulai mengerjakan tugas Anda.</p>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
             <button onclick="closeModal('checkout-modal')">BATAL</button>
-            <button onclick="confirmOrder()">KONFIRMASI PEMBAYARAN</button>
+            <button onclick="confirmOrder()">KIRIM PESANAN SEKARANG</button>
         </div>
     </div>
 </div>
@@ -1072,7 +1041,7 @@
                     <div>
                         <div class="card-title">${escapeHtml(tx.jobTitle)}</div>
                         <div class="card-price">${formatRupiah(tx.amountPaid)} Paid</div>
-                        <p class="card-desc" style="margin-top:4px;">Method: ${escapeHtml(tx.paymentMethod)} | Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
+                        <p class="card-desc" style="margin-top:4px;">Status: <span style="color:#00ffcc; font-weight:bold;">${escapeHtml(tx.status)}</span></p>
                         ${statusPekerjaanBadge}
                         ${proofsHtml}
                     </div>
@@ -1107,9 +1076,9 @@
             if (job.status === 'accepted') {
                 const alreadyOrdered = window.transactionsList.some(t => t.customerName === window.currentUser && t.jobId === job.id);
                 if (alreadyOrdered) {
-                    actionBtn = `<span style="color:#00ffcc; font-size:12px; font-weight:bold;">[TRANSAKSI TERCATAT - SEDANG DIKERJAKAN]</span>`;
+                    actionBtn = `<span style="color:#00ffcc; font-size:12px; font-weight:bold;">[PESANAN TERCATAT - SEDANG DIKERJAKAN]</span>`;
                 } else {
-                    actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b;">[BAYAR SEKARANG]</button>`;
+                    actionBtn = `<button onclick="openCheckoutModal('${job.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b;">[PESAN SEKARANG]</button>`;
                 }
             } else {
                 actionBtn = isStaff ? 
@@ -1216,58 +1185,21 @@
         if (!selectedCheckoutJob) return;
 
         if (window.transactionsList.some(t => t.customerName === window.currentUser && t.jobId === jobId)) {
-            alert('Kamu sudah pernah memesan dan melakukan pembayaran untuk layanan ini!');
+            alert('Kamu sudah pernah memesan layanan ini!');
             return;
         }
 
         document.getElementById('checkout-item-title').innerText = selectedCheckoutJob.title;
-        document.getElementById('checkout-item-price').innerText = `TOTAL PEMBAYARAN: ${formatRupiah(selectedCheckoutJob.price)}`;
-        document.getElementById('qris-amount').innerText = formatRupiah(selectedCheckoutJob.price);
-        document.getElementById('ewallet-amount').innerText = formatRupiah(selectedCheckoutJob.price);
-
+        document.getElementById('checkout-item-price').innerText = `ESTIMASI HARGA: ${formatRupiah(selectedCheckoutJob.price)}`;
         document.getElementById('order-phone').value = selectedCheckoutJob.phone || '';
         document.getElementById('order-task-link').value = selectedCheckoutJob.taskLink || '';
-        document.getElementById('pay-proof-img').value = '';
         document.getElementById('checkout-modal').style.display = 'flex';
     };
 
-    window.togglePaymentInstructions = function() {
-        const method = document.getElementById('pay-method').value;
-        document.getElementById('qris-display').style.display = method === 'QRIS' ? 'block' : 'none';
-        document.getElementById('ewallet-display').style.display = method === 'EWALLET' ? 'block' : 'none';
-    };
-
-    window.copyNumber = function(text) {
-        navigator.clipboard.writeText(text);
-        alert('Copied: ' + text);
-    };
-
-    window.confirmOrder = function() {
+    window.confirmOrder = async function() {
         const phone = document.getElementById('order-phone').value.trim();
         if (!phone) { alert('Nomor telepon wajib diisi!'); return; }
 
-        const proofInput = document.getElementById('pay-proof-img');
-        if (!proofInput.files[0]) {
-            proceedWithProof(null);
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 800; canvas.height = 800 * (img.height / img.width);
-                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                proceedWithProof(canvas.toDataURL('image/jpeg', 0.7));
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(proofInput.files[0]);
-    };
-
-    async function proceedWithProof(proofData) {
-        const phone = document.getElementById('order-phone').value.trim();
         const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
 
         await setDoc(doc(db, "transactions", txId), {
@@ -1278,10 +1210,10 @@
             phone,
             taskLink: document.getElementById('order-task-link').value.trim(),
             totalPrice: selectedCheckoutJob.price,
-            paymentMethod: document.getElementById('pay-method').value,
-            amountPaid: selectedCheckoutJob.price,
-            proofImage: proofData || '',
-            status: 'PENDING_VERIFICATION',
+            paymentMethod: 'MENUNGGU PEKERJA',
+            amountPaid: 0,
+            proofImage: '',
+            status: 'ORDERED_WAITING_WORKER',
             isCompleted: false,
             completedBy: null,
             createdAt: Date.now(),
@@ -1290,8 +1222,8 @@
 
         window.closeModal('checkout-modal');
         window.switchTab('ORDERS');
-        addLog(`[ORDER] Pembayaran tercatat.`);
-    }
+        addLog(`[ORDER] Pesanan dikirim tanpa pembayaran di awal.`);
+    };
 
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
     window.executeCliCommand = function() {
