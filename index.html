@@ -57,15 +57,47 @@
             border-bottom: 2px solid #00ffcc;
             padding-bottom: 14px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Sidebar Toggle Button Animation */
+        .sidebar-toggle-btn {
+            background: #000;
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background-color: #00ffcc;
+            color: #000;
         }
 
         .title-container {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .shiny-text-big {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            font-size: 3rem;
+            font-size: 2.6rem;
             font-weight: 800;
             letter-spacing: -1px;
             display: inline-block;
@@ -84,10 +116,9 @@
         }
 
         .sys-info {
-            font-size: 14px;
+            font-size: 13px;
             color: #d0d0d0;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
@@ -105,12 +136,18 @@
 
         .user-badge:hover { background-color: #00ffcc; color: #000; }
 
+        /* App Layout with Smooth Sidebar Animation */
         .app-layout {
             display: grid;
             grid-template-columns: 260px 1fr;
             gap: 20px;
             align-items: start;
             margin-bottom: 20px;
+            transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .app-layout.sidebar-collapsed {
+            grid-template-columns: 0px 1fr;
         }
 
         .sidebar {
@@ -122,6 +159,19 @@
             gap: 16px;
             position: sticky;
             top: 20px;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease, border 0.4s ease;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .app-layout.sidebar-collapsed .sidebar {
+            opacity: 0;
+            transform: translateX(-30px);
+            padding: 0px;
+            border-color: transparent;
+            pointer-events: none;
         }
 
         .sidebar-section-title {
@@ -176,6 +226,7 @@
             flex-direction: column;
             gap: 16px;
             min-width: 0;
+            transition: all 0.4s ease;
         }
 
         .stats-bar {
@@ -246,6 +297,7 @@
             justify-content: space-between;
             gap: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            transition: border-color 0.2s;
         }
 
         .card.completed-card {
@@ -404,8 +456,8 @@
         @media screen and (max-width: 860px) {
             body { padding: 10px; }
             .shiny-text-big { font-size: 2.2rem; }
-            .app-layout { grid-template-columns: 1fr; }
-            .sidebar { position: static; }
+            .app-layout { grid-template-columns: 1fr !important; }
+            .sidebar { position: static; white-space: normal; }
             .sys-info { font-size: 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
             .stats-bar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 12px; padding: 10px; }
             .cli-prompt-line { flex-direction: column; align-items: stretch; }
@@ -431,8 +483,13 @@
 
 <div class="terminal">
     <header>
-        <div class="title-container">
-            <h1 class="shiny-text-big">TJKTSS</h1>
+        <div class="header-left">
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" id="sidebar-toggle-btn" title="Buka/Tutup Sidebar">
+                <span>☰</span> <span id="toggle-label">[HIDE MENU]</span>
+            </button>
+            <div class="title-container">
+                <h1 class="shiny-text-big">TJKTSS</h1>
+            </div>
         </div>
         <div class="sys-info">
             <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Klik untuk ubah nama">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
@@ -443,7 +500,7 @@
         </div>
     </header>
 
-    <div class="app-layout">
+    <div class="app-layout" id="app-layout">
         <!-- Sidebar Navigation & Actions -->
         <aside class="sidebar">
             <div class="sidebar-section-title">[ NAVIGASI ]</div>
@@ -504,7 +561,7 @@
             <button onclick="executeCliCommand()" id="exec-btn" style="background:#000; color:#fff; border:1px solid #fff;">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized with Sidebar Layout.</div>
+            <div class="log-entry">[SYS] TJKTSS Initialized with Sidebar Animation.</div>
         </div>
     </div>
 </div>
@@ -807,22 +864,391 @@
     window.transactionsList = [];
     window.authorizedEmployees = [];
     window.collapsedProofs = {};
-    window.kamusData = null;
     window.translatorMode = 'id_to_kenyah';
 
     let bgGameAnimId = null;
     window.activeBgGame = null;
 
-    // Load Kenyah Dictionary data automatically on startup
-    async function initKenyahDictionary() {
-        try {
-            const res = await fetch('kamus_web.json');
-            window.kamusData = await res.json();
-        } catch(e) {
-            console.log("Kamus web.json not found or loaded via fallback.");
+    // EMBEDDED KAMUS DATA (Full Dayak Kenyah Dataset)
+    window.kamusData = {
+        "metadata": {
+            "sumber": "Balai Bahasa Kaltim / Data User",
+            "dialek": ["Lepoq Jalan", "Lepoq Tau"]
+        },
+        "dialek_lepoq_jalan": {
+            "ada": { "arti": "Aun", "kelas_kata": "umum" },
+            "adik": { "arti": "Sadim", "kelas_kata": "umum" },
+            "ayam jago": { "arti": "lyap baung", "kelas_kata": "umum" },
+            "aku": { "arti": "Ake", "kelas_kata": "umum" },
+            "angin": { "arti": "Bayu", "kelas_kata": "umum" },
+            "anak-anak": { "arti": "[Kosakata Anak]", "kelas_kata": "umum" },
+            "air": { "arti": "Sungai", "kelas_kata": "umum" },
+            "rumahmu dimana": { "arti": "Lamin engku", "kelas_kata": "umum" },
+            "kempi": { "arti": "[Kemana]", "kelas_kata": "umum" },
+            "ambil": { "arti": "Alak", "kelas_kata": "umum" },
+            "anjing": { "arti": "Asu", "kelas_kata": "umum" },
+            "babi": { "arti": "Babuy", "kelas_kata": "umum" },
+            "banjir": { "arti": "Layap", "kelas_kata": "umum" },
+            "bagus / baik": { "arti": "Tiga", "kelas_kata": "umum" },
+            "beli": { "arti": "Lemeli", "kelas_kata": "umum" },
+            "bapak": { "arti": "Amei / Tamam", "kelas_kata": "umum" },
+            "besar": { "arti": "Biyok", "kelas_kata": "umum" },
+            "berenang": { "arti": "Nyatung", "kelas_kata": "umum" },
+            "berbohong": { "arti": "Lemalo", "kelas_kata": "umum" },
+            "bohong": { "arti": "Palo", "kelas_kata": "umum" },
+            "bocor": { "arti": "Tudok", "kelas_kata": "umum" },
+            "berak": { "arti": "Lepin", "kelas_kata": "umum" },
+            "berak mencret": { "arti": "Lepin Perek", "kelas_kata": "umum" },
+            "berdiri": { "arti": "Ngrejeng", "kelas_kata": "umum" },
+            "bicara": { "arti": "Petirak", "kelas_kata": "umum" },
+            "bintang": { "arti": "Betuen", "kelas_kata": "umum" },
+            "besok": { "arti": "Nembam", "kelas_kata": "umum" },
+            "bintang betuen berapa": { "arti": "Kudak", "kelas_kata": "umum" },
+            "babui": { "arti": "Babui", "kelas_kata": "umum" },
+            "burung": { "arti": "Upit", "kelas_kata": "umum" },
+            "celana": { "arti": "Seluen", "kelas_kata": "umum" },
+            "cabe": { "arti": "Lia", "kelas_kata": "umum" },
+            "duduk": { "arti": "Adung", "kelas_kata": "umum" },
+            "dangkal": { "arti": "Libeu", "kelas_kata": "umum" },
+            "dingin": { "arti": "Sengim", "kelas_kata": "umum" },
+            "dekat": { "arti": "Nyeng", "kelas_kata": "umum" },
+            "desa": { "arti": "Kampung", "kelas_kata": "umum" },
+            "demam": { "arti": "Mayung", "kelas_kata": "umum" },
+            "gelap": { "arti": "Mendem", "kelas_kata": "umum" },
+            "gigi": { "arti": "Jipen", "kelas_kata": "umum" },
+            "gemuk": { "arti": "Lembok", "kelas_kata": "umum" },
+            "gendong": { "arti": "Bak", "kelas_kata": "umum" },
+            "gunung": { "arti": "Mudung", "kelas_kata": "umum" },
+            "gula": { "arti": "Gulak", "kelas_kata": "umum" },
+            "gundul": { "arti": "Ulok", "kelas_kata": "umum" },
+            "garam": { "arti": "Usen", "kelas_kata": "umum" },
+            "hari": { "arti": "Tao", "kelas_kata": "umum" },
+            "hidup": { "arti": "Mudip", "kelas_kata": "umum" },
+            "hidung": { "arti": "Ndung", "kelas_kata": "umum" },
+            "hutan": { "arti": "Bai", "kelas_kata": "umum" },
+            "haus": { "arti": "Moang Laset", "kelas_kata": "umum" },
+            "apa khabarmu": { "arti": "Inu kabar kem", "kelas_kata": "umum" },
+            "ikan": { "arti": "Atuk", "kelas_kata": "umum" },
+            "ibu": { "arti": "Uwek", "kelas_kata": "umum" },
+            "jernih": { "arti": "Litut", "kelas_kata": "umum" },
+            "mamak": { "arti": "Tinam", "kelas_kata": "umum" },
+            "jalan": { "arti": "Masat", "kelas_kata": "umum" },
+            "jatuh": { "arti": "Labok", "kelas_kata": "umum" },
+            "jauh": { "arti": "Cok", "kelas_kata": "umum" },
+            "jelek": { "arti": "Ja'at", "kelas_kata": "umum" },
+            "jendela": { "arti": "Sikan", "kelas_kata": "umum" },
+            "kencing": { "arti": "Nyengit", "kelas_kata": "umum" },
+            "kenyang": { "arti": "Beso", "kelas_kata": "umum" },
+            "kemaluan laki2": { "arti": "butok - kanjut", "kelas_kata": "umum" },
+            "kemaluan wanita": { "arti": "utit", "kelas_kata": "umum" },
+            "kemana": { "arti": "Kempi", "kelas_kata": "umum" },
+            "kamu / kalian": { "arti": "Ikem (banyak org)", "kelas_kata": "umum" },
+            "kau": { "arti": "Iko (satu org)", "kelas_kata": "umum" },
+            "siapa nama anakmu": { "arti": "lye ngadan anak kuk", "kelas_kata": "umum" },
+            "kepala": { "arti": "Ulu", "kelas_kata": "umum" },
+            "kapan": { "arti": "Midan", "kelas_kata": "umum" },
+            "keatas / naik": { "arti": "Kempou", "kelas_kata": "umum" },
+            "kembali": { "arti": "ulek", "kelas_kata": "umum" },
+            "kemarau": { "arti": "Tagak", "kelas_kata": "umum" },
+            "kakek/nenek": { "arti": "Pui", "kelas_kata": "umum" },
+            "kakak": { "arti": "Seken", "kelas_kata": "umum" },
+            "kaki": { "arti": "Taket", "kelas_kata": "umum" },
+            "kurus": { "arti": "Mae", "kelas_kata": "umum" },
+            "kecil": { "arti": "iut", "kelas_kata": "umum" },
+            "ke": { "arti": "Tei (kata sambung)", "kelas_kata": "umum" },
+            "lihat": { "arti": "Maat", "kelas_kata": "umum" },
+            "lapar": { "arti": "Lau", "kelas_kata": "umum" },
+            "laki": { "arti": "Laki - Laki-Laki", "kelas_kata": "umum" },
+            "lidah": { "arti": "Jelak", "kelas_kata": "umum" },
+            "ladang": { "arti": "Uma", "kelas_kata": "umum" },
+            "mana istrimu": { "arti": "Mpi Leto Kuk", "kelas_kata": "umum" },
+            "makan": { "arti": "Umen", "kelas_kata": "umum" },
+            "menari": { "arti": "Kancet", "kelas_kata": "umum" },
+            "mandi": { "arti": "Ndok", "kelas_kata": "umum" },
+            "malam": { "arti": "Nataup", "kelas_kata": "umum" },
+            "minuman keras": { "arti": "Jakan", "kelas_kata": "umum" },
+            "mabok": { "arti": "Meduk", "kelas_kata": "umum" },
+            "madu": { "arti": "Layuk", "kelas_kata": "umum" },
+            "monyet": { "arti": "Duk Tengen", "kelas_kata": "umum" },
+            "orang hutan": { "arti": "Lakeng Kuyang", "kelas_kata": "umum" },
+            "mencari": { "arti": "Mita", "kelas_kata": "umum" },
+            "malu": { "arti": "Sa’e", "kelas_kata": "umum" },
+            "menyelam": { "arti": "Lemeset", "kelas_kata": "umum" },
+            "memanjat": { "arti": "Lemaket", "kelas_kata": "umum" },
+            "menanam": { "arti": "Mula", "kelas_kata": "umum" },
+            "kanjet": { "arti": "Kanjet", "kelas_kata": "umum" },
+            "mau": { "arti": "Obak", "kelas_kata": "umum" },
+            "mata": { "arti": "Mata", "kelas_kata": "umum" },
+            "mimpi": { "arti": "Ngenupi", "kelas_kata": "umum" },
+            "mencuri": { "arti": "Mengelau", "kelas_kata": "umum" },
+            "minum": { "arti": "Misep", "kelas_kata": "umum" },
+            "menangis": { "arti": "Menange", "kelas_kata": "umum" },
+            "mana": { "arti": "Mpi", "kelas_kata": "umum" },
+            "mana suamimu": { "arti": "Mpi Laki kuk", "kelas_kata": "umum" },
+            "mati": { "arti": "Matae", "kelas_kata": "umum" },
+            "menyeberang": { "arti": "Pelawat", "kelas_kata": "umum" },
+            "namamu siapa": { "arti": "iyek ngadan nggu", "kelas_kata": "umum" },
+            "perempuan": { "arti": "Leto", "kelas_kata": "umum" },
+            "peluk": { "arti": "Nyekapu", "kelas_kata": "umum" },
+            "panen": { "arti": "Majau", "kelas_kata": "umum" },
+            "pulang": { "arti": "Ulek", "kelas_kata": "umum" },
+            "perut": { "arti": "Batek", "kelas_kata": "umum" },
+            "pahit": { "arti": "Pait", "kelas_kata": "umum" },
+            "pintu": { "arti": "Pamen", "kelas_kata": "umum" },
+            "pakaian": { "arti": "Sapai", "kelas_kata": "umum" },
+            "perahu": { "arti": "Alut", "kelas_kata": "umum" },
+            "parang": { "arti": "Mandau", "kelas_kata": "umum" },
+            "panjang": { "arti": "Dadok", "kelas_kata": "umum" },
+            "pendek": { "arti": "Bu’et", "kelas_kata": "umum" },
+            "pedas": { "arti": "Sanit", "kelas_kata": "umum" },
+            "pagi": { "arti": "Nak kempem", "kelas_kata": "umum" },
+            "pergi": { "arti": "Tei", "kelas_kata": "umum" },
+            "pandai": { "arti": "Encam", "kelas_kata": "umum" },
+            "pohon": { "arti": "Puun", "kelas_kata": "umum" },
+            "rusa": { "arti": "Payao", "kelas_kata": "umum" },
+            "rindu": { "arti": "Menok Menawai", "kelas_kata": "umum" },
+            "sayur": { "arti": "Lekey", "kelas_kata": "umum" },
+            "siang": { "arti": "Tao", "kelas_kata": "umum" },
+            "seperti": { "arti": "Kayaku", "kelas_kata": "umum" },
+            "suami mu": { "arti": "Laki kuk", "kelas_kata": "umum" },
+            "satu bulan": { "arti": "ca bulan", "kelas_kata": "umum" },
+            "setuju": { "arti": "ake obak", "kelas_kata": "umum" },
+            "selimut": { "arti": "Kelumah", "kelas_kata": "umum" },
+            "siapa": { "arti": "lyek", "kelas_kata": "umum" },
+            "sungai": { "arti": "Kali", "kelas_kata": "umum" },
+            "sehat": { "arti": "Muat", "kelas_kata": "umum" },
+            "turun": { "arti": "Kendak", "kelas_kata": "umum" },
+            "tas gendong bayi": { "arti": "Bening", "kelas_kata": "umum" },
+            "topi lebar": { "arti": "Saung", "kelas_kata": "umum" },
+            "tas": { "arti": "Belanyat", "kelas_kata": "umum" },
+            "tua": { "arti": "Mukun", "kelas_kata": "umum" },
+            "tas punggung unt ke ladang": { "arti": "Kibah", "kelas_kata": "umum" },
+            "teman": { "arti": "Tuyang", "kelas_kata": "umum" },
+            "tidur": { "arti": "Londok", "kelas_kata": "umum" },
+            "tunggu": { "arti": "Pekena", "kelas_kata": "umum" },
+            "tilam / tikar": { "arti": "Maken", "kelas_kata": "umum" },
+            "tangan": { "arti": "Ujok", "kelas_kata": "umum" },
+            "tikus": { "arti": "Belabau", "kelas_kata": "umum" },
+            "terang": { "arti": "Dema", "kelas_kata": "umum" },
+            "tinggi": { "arti": "Mpao", "kelas_kata": "umum" },
+            "tembakau": { "arti": "Jakok", "kelas_kata": "umum" },
+            "terima kasih": { "arti": "Tiga Tawei", "kelas_kata": "umum" },
+            "terbakar": { "arti": "Tutung", "kelas_kata": "umum" },
+            "telanjang": { "arti": "Ugai", "kelas_kata": "umum" },
+            "tidak": { "arti": "Mpi Aun", "kelas_kata": "umum" },
+            "tidak tahu": { "arti": "Mpi Tisen", "kelas_kata": "umum" },
+            "ular": { "arti": "Ulet", "kelas_kata": "umum" },
+            "umur": { "arti": "Umun", "kelas_kata": "umum" },
+            "1": { "arti": "cha", "kelas_kata": "umum" },
+            "2": { "arti": "dua", "kelas_kata": "umum" },
+            "3": { "arti": "telu", "kelas_kata": "umum" },
+            "4": { "arti": "pat", "kelas_kata": "umum" },
+            "5": { "arti": "lema", "kelas_kata": "umum" },
+            "6": { "arti": "jam", "kelas_kata": "umum" },
+            "7": { "arti": "tujo", "kelas_kata": "umum" },
+            "8": { "arti": "aya", "kelas_kata": "umum" },
+            "9": { "arti": "pi’en", "kelas_kata": "umum" },
+            "10": { "arti": "polok", "kelas_kata": "umum" },
+            "akek ubak tei ulek ka tanjung selor": { "arti": "Saya mau pulang ke tanjung Selor", "kelas_kata": "umum" },
+            "bagaimana khabar bapak": { "arti": "Kumbin khabar tamam kuk", "kelas_kata": "umum" },
+            "sehat selalu": { "arti": "Muat te", "kelas_kata": "umum" },
+            "siapa nama adikmu": { "arti": "lyek ngadan Sadim ngku", "kelas_kata": "umum" },
+            "apa kamu tidak tidur": { "arti": "Mpi kuk tei londok", "kelas_kata": "umum" },
+            "saya mau pergi beli makanan": { "arti": "Ake ubak tei lemeli pengumen", "kelas_kata": "umum" },
+            "saya mau pergi mandi di sungai": { "arti": "Ake ubak tei ndok kali", "kelas_kata": "umum" }
+        },
+        "dialek_lepoq_tau": {
+            "ada": { "arti": "Aun", "kelas_kata": "umum" },
+            "adik": { "arti": "Sadim", "kelas_kata": "umum" },
+            "ayam jago": { "arti": "lyap baung", "kelas_kata": "umum" },
+            "aku": { "arti": "Ake", "kelas_kata": "umum" },
+            "angin": { "arti": "Bayu", "kelas_kata": "umum" },
+            "anak-anak": { "arti": "[Kosakata Anak]", "kelas_kata": "umum" },
+            "air": { "arti": "Sungai", "kelas_kata": "umum" },
+            "rumahmu dimana": { "arti": "Lamin engku", "kelas_kata": "umum" },
+            "kempi": { "arti": "[Kemana]", "kelas_kata": "umum" },
+            "ambil": { "arti": "Alak", "kelas_kata": "umum" },
+            "anjing": { "arti": "Asu", "kelas_kata": "umum" },
+            "babi": { "arti": "Babuy", "kelas_kata": "umum" },
+            "banjir": { "arti": "Layap", "kelas_kata": "umum" },
+            "bagus / baik": { "arti": "Tiga", "kelas_kata": "umum" },
+            "beli": { "arti": "Lemeli", "kelas_kata": "umum" },
+            "bapak": { "arti": "Amei / Tamam", "kelas_kata": "umum" },
+            "besar": { "arti": "Biyok", "kelas_kata": "umum" },
+            "berenang": { "arti": "Nyatung", "kelas_kata": "umum" },
+            "berbohong": { "arti": "Lemalo", "kelas_kata": "umum" },
+            "bohong": { "arti": "Palo", "kelas_kata": "umum" },
+            "bocor": { "arti": "Tudok", "kelas_kata": "umum" },
+            "berak": { "arti": "Lepin", "kelas_kata": "umum" },
+            "berak mencret": { "arti": "Lepin Perek", "kelas_kata": "umum" },
+            "berdiri": { "arti": "Ngrejeng", "kelas_kata": "umum" },
+            "bicara": { "arti": "Petirak", "kelas_kata": "umum" },
+            "bintang": { "arti": "Betuen", "kelas_kata": "umum" },
+            "besok": { "arti": "Nembam", "kelas_kata": "umum" },
+            "bintang betuen berapa": { "arti": "Kudak", "kelas_kata": "umum" },
+            "babui": { "arti": "Babui", "kelas_kata": "umum" },
+            "burung": { "arti": "Upit", "kelas_kata": "umum" },
+            "celana": { "arti": "Seluen", "kelas_kata": "umum" },
+            "cabe": { "arti": "Lia", "kelas_kata": "umum" },
+            "duduk": { "arti": "Adung", "kelas_kata": "umum" },
+            "dangkal": { "arti": "Libeu", "kelas_kata": "umum" },
+            "dingin": { "arti": "Sengim", "kelas_kata": "umum" },
+            "dekat": { "arti": "Nyeng", "kelas_kata": "umum" },
+            "desa": { "arti": "Kampung", "kelas_kata": "umum" },
+            "demam": { "arti": "Mayung", "kelas_kata": "umum" },
+            "gelap": { "arti": "Mendem", "kelas_kata": "umum" },
+            "gigi": { "arti": "Jipen", "kelas_kata": "umum" },
+            "gemuk": { "arti": "Lembok", "kelas_kata": "umum" },
+            "gendong": { "arti": "Bak", "kelas_kata": "umum" },
+            "gunung": { "arti": "Mudung", "kelas_kata": "umum" },
+            "gula": { "arti": "Gulak", "kelas_kata": "umum" },
+            "gundul": { "arti": "Ulok", "kelas_kata": "umum" },
+            "garam": { "arti": "Usen", "kelas_kata": "umum" },
+            "hari": { "arti": "Tao", "kelas_kata": "umum" },
+            "hidup": { "arti": "Mudip", "kelas_kata": "umum" },
+            "hidung": { "arti": "Ndung", "kelas_kata": "umum" },
+            "hutan": { "arti": "Bai", "kelas_kata": "umum" },
+            "haus": { "arti": "Moang Laset", "kelas_kata": "umum" },
+            "apa khabarmu": { "arti": "Inu kabar kem", "kelas_kata": "umum" },
+            "ikan": { "arti": "Atuk", "kelas_kata": "umum" },
+            "ibu": { "arti": "Uwek", "kelas_kata": "umum" },
+            "jernih": { "arti": "Litut", "kelas_kata": "umum" },
+            "mamak": { "arti": "Tinam", "kelas_kata": "umum" },
+            "jalan": { "arti": "Masat", "kelas_kata": "umum" },
+            "jatuh": { "arti": "Labok", "kelas_kata": "umum" },
+            "jauh": { "arti": "Cok", "kelas_kata": "umum" },
+            "jelek": { "arti": "Ja'at", "kelas_kata": "umum" },
+            "jendela": { "arti": "Sikan", "kelas_kata": "umum" },
+            "kencing": { "arti": "Nyengit", "kelas_kata": "umum" },
+            "kenyang": { "arti": "Beso", "kelas_kata": "umum" },
+            "kemaluan laki2": { "arti": "butok - kanjut", "kelas_kata": "umum" },
+            "kemaluan wanita": { "arti": "utit", "kelas_kata": "umum" },
+            "kemana": { "arti": "Kempi", "kelas_kata": "umum" },
+            "kamu / kalian": { "arti": "Ikem (banyak org)", "kelas_kata": "umum" },
+            "kau": { "arti": "Iko (satu org)", "kelas_kata": "umum" },
+            "siapa nama anakmu": { "arti": "lye ngadan anak kuk", "kelas_kata": "umum" },
+            "kepala": { "arti": "Ulu", "kelas_kata": "umum" },
+            "kapan": { "arti": "Midan", "kelas_kata": "umum" },
+            "keatas / naik": { "arti": "Kempou", "kelas_kata": "umum" },
+            "kembali": { "arti": "ulek", "kelas_kata": "umum" },
+            "kemarau": { "arti": "Tagak", "kelas_kata": "umum" },
+            "kakek/nenek": { "arti": "Pui", "kelas_kata": "umum" },
+            "kakak": { "arti": "Seken", "kelas_kata": "umum" },
+            "kaki": { "arti": "Taket", "kelas_kata": "umum" },
+            "kurus": { "arti": "Mae", "kelas_kata": "umum" },
+            "kecil": { "arti": "iut", "kelas_kata": "umum" },
+            "ke": { "arti": "Tei (kata sambung)", "kelas_kata": "umum" },
+            "lihat": { "arti": "Maat", "kelas_kata": "umum" },
+            "lapar": { "arti": "Lau", "kelas_kata": "umum" },
+            "laki": { "arti": "Laki - Laki-Laki", "kelas_kata": "umum" },
+            "lidah": { "arti": "Jelak", "kelas_kata": "umum" },
+            "ladang": { "arti": "Uma", "kelas_kata": "umum" },
+            "mana istrimu": { "arti": "Mpi Leto Kuk", "kelas_kata": "umum" },
+            "makan": { "arti": "Umen", "kelas_kata": "umum" },
+            "menari": { "arti": "Kancet", "kelas_kata": "umum" },
+            "mandi": { "arti": "Ndok", "kelas_kata": "umum" },
+            "malam": { "arti": "Nataup", "kelas_kata": "umum" },
+            "minuman keras": { "arti": "Jakan", "kelas_kata": "umum" },
+            "mabok": { "arti": "Meduk", "kelas_kata": "umum" },
+            "madu": { "arti": "Layuk", "kelas_kata": "umum" },
+            "monyet": { "arti": "Duk Tengen", "kelas_kata": "umum" },
+            "orang hutan": { "arti": "Lakeng Kuyang", "kelas_kata": "umum" },
+            "mencari": { "arti": "Mita", "kelas_kata": "umum" },
+            "malu": { "arti": "Sa’e", "kelas_kata": "umum" },
+            "menyelam": { "arti": "Lemeset", "kelas_kata": "umum" },
+            "memanjat": { "arti": "Lemaket", "kelas_kata": "umum" },
+            "menanam": { "arti": "Mula", "kelas_kata": "umum" },
+            "kanjet": { "arti": "Kanjet", "kelas_kata": "umum" },
+            "mau": { "arti": "Obak", "kelas_kata": "umum" },
+            "mata": { "arti": "Mata", "kelas_kata": "umum" },
+            "mimpi": { "arti": "Ngenupi", "kelas_kata": "umum" },
+            "mencuri": { "arti": "Mengelau", "kelas_kata": "umum" },
+            "minum": { "arti": "Misep", "kelas_kata": "umum" },
+            "menangis": { "arti": "Menange", "kelas_kata": "umum" },
+            "mana": { "arti": "Mpi", "kelas_kata": "umum" },
+            "mana suamimu": { "arti": "Mpi Laki kuk", "kelas_kata": "umum" },
+            "mati": { "arti": "Matae", "kelas_kata": "umum" },
+            "menyeberang": { "arti": "Pelawat", "kelas_kata": "umum" },
+            "namamu siapa": { "arti": "iyek ngadan nggu", "kelas_kata": "umum" },
+            "perempuan": { "arti": "Leto", "kelas_kata": "umum" },
+            "peluk": { "arti": "Nyekapu", "kelas_kata": "umum" },
+            "panen": { "arti": "Majau", "kelas_kata": "umum" },
+            "pulang": { "arti": "Ulek", "kelas_kata": "umum" },
+            "perut": { "arti": "Batek", "kelas_kata": "umum" },
+            "pahit": { "arti": "Pait", "kelas_kata": "umum" },
+            "pintu": { "arti": "Pamen", "kelas_kata": "umum" },
+            "pakaian": { "arti": "Sapai", "kelas_kata": "umum" },
+            "perahu": { "arti": "Alut", "kelas_kata": "umum" },
+            "parang": { "arti": "Mandau", "kelas_kata": "umum" },
+            "panjang": { "arti": "Dadok", "kelas_kata": "umum" },
+            "pendek": { "arti": "Bu’et", "kelas_kata": "umum" },
+            "pedas": { "arti": "Sanit", "kelas_kata": "umum" },
+            "pagi": { "arti": "Nak kempem", "kelas_kata": "umum" },
+            "pergi": { "arti": "Tei", "kelas_kata": "umum" },
+            "pandai": { "arti": "Encam", "kelas_kata": "umum" },
+            "pohon": { "arti": "Puun", "kelas_kata": "umum" },
+            "rusa": { "arti": "Payao", "kelas_kata": "umum" },
+            "rindu": { "arti": "Menok Menawai", "kelas_kata": "umum" },
+            "sayur": { "arti": "Lekey", "kelas_kata": "umum" },
+            "siang": { "arti": "Tao", "kelas_kata": "umum" },
+            "seperti": { "arti": "Kayaku", "kelas_kata": "umum" },
+            "suami mu": { "arti": "Laki kuk", "kelas_kata": "umum" },
+            "satu bulan": { "arti": "ca bulan", "kelas_kata": "umum" },
+            "setuju": { "arti": "ake obak", "kelas_kata": "umum" },
+            "selimut": { "arti": "Kelumah", "kelas_kata": "umum" },
+            "siapa": { "arti": "lyek", "kelas_kata": "umum" },
+            "sungai": { "arti": "Kali", "kelas_kata": "umum" },
+            "sehat": { "arti": "Muat", "kelas_kata": "umum" },
+            "turun": { "arti": "Kendak", "kelas_kata": "umum" },
+            "tas gendong bayi": { "arti": "Bening", "kelas_kata": "umum" },
+            "topi lebar": { "arti": "Saung", "kelas_kata": "umum" },
+            "tas": { "arti": "Belanyat", "kelas_kata": "umum" },
+            "tua": { "arti": "Mukun", "kelas_kata": "umum" },
+            "tas punggung unt ke ladang": { "arti": "Kibah", "kelas_kata": "umum" },
+            "teman": { "arti": "Tuyang", "kelas_kata": "umum" },
+            "tidur": { "arti": "Londok", "kelas_kata": "umum" },
+            "tunggu": { "arti": "Pekena", "kelas_kata": "umum" },
+            "tilam / tikar": { "arti": "Maken", "kelas_kata": "umum" },
+            "tangan": { "arti": "Ujok", "kelas_kata": "umum" },
+            "tikus": { "arti": "Belabau", "kelas_kata": "umum" },
+            "terang": { "arti": "Dema", "kelas_kata": "umum" },
+            "tinggi": { "arti": "Mpao", "kelas_kata": "umum" },
+            "tembakau": { "arti": "Jakok", "kelas_kata": "umum" },
+            "terima kasih": { "arti": "Tiga Tawei", "kelas_kata": "umum" },
+            "terbakar": { "arti": "Tutung", "kelas_kata": "umum" },
+            "telanjang": { "arti": "Ugai", "kelas_kata": "umum" },
+            "tidak": { "arti": "Mpi Aun", "kelas_kata": "umum" },
+            "tidak tahu": { "arti": "Mpi Tisen", "kelas_kata": "umum" },
+            "ular": { "arti": "Ulet", "kelas_kata": "umum" },
+            "umur": { "arti": "Umun", "kelas_kata": "umum" },
+            "1": { "arti": "cha", "kelas_kata": "umum" },
+            "2": { "arti": "dua", "kelas_kata": "umum" },
+            "3": { "arti": "telu", "kelas_kata": "umum" },
+            "4": { "arti": "pat", "kelas_kata": "umum" },
+            "5": { "arti": "lema", "kelas_kata": "umum" },
+            "6": { "arti": "jam", "kelas_kata": "umum" },
+            "7": { "arti": "tujo", "kelas_kata": "umum" },
+            "8": { "arti": "aya", "kelas_kata": "umum" },
+            "9": { "arti": "pi’en", "kelas_kata": "umum" },
+            "10": { "arti": "polok", "kelas_kata": "umum" },
+            "akek ubak tei ulek ka tanjung selor": { "arti": "Saya mau pulang ke tanjung Selor", "kelas_kata": "umum" },
+            "bagaimana khabar bapak": { "arti": "Kumbin khabar tamam kuk", "kelas_kata": "umum" },
+            "sehat selalu": { "arti": "Muat te", "kelas_kata": "umum" },
+            "siapa nama adikmu": { "arti": "lyek ngadan Sadim ngku", "kelas_kata": "umum" },
+            "apa kamu tidak tidur": { "arti": "Mpi kuk tei londok", "kelas_kata": "umum" },
+            "saya mau pergi beli makanan": { "arti": "Ake ubak tei lemeli pengumen", "kelas_kata": "umum" },
+            "saya mau pergi mandi di sungai": { "arti": "Ake ubak tei ndok kali", "kelas_kata": "umum" }
         }
-    }
-    initKenyahDictionary();
+    };
+
+    // Sidebar Toggle Animation Logic
+    window.toggleSidebar = function() {
+        const layout = document.getElementById('app-layout');
+        const toggleLabel = document.getElementById('toggle-label');
+        layout.classList.toggle('sidebar-collapsed');
+        const isCollapsed = layout.classList.contains('sidebar-collapsed');
+        toggleLabel.innerText = isCollapsed ? '[SHOW MENU]' : '[HIDE MENU]';
+    };
 
     window.openKenyahTranslatorModal = function() {
         document.getElementById('kenyah-translator-modal').style.display = 'flex';
@@ -844,16 +1270,13 @@
             btnKenyah.style.background = '#00ffcc'; btnKenyah.style.color = '#000';
             btnId.style.background = '#000'; btnId.style.color = '#00ffcc';
             lblSource.innerText = "SUMBER (Kenyah):";
-            sourceText.placeholder = "Ketik kata Kenyah (misal: amin, sungai)...";
+            sourceText.placeholder = "Ketik kata Kenyah (misal: amin, asu)...";
         }
         translateKenyahText();
     };
 
     window.translateKenyahText = function() {
-        if (!window.kamusData) {
-            document.getElementById('trans-target-output').innerText = "[INFO]: Memuat kamus_web.json...";
-            return;
-        }
+        if (!window.kamusData) return;
         const text = document.getElementById('trans-source-text').value.trim();
         const dialect = document.getElementById('trans-dialect-select').value;
         const outputDiv = document.getElementById('trans-target-output');
