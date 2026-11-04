@@ -141,8 +141,8 @@ header {
 .sidebar {
     position: fixed;
     top: 0;
-    left: -280px;
-    width: 260px;
+    left: -320px;
+    width: 300px;
     height: 100vh;
     background: #181c24;
     border-right: 1px solid #374151;
