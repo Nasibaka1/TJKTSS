@@ -13,12 +13,14 @@ import {
     doc, 
     setDoc, 
     onSnapshot,
-    getMessaging,
-    getToken,
-    onMessage,
     deleteDoc,
     updateDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { 
+    getMessaging,
+    getToken,
+    onMessage
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
