@@ -44,10 +44,14 @@ const messaging = getMessaging(app);
 
 window.requestNotificationPermission = async function() {
   try {
+    // Explicitly register the service worker first
+    const registration = await navigator.serviceWorker.register('/firebase-cloud-messaging-sw.js');
+    
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
       const token = await getToken(messaging, { 
-        vapidKey: 'BBZHddGLfVNKrg5mww_IDnIq6RHikz7g7cyocGrHKHqautDk_2w19U0vgW-JKRNB6ZDDocA92iMmAHmevdP59O4' 
+        vapidKey: 'BBZHddGLfVNKrg5mww_IDnIq6RHikz7g7cyocGrHKHqautDk_2w19U0vgW-JKRNB6ZDDocA92iMmAHmevdP59O4',
+        serviceWorkerRegistration: registration // Pass the manual registration here
       });
       console.log('FCM Device Token:', token);
     } else {
