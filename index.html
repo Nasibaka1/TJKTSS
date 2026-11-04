@@ -505,7 +505,7 @@
     <div class="app-layout" id="app-layout">
         <!-- Sidebar Navigation & Actions (Collapsed by Default) -->
         <aside class="sidebar">
-            <div class="sidebar-section-title">[ NAVIGASI ]</div>
+            <div class="sidebar-section-title" id="nav-title-nav">[ NAVIGASI ]</div>
             <div class="sidebar-nav-group">
                 <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
                 <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUEST KUSTOM</button>
@@ -513,12 +513,11 @@
                 <button id="tab-all-orders" onclick="switchTab('ALL_ORDERS')" style="display:none;" class="btn-accent">[4] SEMUA TRANSAKSI</button>
             </div>
 
-            <div class="sidebar-section-title" style="margin-top: 10px;">[ AKSI / MENU ]</div>
+            <div class="sidebar-section-title" id="nav-title-actions" style="margin-top: 10px;">[ AKSI / MENU ]</div>
             <div class="sidebar-nav-group">
                 <button id="btn-action-request" onclick="openCustomRequestModal()" class="btn-accent">+ AJUKAN KUSTOM</button>
                 <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
                 <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none;" class="btn-accent">+ KELOLA PEGAWAI</button>
-                <button onclick="openKenyahTranslatorModal()" class="btn-accent">+ DAYAK KENYAH TRANSLATOR</button>
             </div>
         </aside>
 
@@ -528,25 +527,25 @@
                 <div><span id="label-stat-active">LAYANAN AKTIF</span>: <span id="stat-active">0</span></div>
                 <div><span id="label-stat-custom">PERMINTAAN KUSTOM</span>: <span id="stat-custom">0</span></div>
                 <div><span id="label-stat-orders">TOTAL TRANSAKSI</span>: <span id="stat-orders">0</span></div>
-                <div>ROLE: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
+                <div><span id="label-stat-role-title">ROLE</span>: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
             </div>
 
             <!-- Advanced Sorting & Filtering Bar -->
             <div class="sorting-bar">
                 <div class="sorting-group">
-                    <span style="color: #00ffcc; font-weight: bold;">[ SORT ]:</span>
+                    <span id="label-sort-title" style="color: #00ffcc; font-weight: bold;">[ SORT ]:</span>
                     <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc; background:#000; cursor: pointer;">[ TERBARU ]</button>
                 </div>
                 <div class="sorting-group" id="filter-container">
-                    <span style="color: #00ffcc; font-weight: bold;">[ FILTER ]:</span>
+                    <span id="label-filter-title" style="color: #00ffcc; font-weight: bold;">[ FILTER ]:</span>
                     <select id="filter-status-select" onchange="window.renderGrid()">
-                        <option value="ALL">SEMUA STATUS</option>
-                        <option value="DP">PENDING DP (BELUM LUNAS)</option>
-                        <option value="COMPLETED">SELESAI</option>
-                        <option value="PENDING">BELUM SELESAI</option>
+                        <option value="ALL" id="opt-filter-all">SEMUA STATUS</option>
+                        <option value="DP" id="opt-filter-dp">PENDING DP (BELUM LUNAS)</option>
+                        <option value="COMPLETED" id="opt-filter-completed">SELESAI</option>
+                        <option value="PENDING" id="opt-filter-pending">BELUM SELESAI</option>
                     </select>
                     <select id="filter-staff-select" onchange="window.renderGrid()">
-                        <option value="ALL">SEMUA PEKERJA</option>
+                        <option value="ALL" id="opt-filter-staff">SEMUA PEKERJA</option>
                     </select>
                     <input type="text" id="filter-customer-input" placeholder="Cari customer..." oninput="window.renderGrid()">
                 </div>
@@ -563,50 +562,7 @@
             <button onclick="executeCliCommand()" id="exec-btn" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">EKSEKUSI</button>
         </div>
         <div class="log-box" id="log-box">
-            <div class="log-entry">[SYS] TJKTSS Initialized with Collapsed Sidebar.</div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Dayak Kenyah Translator -->
-<div class="modal-overlay" id="kenyah-translator-modal">
-    <div class="modal-box" style="max-width: 800px; border-color: #00ffcc;">
-        <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center;">
-            <span>[ KAMUS & TRANSLATOR BAHASA KENYAH ]</span>
-            <button onclick="closeModal('kenyah-translator-modal')" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; padding: 2px 8px; font-size:12px; cursor:pointer;">[X]</button>
-        </div>
-        <div style="font-size: 11px; color: #00ffcc; margin-bottom: 12px;">Dialek Lepoq Jalan & Lepoq Tau — Balai Bahasa Kaltim</div>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-            <button class="btn-mode active" id="btn-mode-id" onclick="setTranslatorMode('id_to_kenyah')" style="flex:1; background:#00ffcc; color:#000; border:1px solid #00ffcc; padding:6px; font-family:inherit; font-size:11px; font-weight:bold; cursor:pointer;">Indonesian ➔ Kenyah</button>
-            <button class="btn-mode" id="btn-mode-kenyah" onclick="setTranslatorMode('kenyah_to_id')" style="flex:1; background:#000; color:#00ffcc; border:1px solid #00ffcc; padding:6px; font-family:inherit; font-size:11px; font-weight:bold; cursor:pointer;">Kenyah ➔ Indonesian</button>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-            <div style="display:flex; flex-direction:column; gap:6px;">
-                <label id="lbl-trans-source" style="font-size:11px; color:#00ffcc; font-weight:bold;">SUMBER (Indonesia):</label>
-                <textarea id="trans-source-text" placeholder="Ketik kata/kalimat..." oninput="translateKenyahText()" style="background:#000; border:1px solid #444; color:#fff; padding:8px; font-family:inherit; font-size:12px; height:90px; resize:vertical;"></textarea>
-                <select id="trans-dialect-select" onchange="translateKenyahText()" style="background:#000; border:1px solid #00ffcc; color:#00ffcc; padding:6px; font-family:inherit; font-size:11px;">
-                    <option value="dialek_lepoq_jalan">Dialek Lepoq Jalan</option>
-                    <option value="dialek_lepoq_tau">Dialek Lepoq Tau</option>
-                </select>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:6px;">
-                <label style="font-size:11px; color:#00ffcc; font-weight:bold;">HASIL TERJEMAHAN:</label>
-                <div id="trans-target-output" style="background:#020805; border:1px dashed #00ffcc; padding:8px; height:124px; overflow-y:auto; color:#fff; font-size:12px; white-space:pre-wrap;"></div>
-            </div>
-        </div>
-
-        <div style="border-top:1px dashed #444; padding-top:10px;">
-            <label style="font-size:11px; color:#00ffcc; font-weight:bold;">PENCARIAN KOSAKATA (Kamus Interaktif):</label>
-            <input type="text" id="trans-search-input" placeholder="Cari kata (cth: rumah, alut, asu)..." oninput="searchKenyahDictionary()" style="background:#000; border:1px solid #444; color:#fff; padding:8px; font-family:inherit; font-size:12px; width:100%; margin-top:6px; margin-bottom:8px;">
-            <div id="trans-search-results" style="max-height: 140px; overflow-y: auto; border: 1px solid #333; background: #000;">
-                <div style="padding: 10px; color: #888; text-align: center; font-size: 11px;">Ketik kata untuk mencari di kamus...</div>
-            </div>
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
-            <button onclick="closeModal('kenyah-translator-modal')" style="background:#000; color:#fff; border:1px solid #fff; padding: 6px 14px; font-size:12px; cursor: pointer;">TUTUP</button>
+            <div class="log-entry" id="log-init-msg">[SYS] TJKTSS Initialized with Collapsed Sidebar.</div>
         </div>
     </div>
 </div>
@@ -620,8 +576,8 @@
             <input type="text" id="new-username-input" placeholder="cth., Turner">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('username-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">BATAL</button>
-            <button onclick="saveCustomUsername()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;">SIMPAN</button>
+            <button onclick="closeModal('username-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-user-cancel">BATAL</button>
+            <button onclick="saveCustomUsername()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-user-save">SIMPAN</button>
         </div>
     </div>
 </div>
@@ -634,15 +590,15 @@
             <label id="m-label-emp">TAMBAHKAN ALAMAT EMAIL GOOGLE</label>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <input type="email" id="new-employee-email" placeholder="cth., pegawai@gmail.com" style="flex: 1; min-width: 200px;">
-                <button onclick="addEmployeeEmail()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;">OTORISASI</button>
+                <button onclick="addEmployeeEmail()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-emp-auth">OTORISASI</button>
             </div>
         </div>
         <div style="margin-top: 15px;">
-            <label style="font-size: 12px; color: #ffffff; display: block; margin-bottom: 6px; font-weight: bold;">DAFTAR STAFF TEROTORISASI:</label>
+            <label id="m-label-emp-list" style="font-size: 12px; color: #ffffff; display: block; margin-bottom: 6px; font-weight: bold;">DAFTAR STAFF TEROTORISASI:</label>
             <div id="employee-list-container"></div>
         </div>
         <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-            <button onclick="closeModal('employee-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">TUTUP</button>
+            <button onclick="closeModal('employee-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-emp-close">TUTUP</button>
         </div>
     </div>
 </div>
@@ -668,8 +624,8 @@
             <input type="file" id="post-img" accept="image/*">
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('post-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">BATAL</button>
-            <button onclick="submitPost()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;">PUBLIKASIKAN</button>
+            <button onclick="closeModal('post-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-post-cancel">BATAL</button>
+            <button onclick="submitPost()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-post-submit">PUBLIKASIKAN</button>
         </div>
     </div>
 </div>
@@ -695,17 +651,17 @@
             <textarea id="custom-desc" rows="2" placeholder="Konfigurasi domain..."></textarea>
         </div>
         <div class="modal-field">
-            <label>NOMOR TELEPON / WHATSAPP</label>
+            <label id="m-label-cust-phone">NOMOR TELEPON / WHATSAPP</label>
             <input type="text" id="custom-phone" placeholder="cth., 081234567890">
         </div>
         <div class="modal-field">
-            <label>LINK / FILE TUGAS (Opsional)</label>
+            <label id="m-label-cust-link">LINK / FILE TUGAS (Opsional)</label>
             <input type="text" id="custom-file-link" placeholder="https://drive.google.com/...">
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('custom-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">BATAL</button>
-            <button onclick="submitCustomRequestOnly()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;">AJUKAN TUGAS</button>
+            <button onclick="closeModal('custom-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-cust-cancel">BATAL</button>
+            <button onclick="submitCustomRequestOnly()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-cust-submit">AJUKAN TUGAS</button>
         </div>
     </div>
 </div>
@@ -713,22 +669,22 @@
 <!-- Modal: Order From Feed -->
 <div class="modal-overlay" id="feed-order-modal">
     <div class="modal-box">
-        <div class="modal-title">[ PESAN LAYANAN JOKI ]</div>
+        <div class="modal-title" id="m-title-feed-order">[ PESAN LAYANAN JOKI ]</div>
         <p id="feed-order-title" style="font-weight: bold; margin-bottom: 4px; color: #fff;"></p>
         <p id="feed-order-price" style="color: #00ffcc; font-size: 14px; margin-bottom: 14px; font-weight: bold;"></p>
 
         <div class="modal-field">
-            <label>NOMOR TELEPON / WHATSAPP</label>
+            <label id="m-label-feed-phone">NOMOR TELEPON / WHATSAPP</label>
             <input type="text" id="feed-order-phone" placeholder="cth., 081234567890">
         </div>
         <div class="modal-field">
-            <label>LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
+            <label id="m-label-feed-link">LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
             <input type="text" id="feed-order-link" placeholder="cth., Link Google Drive / Catatan">
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('feed-order-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">BATAL</button>
-            <button onclick="submitOrderFromFeed()" style="border-color: #00ffcc; color: #00ffcc; background: #01241b; cursor: pointer;">KIRIM PESANAN</button>
+            <button onclick="closeModal('feed-order-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-feed-cancel">BATAL</button>
+            <button onclick="submitOrderFromFeed()" style="border-color: #00ffcc; color: #00ffcc; background: #01241b; cursor: pointer;" id="btn-feed-submit">KIRIM PESANAN</button>
         </div>
     </div>
 </div>
@@ -736,10 +692,10 @@
 <!-- Modal: Image Full-Size Viewer -->
 <div class="modal-overlay" id="img-viewer-modal" onclick="closeModal('img-viewer-modal')">
     <div class="modal-box" style="max-width: 700px; text-align: center; background: rgba(0,0,0,0.95);" onclick="event.stopPropagation()">
-        <div class="modal-title">[ PREVIEW LAMPIRAN ]</div>
+        <div class="modal-title" id="m-title-img-viewer">[ PREVIEW LAMPIRAN ]</div>
         <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 70vh; border: 1px solid #444; margin: 10px 0;">
         <div style="text-align: right;">
-            <button onclick="closeModal('img-viewer-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">TUTUP</button>
+            <button onclick="closeModal('img-viewer-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-img-close">TUTUP</button>
         </div>
     </div>
 </div>
@@ -752,40 +708,40 @@
         <p id="checkout-item-price" style="color: #00ffcc; font-size: 15px; margin-bottom: 14px; font-weight: bold;"></p>
 
         <div class="modal-field">
-            <label>NOMOR TELEPON / WHATSAPP</label>
+            <label id="m-label-pay-phone">NOMOR TELEPON / WHATSAPP</label>
             <input type="text" id="order-phone" placeholder="cth., 081234567890">
         </div>
 
         <div class="modal-field">
-            <label>LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
+            <label id="m-label-pay-link">LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
             <input type="text" id="order-task-link" placeholder="cth., Link Google Drive">
         </div>
 
         <div id="payment-details-wrapper">
             <div class="modal-field" id="pay-type-wrapper">
-                <label>PILIH METODE PEMBAYARAN / DP</label>
+                <label id="m-label-pay-type">PILIH METODE PEMBAYARAN / DP</label>
                 <select id="pay-type" onchange="updatePaymentAmounts()">
-                    <option value="DP50">Down Payment (DP) 50%</option>
-                    <option value="CUSTOM">Custom DP (Nominal Bebas)</option>
-                    <option value="FULL">Bayar Penuh (Full Payment)</option>
+                    <option value="DP50" id="opt-pay-dp50">Down Payment (DP) 50%</option>
+                    <option value="CUSTOM" id="opt-pay-custom">Custom DP (Nominal Bebas)</option>
+                    <option value="FULL" id="opt-pay-full">Bayar Penuh (Full Payment)</option>
                 </select>
             </div>
 
             <div class="modal-field" id="custom-dp-field" style="display: none;">
-                <label>MASUKKAN NOMINAL CUSTOM DP</label>
+                <label id="m-label-pay-custom-amt">MASUKKAN NOMINAL CUSTOM DP</label>
                 <input type="text" id="custom-dp-amount" placeholder="cth., 5000" oninput="updatePaymentAmounts()">
             </div>
 
             <div class="modal-field">
-                <label>METODE PEMBAYARAN</label>
+                <label id="m-label-pay-method">METODE PEMBAYARAN</label>
                 <select id="pay-method" onchange="togglePaymentInstructions()">
                     <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
-                    <option value="EWALLET">Transfer Langsung E-Wallet</option>
+                    <option value="EWALLET" id="opt-pay-ewallet">Transfer Langsung E-Wallet</option>
                 </select>
             </div>
 
             <div id="qris-display" class="qris-box">
-                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
+                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-qris-scan">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
                 <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
                 <img src="qris.jpg" class="qris-img-render" alt="QRIS">
                 <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
@@ -793,24 +749,24 @@
             </div>
 
             <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
-                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
+                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-ewallet-title">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
                 <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
                 <div style="background: #000; border: 1px solid #444; padding: 10px; margin: 10px 0; text-align: left;">
                     <p style="font-size: 11px; color: #ccc;">NOMOR: <span style="color: #fff; font-weight: bold; font-size: 13px;">08977246853</span></p>
                     <p style="font-size: 11px; color: #ccc; margin-top: 4px;">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
                 </div>
-                <button onclick="copyNumber('08977246853')" style="font-size: 10px; padding: 3px 8px; background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">[SALIN NOMOR]</button>
+                <button onclick="copyNumber('08977246853')" style="font-size: 10px; padding: 3px 8px; background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-copy-num">[SALIN NOMOR]</button>
             </div>
 
             <div class="modal-field" style="margin-top: 12px;">
-                <label>LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN</label>
+                <label id="m-label-pay-proof">LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN</label>
                 <input type="file" id="pay-proof-img" accept="image/*">
             </div>
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('checkout-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;">BATAL</button>
-            <button onclick="confirmOrderPayment()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;">KONFIRMASI</button>
+            <button onclick="closeModal('checkout-modal')" style="background:#000; color:#fff; border:1px solid #fff; cursor: pointer;" id="btn-pay-cancel">BATAL</button>
+            <button onclick="confirmOrderPayment()" style="background:#000; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-pay-confirm">KONFIRMASI</button>
         </div>
     </div>
 </div>
@@ -866,175 +822,9 @@
     window.transactionsList = [];
     window.authorizedEmployees = [];
     window.collapsedProofs = {};
-    window.translatorMode = 'id_to_kenyah';
 
     let bgGameAnimId = null;
     window.activeBgGame = null;
-
-    // EMBEDDED KAMUS DATA (Full Dayak Kenyah Dataset)
-    window.kamusData = {
-        "metadata": {
-            "sumber": "Balai Bahasa Kaltim / Data User",
-            "dialek": ["Lepoq Jalan", "Lepoq Tau"]
-        },
-        "dialek_lepoq_jalan": {
-            "ada": { "arti": "Aun", "kelas_kata": "umum" },
-            "adik": { "arti": "Sadim", "kelas_kata": "umum" },
-            "ayam jago": { "arti": "lyap baung", "kelas_kata": "umum" },
-            "aku": { "arti": "Ake", "kelas_kata": "umum" },
-            "angin": { "arti": "Bayu", "kelas_kata": "umum" },
-            "air": { "arti": "Sungai", "kelas_kata": "umum" },
-            "rumahmu dimana": { "arti": "Lamin engku", "kelas_kata": "umum" },
-            "ambil": { "arti": "Alak", "kelas_kata": "umum" },
-            "anjing": { "arti": "Asu", "kelas_kata": "umum" },
-            "babi": { "arti": "Babuy", "kelas_kata": "umum" },
-            "banjir": { "arti": "Layap", "kelas_kata": "umum" },
-            "bagus / baik": { "arti": "Tiga", "kelas_kata": "umum" },
-            "beli": { "arti": "Lemeli", "kelas_kata": "umum" },
-            "bapak": { "arti": "Amei / Tamam", "kelas_kata": "umum" },
-            "besar": { "arti": "Biyok", "kelas_kata": "umum" },
-            "berenang": { "arti": "Nyatung", "kelas_kata": "umum" },
-            "terima kasih": { "arti": "Tiga Tawei", "kelas_kata": "umum" },
-            "pulang": { "arti": "Ulek", "kelas_kata": "umum" },
-            "pergi": { "arti": "Tei", "kelas_kata": "umum" }
-        },
-        "dialek_lepoq_tau": {
-            "ada": { "arti": "Aun", "kelas_kata": "umum" },
-            "adik": { "arti": "Sadim", "kelas_kata": "umum" },
-            "ayam jago": { "arti": "lyap baung", "kelas_kata": "umum" },
-            "aku": { "arti": "Ake", "kelas_kata": "umum" },
-            "angin": { "arti": "Bayu", "kelas_kata": "umum" },
-            "air": { "arti": "Sungai", "kelas_kata": "umum" },
-            "rumahmu dimana": { "arti": "Lamin engku", "kelas_kata": "umum" },
-            "ambil": { "arti": "Alak", "kelas_kata": "umum" },
-            "anjing": { "arti": "Asu", "kelas_kata": "umum" },
-            "babi": { "arti": "Babuy", "kelas_kata": "umum" },
-            "banjir": { "arti": "Layap", "kelas_kata": "umum" },
-            "bagus / baik": { "arti": "Tiga", "kelas_kata": "umum" },
-            "beli": { "arti": "Lemeli", "kelas_kata": "umum" },
-            "bapak": { "arti": "Amei / Tamam", "kelas_kata": "umum" },
-            "besar": { "arti": "Biyok", "kelas_kata": "umum" },
-            "berenang": { "arti": "Nyatung", "kelas_kata": "umum" },
-            "terima kasih": { "arti": "Tiga Tawei", "kelas_kata": "umum" },
-            "pulang": { "arti": "Ulek", "kelas_kata": "umum" },
-            "pergi": { "arti": "Tei", "kelas_kata": "umum" }
-        }
-    };
-
-    // Sidebar Toggle Logic (Collapsed by Default)
-    window.toggleSidebar = function() {
-        const layout = document.getElementById('app-layout');
-        const toggleLabel = document.getElementById('toggle-label');
-        layout.classList.toggle('sidebar-open');
-        const isOpen = layout.classList.contains('sidebar-open');
-        toggleLabel.innerText = isOpen ? '[HIDE MENU]' : '[SHOW MENU]';
-    };
-
-    window.openKenyahTranslatorModal = function() {
-        document.getElementById('kenyah-translator-modal').style.display = 'flex';
-    };
-
-    window.setTranslatorMode = function(mode) {
-        window.translatorMode = mode;
-        const btnId = document.getElementById('btn-mode-id');
-        const btnKenyah = document.getElementById('btn-mode-kenyah');
-        const lblSource = document.getElementById('lbl-trans-source');
-        const sourceText = document.getElementById('trans-source-text');
-
-        if (mode === 'id_to_kenyah') {
-            btnId.style.background = '#00ffcc'; btnId.style.color = '#000';
-            btnKenyah.style.background = '#000'; btnKenyah.style.color = '#00ffcc';
-            lblSource.innerText = "SUMBER (Indonesia):";
-            sourceText.placeholder = "Ketik kata Indonesia (misal: rumah, air)...";
-        } else {
-            btnKenyah.style.background = '#00ffcc'; btnKenyah.style.color = '#000';
-            btnId.style.background = '#000'; btnId.style.color = '#00ffcc';
-            lblSource.innerText = "SUMBER (Kenyah):";
-            sourceText.placeholder = "Ketik kata Kenyah (misal: amin, asu)...";
-        }
-        translateKenyahText();
-    };
-
-    window.translateKenyahText = function() {
-        if (!window.kamusData) return;
-        const text = document.getElementById('trans-source-text').value.trim();
-        const dialect = document.getElementById('trans-dialect-select').value;
-        const outputDiv = document.getElementById('trans-target-output');
-
-        if (!text) {
-            outputDiv.innerText = "";
-            return;
-        }
-
-        const dict = window.kamusData[dialect] || {};
-        const words = text.split(/\s+/);
-        let translatedWords = [];
-
-        if (window.translatorMode === 'id_to_kenyah') {
-            for (let w of words) {
-                let cleanW = w.toLowerCase().replace(/[^a-zà-ÿ0-9]/g, '');
-                let matches = [];
-                for (let [kenyahWord, info] of Object.entries(dict)) {
-                    if (info.arti.toLowerCase().includes(cleanW)) {
-                        matches.push(`${kenyahWord} (${info.arti})`);
-                    }
-                }
-                if (matches.length > 0) {
-                    translatedWords.push(`[${w} ➔ ${matches.slice(0, 3).join(', ')}]`);
-                } else {
-                    translatedWords.push(`[${w} ?]`);
-                }
-            }
-            outputDiv.innerText = translatedWords.join(' ');
-        } else {
-            for (let w of words) {
-                let cleanW = w.toLowerCase().replace(/[^a-zà-ÿ0-9'\-]/g, '');
-                if (dict[cleanW]) {
-                    translatedWords.push(`${w} ➔ ${dict[cleanW].arti} [${dict[cleanW].kelas_kata}]`);
-                } else {
-                    translatedWords.push(`${w} ➔ [Tidak ditemukan]`);
-                }
-            }
-            outputDiv.innerText = translatedWords.join('\n');
-        }
-    };
-
-    window.searchKenyahDictionary = function() {
-        if (!window.kamusData) return;
-        const query = document.getElementById('trans-search-input').value.trim().toLowerCase();
-        const dialect = document.getElementById('trans-dialect-select').value;
-        const resultsDiv = document.getElementById('trans-search-results');
-        const dict = window.kamusData[dialect] || {};
-
-        if (!query) {
-            resultsDiv.innerHTML = '<div style="padding: 10px; color: #888; text-align: center; font-size: 11px;">Ketik kata untuk mencari di kamus...</div>';
-            return;
-        }
-
-        let results = [];
-        for (let [word, info] of Object.entries(dict)) {
-            if (word.toLowerCase().includes(query) || info.arti.toLowerCase().includes(query)) {
-                results.push({ word, ...info });
-            }
-            if (results.length >= 30) break;
-        }
-
-        if (results.length === 0) {
-            resultsDiv.innerHTML = '<div style="padding: 10px; color: #00ffcc; text-align: center; font-size: 11px;">Kosakata tidak ditemukan.</div>';
-            return;
-        }
-
-        let html = '';
-        for (let item of results) {
-            html += `
-                <div style="padding: 8px 12px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
-                    <div><span style="color: #00ffcc; font-weight: bold;">${item.word}</span> <span style="color: #888; font-style: italic;">[${item.kelas_kata}]</span></div>
-                    <div style="color: #fff; text-align: right; max-width: 55%;">${item.arti}</div>
-                </div>
-            `;
-        }
-        resultsDiv.innerHTML = html;
-    };
 
     const translations = {
         id: {
@@ -1044,18 +834,77 @@
             statActive: "LAYANAN AKTIF",
             statCustom: "PERMINTAAN KUSTOM",
             statOrders: "TOTAL TRANSAKSI",
+            roleTitle: "ROLE",
+            sortTitle: "[ SORT ]:",
+            sortNewest: "[ TERBARU ]",
+            sortOldest: "[ TERLAMA ]",
+            filterTitle: "[ FILTER ]:",
+            optAllStatus: "SEMUA STATUS",
+            optPendingDp: "PENDING DP (BELUM LUNAS)",
+            optCompleted: "SELESAI",
+            optPending: "BELUM SELESAI",
+            optAllStaff: "SEMUA PEKERJA",
+            filterCustPlaceholder: "Cari customer...",
             tabFeed: "[1] FEED LAYANAN",
             tabCustom: "[2] REQUEST KUSTOM",
             tabOrders: "[3] TRANSAKSI SAYA",
             tabAllOrders: "[4] SEMUA TRANSAKSI",
+            navNav: "[ NAVIGASI ]",
+            navActions: "[ AKSI / MENU ]",
             manageEmp: "+ KELOLA PEGAWAI",
             postJoki: "+ POST JOKI",
             reqCustom: "+ AJUKAN KUSTOM",
             cliPlaceholder: "Ketik perintah (cth: '/tetris', '/snake', '/bg off', 'help')",
             cliExec: "EKSEKUSI",
+            logInit: "[SYS] TJKTSS Initialized with Collapsed Sidebar.",
             noTrans: "[ TIDAK ADA TRANSAKSI DITEMUKAN ]",
             noFeed: "[ TIDAK ADA LISTING FEED DITEMUKAN ]",
-            noCustom: "[ TIDAK ADA LISTING KUSTOM DITEMUKAN ]"
+            noCustom: "[ TIDAK ADA LISTING KUSTOM DITEMUKAN ]",
+            // Modals ID
+            mUserTitle: "UBAH NAMA TAMPILAN PENGGUNA",
+            mUserLabel: "MASUKKAN USERNAME BARU",
+            btnBatal: "BATAL",
+            btnSimpan: "SIMPAN",
+            mEmpTitle: "[ ADMIN ] OTORISASI AKUN GOOGLE PEGAWAI",
+            mEmpLabel: "TAMBAHKAN ALAMAT EMAIL GOOGLE",
+            btnOtorisasi: "OTORISASI",
+            mEmpListLabel: "DAFTAR STAFF TEROTORISASI:",
+            btnTutup: "TUTUP",
+            mPostTitle: "BUAT LAYANAN JOKI",
+            mPostLblTitle: "JUDUL",
+            mPostLblPrice: "HARGA (cth: 15000, 15rb, 15k)",
+            mPostLblDesc: "DESKRIPSI & CAKUPAN",
+            mPostLblImg: "LAMPIRKAN GAMBAR / PREVIEW",
+            btnPublikasikan: "PUBLIKASIKAN",
+            mCustTitle: "AJUKAN PERMINTAAN TUGAS KUSTOM",
+            mCustLblTitle: "JUDUL TUGAS",
+            mCustLblBudget: "TAWARAN BUDGET / HARGA",
+            mCustLblDeadline: "TENGGAK WAKTU (DEADLINE)",
+            mCustLblDesc: "DETAIL / INSTRUKSI TUGAS",
+            mCustLblPhone: "NOMOR TELEPON / WHATSAPP",
+            mCustLblLink: "LINK / FILE TUGAS (Opsional)",
+            btnAjukan: "AJUKAN TUGAS",
+            mFeedOrderTitle: "[ PESAN LAYANAN JOKI ]",
+            mFeedOrderPhone: "NOMOR TELEPON / WHATSAPP",
+            mFeedOrderLink: "LINK ATAU CATATAN FILE TUGAS (OPSIONAL)",
+            btnKirimPesan: "KIRIM PESANAN",
+            mImgViewerTitle: "[ PREVIEW LAMPIRAN ]",
+            mPayTitle: "PEMBAYARAN PESANAN",
+            mPayPhone: "NOMOR TELEPON / WHATSAPP",
+            mPayLink: "LINK ATAU CATATAN FILE TUGAS (OPSIONAL)",
+            mPayType: "PILIH METODE PEMBAYARAN / DP",
+            optPayDp50: "Down Payment (DP) 50%",
+            optPayCustom: "Custom DP (Nominal Bebas)",
+            optPayFull: "Bayar Penuh (Full Payment)",
+            mPayCustomAmt: "MASUKKAN NOMINAL CUSTOM DP",
+            mPayMethod: "METODE PEMBAYARAN",
+            optPayEwallet: "Transfer Langsung E-Wallet",
+            qrisScanTxt: "[ SCAN QRIS UNTUK MEMBAYAR ]",
+            ewalletTitleTxt: "[ TRANSFER LANGSUNG GOPAY / DANA ]",
+            btnCopyNum: "[SALIN NOMOR]",
+            mPayProof: "LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN",
+            btnKonfirmasi: "KONFIRMASI",
+            pelunasanTitle: "PELUNASAN SISA PEMBAYARAN"
         },
         en: {
             authTitle: "[ AUTHENTICATION REQUIRED ]",
@@ -1064,19 +913,86 @@
             statActive: "ACTIVE LISTINGS",
             statCustom: "CUSTOM REQUESTS",
             statOrders: "TOTAL ORDERS",
+            roleTitle: "ROLE",
+            sortTitle: "[ SORT ]:",
+            sortNewest: "[ NEWEST ]",
+            sortOldest: "[ OLDEST ]",
+            filterTitle: "[ FILTER ]:",
+            optAllStatus: "ALL STATUSES",
+            optPendingDp: "PENDING DP (UNPAID)",
+            optCompleted: "COMPLETED",
+            optPending: "INCOMPLETE",
+            optAllStaff: "ALL WORKERS",
+            filterCustPlaceholder: "Search customer...",
             tabFeed: "[1] SERVICE FEED",
             tabCustom: "[2] CUSTOM REQUESTS",
             tabOrders: "[3] MY TRANSACTIONS",
             tabAllOrders: "[4] ALL TRANSACTIONS",
+            navNav: "[ NAVIGATION ]",
+            navActions: "[ ACTIONS / MENU ]",
             manageEmp: "+ MANAGE EMPLOYEES",
             postJoki: "+ POST A JOKI",
             reqCustom: "+ SUBMIT CUSTOM",
             cliPlaceholder: "Type command (e.g., '/tetris', '/snake', '/bg off', 'help')",
             cliExec: "EXEC",
+            logInit: "[SYS] TJKTSS Initialized with Collapsed Sidebar.",
             noTrans: "[ NO TRANSACTIONS FOUND ]",
             noFeed: "[ NO FEED LISTINGS FOUND ]",
-            noCustom: "[ NO CUSTOM LISTINGS FOUND ]"
+            noCustom: "[ NO CUSTOM LISTINGS FOUND ]",
+            // Modals EN
+            mUserTitle: "EDIT DISPLAY USERNAME",
+            mUserLabel: "ENTER NEW USERNAME",
+            btnBatal: "CANCEL",
+            btnSimpan: "SAVE",
+            mEmpTitle: "[ ADMIN ] AUTHORIZE GOOGLE EMPLOYEE ACCOUNTS",
+            mEmpLabel: "ADD GOOGLE EMAIL ADDRESS",
+            btnOtorisasi: "AUTHORIZE",
+            mEmpListLabel: "AUTHORIZED STAFF LIST:",
+            btnTutup: "CLOSE",
+            mPostTitle: "CREATE SERVICE LISTING",
+            mPostLblTitle: "TITLE",
+            mPostLblPrice: "PRICE (e.g., 15000, 15rb, 15k)",
+            mPostLblDesc: "DESCRIPTION & SCOPE",
+            mPostLblImg: "ATTACH IMAGE / PREVIEW",
+            btnPublikasikan: "PUBLISH",
+            mCustTitle: "SUBMIT CUSTOM TASK REQUEST",
+            mCustLblTitle: "TASK TITLE",
+            mCustLblBudget: "BUDGET / OFFER PRICE",
+            mCustLblDeadline: "DEADLINE",
+            mCustLblDesc: "TASK DETAILS / INSTRUCTIONS",
+            mCustLblPhone: "PHONE NUMBER / WHATSAPP",
+            mCustLblLink: "TASK LINK / FILE (Optional)",
+            btnAjukan: "SUBMIT TASK",
+            mFeedOrderTitle: "[ ORDER JOKI SERVICE ]",
+            mFeedOrderPhone: "PHONE NUMBER / WHATSAPP",
+            mFeedOrderLink: "TASK LINK OR FILE NOTES (OPTIONAL)",
+            btnKirimPesan: "SEND ORDER",
+            mImgViewerTitle: "[ ATTACHMENT PREVIEW ]",
+            mPayTitle: "ORDER PAYMENT",
+            mPayPhone: "PHONE NUMBER / WHATSAPP",
+            mPayLink: "TASK LINK OR FILE NOTES (OPTIONAL)",
+            mPayType: "SELECT PAYMENT METHOD / DP",
+            optPayDp50: "Down Payment (DP) 50%",
+            optPayCustom: "Custom DP (Free Amount)",
+            optPayFull: "Full Payment",
+            mPayCustomAmt: "ENTER CUSTOM DP AMOUNT",
+            mPayMethod: "PAYMENT METHOD",
+            optPayEwallet: "Direct E-Wallet Transfer",
+            qrisScanTxt: "[ SCAN QRIS TO PAY ]",
+            ewalletTitleTxt: "[ DIRECT GOPAY / DANA TRANSFER ]",
+            btnCopyNum: "[COPY NUMBER]",
+            mPayProof: "ATTACH PAYMENT SCREENSHOT PROOF",
+            btnKonfirmasi: "CONFIRM",
+            pelunasanTitle: "REMAINING BALANCE PAYMENT"
         }
+    };
+
+    window.toggleSidebar = function() {
+        const layout = document.getElementById('app-layout');
+        const toggleLabel = document.getElementById('toggle-label');
+        layout.classList.toggle('sidebar-open');
+        const isOpen = layout.classList.contains('sidebar-open');
+        toggleLabel.innerText = isOpen ? '[HIDE MENU]' : '[SHOW MENU]';
     };
 
     window.toggleLanguage = function() {
@@ -1095,23 +1011,93 @@
         document.getElementById('label-stat-active').innerText = t.statActive;
         document.getElementById('label-stat-custom').innerText = t.statCustom;
         document.getElementById('label-stat-orders').innerText = t.statOrders;
+        document.getElementById('label-stat-role-title').innerText = t.roleTitle;
+        document.getElementById('label-sort-title').innerText = t.sortTitle;
+        document.getElementById('sort-toggle-btn').innerText = window.sortNewest ? t.sortNewest : t.sortOldest;
+        document.getElementById('label-filter-title').innerText = t.filterTitle;
+        document.getElementById('opt-filter-all').innerText = t.optAllStatus;
+        document.getElementById('opt-filter-dp').innerText = t.optPendingDp;
+        document.getElementById('opt-filter-completed').innerText = t.optCompleted;
+        document.getElementById('opt-filter-pending').innerText = t.optPending;
+        document.getElementById('opt-filter-staff').innerText = t.optAllStaff;
+        document.getElementById('filter-customer-input').placeholder = t.filterCustPlaceholder;
+
         document.getElementById('tab-feed').innerText = t.tabFeed;
         document.getElementById('tab-custom').innerText = t.tabCustom;
         document.getElementById('tab-orders').innerText = t.tabOrders;
         document.getElementById('tab-all-orders').innerText = t.tabAllOrders;
+        document.getElementById('nav-title-nav').innerText = t.navNav;
+        document.getElementById('nav-title-actions').innerText = t.navActions;
         document.getElementById('btn-action-manage-emp').innerText = t.manageEmp;
         document.getElementById('btn-action-post').innerText = t.postJoki;
         document.getElementById('btn-action-request').innerText = t.reqCustom;
         document.getElementById('cli-input').placeholder = t.cliPlaceholder;
         document.getElementById('exec-btn').innerText = t.cliExec;
+        document.getElementById('log-init-msg').innerText = t.logInit;
+
+        // Modals
+        document.getElementById('m-title-user').innerText = t.mUserTitle;
+        document.getElementById('m-label-user').innerText = t.mUserLabel;
+        document.getElementById('btn-user-cancel').innerText = t.btnBatal;
+        document.getElementById('btn-user-save').innerText = t.btnSimpan;
+
+        document.getElementById('m-title-emp').innerText = t.mEmpTitle;
+        document.getElementById('m-label-emp').innerText = t.mEmpLabel;
+        document.getElementById('btn-emp-auth').innerText = t.btnOtorisasi;
+        document.getElementById('m-label-emp-list').innerText = t.mEmpListLabel;
+        document.getElementById('btn-emp-close').innerText = t.btnTutup;
+
+        document.getElementById('m-title-post').innerText = t.mPostTitle;
+        document.getElementById('m-label-title').innerText = t.mPostLblTitle;
+        document.getElementById('m-label-price').innerText = t.mPostLblPrice;
+        document.getElementById('m-label-desc').innerText = t.mPostLblDesc;
+        document.getElementById('m-label-img').innerText = t.mPostLblImg;
+        document.getElementById('btn-post-cancel').innerText = t.btnBatal;
+        document.getElementById('btn-post-submit').innerText = t.btnPublikasikan;
+
+        document.getElementById('m-title-cust').innerText = t.mCustTitle;
+        document.getElementById('m-label-cust-title').innerText = t.mCustLblTitle;
+        document.getElementById('m-label-cust-budget').innerText = t.mCustLblBudget;
+        document.getElementById('m-label-cust-deadline').innerText = t.mCustLblDeadline;
+        document.getElementById('m-label-cust-desc').innerText = t.mCustLblDesc;
+        document.getElementById('m-label-cust-phone').innerText = t.mCustLblPhone;
+        document.getElementById('m-label-cust-link').innerText = t.mCustLblLink;
+        document.getElementById('btn-cust-cancel').innerText = t.btnBatal;
+        document.getElementById('btn-cust-submit').innerText = t.btnAjukan;
+
+        document.getElementById('m-title-feed-order').innerText = t.mFeedOrderTitle;
+        document.getElementById('m-label-feed-phone').innerText = t.mFeedOrderPhone;
+        document.getElementById('m-label-feed-link').innerText = t.mFeedOrderLink;
+        document.getElementById('btn-feed-cancel').innerText = t.btnBatal;
+        document.getElementById('btn-feed-submit').innerText = t.btnKirimPesan;
+
+        document.getElementById('m-title-img-viewer').innerText = t.mImgViewerTitle;
+        document.getElementById('btn-img-close').innerText = t.btnTutup;
+
+        document.getElementById('checkout-modal-title').innerText = t.mPayTitle;
+        document.getElementById('m-label-pay-phone').innerText = t.mPayPhone;
+        document.getElementById('m-label-pay-link').innerText = t.mPayLink;
+        document.getElementById('m-label-pay-type').innerText = t.mPayType;
+        document.getElementById('opt-pay-dp50').innerText = t.optPayDp50;
+        document.getElementById('opt-pay-custom').innerText = t.optPayCustom;
+        document.getElementById('opt-pay-full').innerText = t.optPayFull;
+        document.getElementById('m-label-pay-custom-amt').innerText = t.mPayCustomAmt;
+        document.getElementById('m-label-pay-method').innerText = t.mPayMethod;
+        document.getElementById('opt-pay-ewallet').innerText = t.optPayEwallet;
+        document.getElementById('txt-qris-scan').innerText = t.qrisScanTxt;
+        document.getElementById('txt-ewallet-title').innerText = t.ewalletTitleTxt;
+        document.getElementById('btn-copy-num').innerText = t.btnCopyNum;
+        document.getElementById('m-label-pay-proof').innerText = t.mPayProof;
+        document.getElementById('btn-pay-cancel').innerText = t.btnBatal;
+        document.getElementById('btn-pay-confirm').innerText = t.btnKonfirmasi;
     }
 
     window.toggleSortingOrder = function() {
         window.sortNewest = !window.sortNewest;
-        const label = window.sortNewest ? "[ TERBARU ]" : "[ TERLAMA ]";
-        document.getElementById('sort-toggle-btn').innerText = label;
+        const t = translations[window.currentLang];
+        document.getElementById('sort-toggle-btn').innerText = window.sortNewest ? t.sortNewest : t.sortOldest;
         window.renderGrid();
-        addLog(`[SORT] Waktu diubah ke ${window.sortNewest ? 'Terbaru' : 'Terlama'}.`);
+        addLog(`[SORT] Order changed to ${window.sortNewest ? 'Newest' : 'Oldest'}.`);
     };
 
     onSnapshot(collection(db, "joki"), (snapshot) => {
@@ -1224,7 +1210,8 @@
         });
         staffSet.add('Randa');
 
-        select.innerHTML = `<option value="ALL">SEMUA PEKERJA</option>`;
+        const t = translations[window.currentLang];
+        select.innerHTML = `<option value="ALL">${t.optAllStaff}</option>`;
         staffSet.forEach(staff => {
             const opt = document.createElement('option');
             opt.value = staff;
@@ -1316,7 +1303,7 @@
             status: 'ACCEPTED_WAITING_PAYMENT',
             acceptedBy: window.currentUser 
         });
-        addLog(`[STAFF] Transaksi ${txId} diterima oleh ${window.currentUser}. Menunggu pembayaran customer.`);
+        addLog(`[STAFF] Transaction ${txId} accepted by ${window.currentUser}. Waiting for customer payment.`);
     };
 
     window.toggleTaskCompletion = async function(txId, isChecked) {
@@ -1326,19 +1313,19 @@
             completedBy: isChecked ? staffName : null,
             completedAt: isChecked ? window.getCurrentFormattedTimestamp() : null
         });
-        addLog(`[TASK] Transaksi ${txId} ditandai ${isChecked ? 'SELESAI oleh ' + staffName : 'BELUM SELESAI'}.`);
+        addLog(`[TASK] Transaction ${txId} marked as ${isChecked ? 'COMPLETED by ' + staffName : 'INCOMPLETE'}.`);
     };
 
     window.cancelTransactionCustomer = async function(txId) {
         const tx = window.transactionsList.find(t => t.id === txId);
         if (!tx) return;
         if ((Date.now() - (tx.createdAt || 0)) / (1000 * 60) > CUSTOMER_CANCEL_WINDOW_MINUTES) {
-            alert('Batas waktu pembatalan (15 menit) telah lewat.');
+            alert('Cancellation window (15 mins) has expired.');
             return;
         }
-        if (confirm('Batalkan transaksi ini?')) {
+        if (confirm('Cancel this transaction?')) {
             await deleteDoc(doc(db, "transactions", txId));
-            addLog(`[CANCEL] Transaksi '${txId}' dibatalkan.`);
+            addLog(`[CANCEL] Transaction '${txId}' cancelled.`);
         }
     };
 
@@ -1355,7 +1342,7 @@
     function renderProofsHtml(tx) {
         let proofs = tx.proofs || [];
         if (proofs.length === 0 && tx.proofImage) {
-            proofs = [{ title: tx.paymentMethod || 'Bukti Pembayaran', image: tx.proofImage, amount: tx.amountPaid || 0, time: tx.requestedAt || '' }];
+            proofs = [{ title: tx.paymentMethod || 'Payment Proof', image: tx.proofImage, amount: tx.amountPaid || 0, time: tx.requestedAt || '' }];
         }
         if (proofs.length === 0) return '';
 
@@ -1365,7 +1352,7 @@
         let html = `
             <div style="margin-top: 10px; border: 1px solid #444; background: #121212; padding: 8px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleProofCollapse('${tx.id}')">
-                    <span style="font-size: 11px; color: #00ffcc; font-weight: bold;">BUKTI PEMBAYARAN (${proofs.length})</span>
+                    <span style="font-size: 11px; color: #00ffcc; font-weight: bold;">PAYMENT PROOFS (${proofs.length})</span>
                     <button style="background: transparent; border: none; color: #00ffcc; font-size: 12px; cursor: pointer; padding: 0;">${arrowSymbol}</button>
                 </div>
         `;
@@ -1375,9 +1362,9 @@
             proofs.forEach((p, idx) => {
                 html += `
                     <div style="border-top: 1px dashed #333; padding-top: 6px;">
-                        <div style="font-size: 10px; color: #fff; font-weight: bold;">#${idx + 1} - ${escapeHtml(p.title || 'Pembayaran')} (${formatRupiah(p.amount || 0)})</div>
+                        <div style="font-size: 10px; color: #fff; font-weight: bold;">#${idx + 1} - ${escapeHtml(p.title || 'Payment')} (${formatRupiah(p.amount || 0)})</div>
                         <div style="font-size: 9px; color: #aaa; margin-bottom: 4px;">${escapeHtml(p.time || '')}</div>
-                        <img src="${p.image}" class="card-img-preview" onclick="viewFullImage('${p.image}')" alt="Bukti">
+                        <img src="${p.image}" class="card-img-preview" onclick="viewFullImage('${p.image}')" alt="Proof">
                     </div>
                 `;
             });
@@ -1454,17 +1441,17 @@
                     <div class="task-status-box">
                         <input type="checkbox" ${tx.isCompleted ? 'checked' : ''} onchange="toggleTaskCompletion('${tx.id}', this.checked)">
                         <div>
-                            <span style="color:#ffffff; font-weight:bold;">${tx.isCompleted ? 'SELESAI DIKERJAKAN' : 'TANDAI SUDAH DIKERJAKAN'}</span>
-                            ${tx.completedBy ? `<div style="font-size:10px; color:#00ffcc;">Oleh: ${escapeHtml(tx.completedBy)} (${tx.completedAt || ''})</div>` : ''}
+                            <span style="color:#ffffff; font-weight:bold;">${tx.isCompleted ? 'COMPLETED' : 'MARK AS COMPLETED'}</span>
+                            ${tx.completedBy ? `<div style="font-size:10px; color:#00ffcc;">By: ${escapeHtml(tx.completedBy)} (${tx.completedAt || ''})</div>` : ''}
                         </div>
                     </div>
                 `;
 
                 let actionStaffBtn = '';
                 if (tx.status === 'ORDERED_WAITING_WORKER') {
-                    actionStaffBtn = `<button onclick="acceptTransactionStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b; cursor: pointer;">[ACCEPT PESANAN]</button>`;
+                    actionStaffBtn = `<button onclick="acceptTransactionStaff('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b; cursor: pointer;">[ACCEPT ORDER]</button>`;
                 } else {
-                    actionStaffBtn = `<span style="color: #00ffcc; font-size: 12px; font-weight: bold;">✓ Diterima oleh ${escapeHtml(tx.acceptedBy || 'Staff')}</span>`;
+                    actionStaffBtn = `<span style="color: #00ffcc; font-size: 12px; font-weight: bold;">✓ Accepted by ${escapeHtml(tx.acceptedBy || 'Staff')}</span>`;
                 }
 
                 const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid (Total: ${formatRupiah(tx.totalPrice)})</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Total: ${formatRupiah(tx.totalPrice || 0)}</div>`;
@@ -1481,7 +1468,7 @@
                     <div>
                         <div class="card-meta">
                             <span><span class="meta-label">BUYER:</span> ${escapeHtml(tx.customerName)}</span>
-                            <span><span class="meta-label">TELP/WA:</span> <b style="color:#00ffcc;">${escapeHtml(tx.phone || 'Tidak diisi')}</b></span>
+                            <span><span class="meta-label">PHONE/WA:</span> <b style="color:#00ffcc;">${escapeHtml(tx.phone || 'N/A')}</b></span>
                             ${tx.taskLink ? '<span><span class="meta-label">FILE/LINK:</span> ' + escapeHtml(tx.taskLink) + '</span>' : ''}
                             <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
@@ -1514,25 +1501,25 @@
 
                 let statusInfoBox = '';
                 if (tx.status === 'ORDERED_WAITING_WORKER') {
-                    statusInfoBox = `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffaa00;">⏳ Menunggu di-accept sama penjoki</div>`;
+                    statusInfoBox = `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffaa00;">⏳ Waiting for worker to accept</div>`;
                 } else if (tx.status === 'ACCEPTED_WAITING_PAYMENT' && tx.amountPaid === 0) {
                     statusInfoBox = `<div style="background:#01241b; border:1px solid #00ffcc; padding:8px; margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:12px; color:#00ffcc; font-weight:bold;">✓ Diterima Penjoki! Silakan Bayar</span>
-                        <button onclick="openCheckoutModal('${tx.id}', false)" style="border-color: #00ffcc; color: #00ffcc; background: #000; padding: 6px 10px; font-size: 11px; cursor: pointer;">[BAYAR SEKARANG]</button>
+                        <span style="font-size:12px; color:#00ffcc; font-weight:bold;">✓ Accepted! Please Pay</span>
+                        <button onclick="openCheckoutModal('${tx.id}', false)" style="border-color: #00ffcc; color: #00ffcc; background: #000; padding: 6px 10px; font-size: 11px; cursor: pointer;">[PAY NOW]</button>
                     </div>`;
                 } else if (tx.status === 'PENDING_DP' && tx.amountPaid < tx.totalPrice) {
                     const sisa = tx.totalPrice - tx.amountPaid;
                     statusInfoBox = `<div style="background:#011b24; border:1px solid #00ffcc; padding:8px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                        <span style="font-size:11px; color:#00ffcc; font-weight:bold;">Sisa Tagihan: ${formatRupiah(sisa)}</span>
-                        <button onclick="openCheckoutModal('${tx.id}', true)" style="border-color: #00ffcc; color: #00ffcc; background: #000; padding: 6px 10px; font-size: 11px; cursor: pointer;">[BAYAR SISA / LUNASI]</button>
+                        <span style="font-size:11px; color:#00ffcc; font-weight:bold;">Remaining: ${formatRupiah(sisa)}</span>
+                        <button onclick="openCheckoutModal('${tx.id}', true)" style="border-color: #00ffcc; color: #00ffcc; background: #000; padding: 6px 10px; font-size: 11px; cursor: pointer;">[PAY REMAINING]</button>
                     </div>`;
                 } else if (tx.isCompleted) {
-                    statusInfoBox = `<div style="background:#032b20; border:1px solid #00ffcc; padding:6px; margin-top:8px; font-size:12px; color:#00ffcc; font-weight:bold;">✓ TUGAS SELESAI DIKERJAKAN</div>`;
+                    statusInfoBox = `<div style="background:#032b20; border:1px solid #00ffcc; padding:6px; margin-top:8px; font-size:12px; color:#00ffcc; font-weight:bold;">✓ TASK COMPLETED</div>`;
                 } else {
-                    statusInfoBox = `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffffff;">⏳ Sedang Dikerjakan</div>`;
+                    statusInfoBox = `<div style="background:#1c1c1c; border:1px solid #555; padding:6px; margin-top:8px; font-size:12px; color:#ffffff;">⏳ In Progress</div>`;
                 }
 
-                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid (Total: ${formatRupiah(tx.totalPrice)})</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Est. Harga: ${formatRupiah(tx.totalPrice || 0)}</div>`;
+                const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid (Total: ${formatRupiah(tx.totalPrice)})</div>` : `<div style="color: #ffaa00; font-size: 13px; font-weight: bold;">Est. Price: ${formatRupiah(tx.totalPrice || 0)}</div>`;
 
                 card.innerHTML = `
                     <div>
@@ -1545,8 +1532,8 @@
                     <div>
                         <div class="card-meta">
                             <span><span class="meta-label">BUYER:</span> ${escapeHtml(tx.customerName)}</span>
-                            <span><span class="meta-label">TELP/WA:</span> ${escapeHtml(tx.phone || 'Tidak diisi')}</span>
-                            ${tx.acceptedBy ? '<span><span class="meta-label">PEKERJA:</span> <b style="color:#00ffcc;">' + escapeHtml(tx.acceptedBy) + '</b></span>' : ''}
+                            <span><span class="meta-label">PHONE/WA:</span> ${escapeHtml(tx.phone || 'N/A')}</span>
+                            ${tx.acceptedBy ? '<span><span class="meta-label">WORKER:</span> <b style="color:#00ffcc;">' + escapeHtml(tx.acceptedBy) + '</b></span>' : ''}
                             <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                             <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
                         </div>
@@ -1570,7 +1557,7 @@
             const card = document.createElement('div');
             card.className = 'card';
             
-            let actionBtn = `<button onclick="openOrderModalFromFeed('${job.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b; cursor: pointer;">[PESAN SEKARANG]</button>`;
+            let actionBtn = `<button onclick="openOrderModalFromFeed('${job.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #01241b; cursor: pointer;">[ORDER NOW]</button>`;
             let delBtn = isStaff || job.authorName === window.currentUser ? `<button class="btn-del" onclick="deleteJoki('${job.id}')" style="cursor: pointer;">DEL</button>` : '';
 
             card.innerHTML = `
@@ -1583,8 +1570,8 @@
                 <div>
                     <div class="card-meta">
                         <span><span class="meta-label">BY:</span> ${escapeHtml(job.authorName)}</span>
-                        ${job.phone ? '<span><span class="meta-label">TELP/WA:</span> <b style="color: #00ffcc;">' + escapeHtml(job.phone) + '</b></span>' : ''}
-                        <span><span class="meta-label">STATUS:</span> <b style="color: #00ffcc;">TERSEDIA</b></span>
+                        ${job.phone ? '<span><span class="meta-label">PHONE/WA:</span> <b style="color: #00ffcc;">' + escapeHtml(job.phone) + '</b></span>' : ''}
+                        <span><span class="meta-label">STATUS:</span> <b style="color: #00ffcc;">AVAILABLE</b></span>
                         <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(job.requestedAt || 'N/A')}</span>
                     </div>
                     <div style="margin-top: 12px; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 6px; flex-wrap: wrap;">
@@ -1605,8 +1592,8 @@
         const title = document.getElementById('custom-title').value.trim();
         const budget = window.parseAmountToNumber(document.getElementById('custom-budget').value);
         const phone = document.getElementById('custom-phone').value.trim();
-        if (!title || !budget) { alert('Judul dan Budget wajib diisi!'); return; }
-        if (!phone) { alert('Nomor telepon/WA wajib diisi!'); return; }
+        if (!title || !budget) { alert('Title and Budget are required!'); return; }
+        if (!phone) { alert('Phone number / WhatsApp is required!'); return; }
 
         const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
         await setDoc(doc(db, "transactions", txId), {
@@ -1616,7 +1603,7 @@
             phone,
             taskLink: document.getElementById('custom-file-link').value.trim(),
             totalPrice: budget,
-            paymentMethod: 'MENUNGGU ACCEPT',
+            paymentMethod: 'WAITING ACCEPT',
             amountPaid: 0,
             proofs: [],
             status: 'ORDERED_WAITING_WORKER',
@@ -1628,7 +1615,7 @@
 
         window.closeModal('custom-modal');
         window.switchTab('ORDERS');
-        addLog(`[CUSTOM] Tugas kustom diajukan. Menunggu pekerja accept.`);
+        addLog(`[CUSTOM] Custom task requested. Waiting for worker to accept.`);
     };
 
     window.submitPost = function() {
@@ -1671,12 +1658,12 @@
         if (!selectedFeedJob) return;
 
         if (window.transactionsList.some(t => t.customerName === window.currentUser && t.jobTitle === selectedFeedJob.title)) {
-            alert('Kamu sudah pernah memesan layanan ini!');
+            alert('You have already ordered this service!');
             return;
         }
 
         document.getElementById('feed-order-title').innerText = selectedFeedJob.title;
-        document.getElementById('feed-order-price').innerText = `HARGA: ${formatRupiah(selectedFeedJob.price)}`;
+        document.getElementById('feed-order-price').innerText = `PRICE: ${formatRupiah(selectedFeedJob.price)}`;
         document.getElementById('feed-order-phone').value = selectedFeedJob.phone || '';
         document.getElementById('feed-order-link').value = selectedFeedJob.taskLink || '';
         document.getElementById('feed-order-modal').style.display = 'flex';
@@ -1684,7 +1671,7 @@
 
     window.submitOrderFromFeed = async function() {
         const phone = document.getElementById('feed-order-phone').value.trim();
-        if (!phone) { alert('Nomor telepon wajib diisi!'); return; }
+        if (!phone) { alert('Phone number is required!'); return; }
         const taskLink = document.getElementById('feed-order-link').value.trim();
 
         const txId = 'tx-' + Math.floor(Math.random() * 9000 + 1000);
@@ -1695,7 +1682,7 @@
             phone,
             taskLink,
             totalPrice: selectedFeedJob.price,
-            paymentMethod: 'MENUNGGU ACCEPT',
+            paymentMethod: 'WAITING ACCEPT',
             amountPaid: 0,
             proofs: [],
             status: 'ORDERED_WAITING_WORKER',
@@ -1707,7 +1694,7 @@
 
         window.closeModal('feed-order-modal');
         window.switchTab('ORDERS');
-        addLog(`[ORDER] Pesanan berhasil dibuat. Menunggu penjoki accept.`);
+        addLog(`[ORDER] Order created successfully. Waiting for worker to accept.`);
     };
 
     let activeCheckoutTx = null;
@@ -1723,12 +1710,13 @@
         document.getElementById('order-task-link').value = activeCheckoutTx.taskLink || '';
         document.getElementById('pay-proof-img').value = '';
 
+        const t = translations[window.currentLang];
         if (isRemainingPayment) {
-            document.getElementById('checkout-modal-title').innerText = "PELUNASAN SISA PEMBAYARAN";
+            document.getElementById('checkout-modal-title').innerText = t.pelunasanTitle;
             document.getElementById('pay-type-wrapper').style.display = 'none';
             document.getElementById('custom-dp-field').style.display = 'none';
         } else {
-            document.getElementById('checkout-modal-title').innerText = "PEMBAYARAN PESANAN";
+            document.getElementById('checkout-modal-title').innerText = t.mPayTitle;
             document.getElementById('pay-type-wrapper').style.display = 'block';
             document.getElementById('pay-type').value = 'DP50';
             document.getElementById('custom-dp-amount').value = '';
@@ -1745,7 +1733,7 @@
         if (isRemainingPayment) {
             const alreadyPaid = activeCheckoutTx.amountPaid || 0;
             calculatedAmount = Math.max(0, totalPrice - alreadyPaid);
-            document.getElementById('checkout-item-price').innerText = `SISA TAGIHAN PELUNASAN: ${formatRupiah(calculatedAmount)} (Total: ${formatRupiah(totalPrice)})`;
+            document.getElementById('checkout-item-price').innerText = `REMAINING BALANCE: ${formatRupiah(calculatedAmount)} (Total: ${formatRupiah(totalPrice)})`;
         } else {
             const payType = document.getElementById('pay-type').value;
             const customField = document.getElementById('custom-dp-field');
@@ -1759,7 +1747,7 @@
                 customField.style.display = 'none';
                 calculatedAmount = totalPrice;
             }
-            document.getElementById('checkout-item-price').innerText = `TOTAL TAGIHAN: ${formatRupiah(calculatedAmount)} (Dari Total: ${formatRupiah(totalPrice)})`;
+            document.getElementById('checkout-item-price').innerText = `TOTAL TO PAY: ${formatRupiah(calculatedAmount)} (From Total: ${formatRupiah(totalPrice)})`;
         }
 
         document.getElementById('qris-amount').innerText = formatRupiah(calculatedAmount);
@@ -1779,24 +1767,24 @@
 
     window.confirmOrderPayment = function() {
         const phone = document.getElementById('order-phone').value.trim();
-        if (!phone) { alert('Nomor telepon wajib diisi!'); return; }
+        if (!phone) { alert('Phone number is required!'); return; }
 
         let amountToPay = activeCheckoutTx.totalPrice;
         let payTypeDesc = 'FULL';
 
         if (isRemainingPayment) {
             amountToPay = Math.max(0, activeCheckoutTx.totalPrice - (activeCheckoutTx.amountPaid || 0));
-            payTypeDesc = 'Pelunasan';
+            payTypeDesc = 'Balance Payment';
         } else {
             const payType = document.getElementById('pay-type').value;
             if (payType === 'DP50') { amountToPay = activeCheckoutTx.totalPrice / 2; payTypeDesc = 'DP 50%'; }
-            else if (payType === 'CUSTOM') { amountToPay = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0; payTypeDesc = 'DP Custom'; }
+            else if (payType === 'CUSTOM') { amountToPay = window.parseAmountToNumber(document.getElementById('custom-dp-amount').value) || 0; payTypeDesc = 'Custom DP'; }
             else { amountToPay = activeCheckoutTx.totalPrice; payTypeDesc = 'Full Payment'; }
         }
 
         const proofInput = document.getElementById('pay-proof-img');
         if (!proofInput.files[0]) {
-            alert('Bukti screenshot pembayaran wajib dilampirkan!');
+            alert('Payment screenshot proof is required!');
             return;
         }
 
@@ -1817,7 +1805,7 @@
     async function finalizePayment(amountPaidNow, payTypeDesc, proofData) {
         let existingProofs = activeCheckoutTx.proofs || [];
         if (existingProofs.length === 0 && activeCheckoutTx.proofImage) {
-            existingProofs.push({ title: activeCheckoutTx.paymentMethod || 'Pembayaran', image: activeCheckoutTx.proofImage, amount: activeCheckoutTx.amountPaid || 0, time: activeCheckoutTx.requestedAt || '' });
+            existingProofs.push({ title: activeCheckoutTx.paymentMethod || 'Payment', image: activeCheckoutTx.proofImage, amount: activeCheckoutTx.amountPaid || 0, time: activeCheckoutTx.requestedAt || '' });
         }
 
         existingProofs.push({
@@ -1841,7 +1829,7 @@
 
         window.closeModal('checkout-modal');
         window.switchTab('ORDERS');
-        addLog(`[PAYMENT] Pembayaran pesanan ${activeCheckoutTx.id} berhasil ditambahkan.`);
+        addLog(`[PAYMENT] Payment for order ${activeCheckoutTx.id} submitted successfully.`);
     }
 
     window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
