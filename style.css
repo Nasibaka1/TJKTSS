@@ -366,9 +366,10 @@ header {
     width: 100%;
     max-width: 520px;
     position: relative;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    flex-shrink: 0;
 }
 
 .modal-title {
