@@ -3,8 +3,6 @@ import {
     getAuth, 
     GoogleAuthProvider, 
     signInWithPopup, 
-    signInWithRedirect,
-    getRedirectResult,
     signOut, 
     onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -19,7 +17,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBQkMZYwL-ZrMndY8KibCEnMmVcboC699o",
+    apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
     authDomain: "tjktssv2.firebaseapp.com",
     projectId: "tjktssv2",
     storageBucket: "tjktssv2.firebasestorage.app",
@@ -344,18 +342,8 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Robust Google Sign-In with Redirect Fallback for Vercel Domains
 window.loginWithGoogle = async function() {
-    try {
-        await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-        console.warn("Popup sign-in failed or blocked, falling back to redirect...", error.message);
-        try {
-            await signInWithRedirect(auth, googleProvider);
-        } catch (redirectError) {
-            alert("Google Sign-In Error: " + redirectError.message + "\n\nTip: Make sure 'tjktss.vercel.app' is added to Authorized Domains in your Firebase Console (Authentication -> Settings).");
-        }
-    }
+    try { await signInWithPopup(auth, googleProvider); } catch (error) { alert("Google Sign-In Error: " + error.message); }
 };
 
 window.logoutSession = async function() { await signOut(auth); location.reload(); };
@@ -1079,8 +1067,3 @@ function initParticles() {
     animate();
 }
 initParticles();
-
-// Android Device Detection for Modal Sizing
-if (/Android/i.test(navigator.userAgent)) {
-    document.body.classList.add('android-device');
-}
