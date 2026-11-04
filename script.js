@@ -341,9 +341,19 @@ onAuthStateChanged(auth, (user) => {
         window.currentUserEmail = null;
     }
 });
-
 window.loginWithGoogle = async function() {
-    try { await signInWithPopup(auth, googleProvider); } catch (error) { alert("Google Sign-In Error: " + error.message); }
+    try {
+        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            await signInWithRedirect(auth, googleProvider);
+        } else {
+            await signInWithPopup(auth, googleProvider);
+        }
+    } catch (error) {
+        console.warn("Popup failed, falling back to redirect:", error);
+        await signInWithRedirect(auth, googleProvider).catch((err) => {
+            alert("Google Sign-In Error: " + err.message);
+        });
+    }
 };
 
 window.logoutSession = async function() { await signOut(auth); location.reload(); };
