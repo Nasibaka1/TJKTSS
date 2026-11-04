@@ -143,25 +143,25 @@ header {
 }
 
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: -320px;
-    width: 280px;
-    height: 100vh;
-    background: #181c24;
-    border-right: 2px solid #00ffcc;
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    z-index: 1000;
-    overflow-y: auto;
-    transition: left 0.3s ease-in-out;
-    box-shadow: 5px 0 25px rgba(0,0,0,0.9);
+    position: fixed !important;
+    top: 0 !important;
+    left: -320px !important;
+    width: 280px !important;
+    height: 100vh !important;
+    background: #181c24 !important;
+    border-right: 2px solid #00ffcc !important;
+    padding: 20px 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    z-index: 9999 !important;
+    overflow-y: auto !important;
+    transition: left 0.3s ease-in-out !important;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.9) !important;
 }
 
 .app-layout.sidebar-open .sidebar {
-    left: 0;
+    left: 0 !important;
 }
 
 .sidebar-section-title {
