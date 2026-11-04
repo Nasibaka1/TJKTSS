@@ -42,7 +42,7 @@ const CUSTOMER_CANCEL_WINDOW_MINUTES = 15;
 
 const messaging = getMessaging(app);
 
-async function requestNotificationPermission() {
+window.requestNotificationPermission = async function() {
   try {
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
