@@ -146,18 +146,18 @@ header {
     position: fixed;
     top: 0;
     left: -320px;
-    width: 300px;
+    width: 280px;
     height: 100vh;
     background: #181c24;
-    border-right: 1px solid #374151;
+    border-right: 2px solid #00ffcc;
     padding: 20px 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
     z-index: 1000;
     overflow-y: auto;
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 5px 0 20px rgba(0,0,0,0.8);
+    transition: left 0.3s ease-in-out;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.9);
 }
 
 .app-layout.sidebar-open .sidebar {
