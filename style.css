@@ -113,45 +113,51 @@ header {
 
 .user-badge:hover { background-color: #00ffcc; color: #111318; }
 
-/* App Layout with Collapsed by Default Sidebar & Smooth Slide Animation */
-.app-layout {
-    display: grid;
-    grid-template-columns: 0px 1fr;
-    gap: 0px;
-    align-items: start;
-    margin-bottom: 20px;
-    transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1), gap 0.4s ease;
+/* Backdrop Overlay for Sidebar */
+.sidebar-backdrop {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(11, 13, 17, 0.7);
+    backdrop-filter: blur(2px);
+    z-index: 90;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.app-layout.sidebar-open {
-    grid-template-columns: 260px 1fr;
-    gap: 20px;
+.app-layout.sidebar-open .sidebar-backdrop {
+    display: block;
+    opacity: 1;
+}
+
+/* App Layout with Overlay Floating Sidebar */
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-bottom: 20px;
 }
 
 .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 260px;
+    height: 100vh;
     background: #181c24;
-    border: 1px solid transparent;
-    padding: 0px;
+    border-right: 1px solid #374151;
+    padding: 20px 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    position: sticky;
-    top: 20px;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease, border 0.4s ease;
-    opacity: 0;
-    transform: translateX(-30px);
-    pointer-events: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 95;
+    overflow-y: auto;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 5px 0 20px rgba(0,0,0,0.8);
 }
 
 .app-layout.sidebar-open .sidebar {
-    opacity: 1;
-    transform: translateX(0);
-    padding: 16px;
-    border-color: #374151;
-    pointer-events: auto;
+    left: 0;
 }
 
 .sidebar-section-title {
@@ -206,8 +212,7 @@ header {
     flex-direction: column;
     gap: 16px;
     min-width: 0;
-    transition: all 0.4s ease;
-    flex-grow: 1;
+    width: 100%;
 }
 
 .stats-bar {
@@ -305,6 +310,7 @@ header {
     padding: 8px;
     border-left: 3px solid #00ffcc;
     border: 1px solid #27272a;
+    word-break: break-all;
 }
 .card-meta span { color: #f3f4f6; }
 .card-meta .meta-label { color: #9ca3af; font-size: 11px; }
@@ -424,8 +430,6 @@ header {
 @media screen and (max-width: 860px) {
     body { padding: 10px; }
     .shiny-text-big { font-size: 2.2rem; }
-    .app-layout.sidebar-open { grid-template-columns: 1fr !important; }
-    .sidebar { position: static; white-space: normal; }
     .sys-info { font-size: 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
     .stats-bar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 12px; padding: 10px; }
 }
