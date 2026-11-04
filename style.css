@@ -374,6 +374,14 @@ header {
     flex-shrink: 0;
 }
 
+/* Bigger modal box specifically for Android users */
+body.android-device .modal-box {
+    max-height: 96vh;
+    width: 96vw;
+    max-width: 100%;
+    padding: 16px;
+}
+
 .modal-title {
     font-size: 15px;
     font-weight: bold;
