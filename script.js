@@ -3,6 +3,8 @@ import {
     getAuth, 
     GoogleAuthProvider, 
     signInWithPopup, 
+    signInWithRedirect,
+    getRedirectResult,
     signOut, 
     onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -342,8 +344,18 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// Robust Google Sign-In with Redirect Fallback for Vercel Domains
 window.loginWithGoogle = async function() {
-    try { await signInWithPopup(auth, googleProvider); } catch (error) { alert("Google Sign-In Error: " + error.message); }
+    try {
+        await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+        console.warn("Popup sign-in failed or blocked, falling back to redirect...", error.message);
+        try {
+            await signInWithRedirect(auth, googleProvider);
+        } catch (redirectError) {
+            alert("Google Sign-In Error: " + redirectError.message + "\n\nTip: Make sure 'tjktss.vercel.app' is added to Authorized Domains in your Firebase Console (Authentication -> Settings).");
+        }
+    }
 };
 
 window.logoutSession = async function() { await signOut(auth); location.reload(); };
