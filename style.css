@@ -1,4 +1,5 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
     background-color: #111318;
     color: #f3f4f6;
@@ -362,12 +363,13 @@ header {
 .modal-box {
     background: #181c24;
     border: 2px solid #374151;
-    padding: 22px;
+    padding: 20px;
     width: 100%;
     max-width: 520px;
     position: relative;
-    max-height: 85vh;
+    max-height: 90vh;
     overflow-y: auto;
+    box-sizing: border-box;
     box-shadow: 0 10px 25px rgba(0,0,0,0.8);
     flex-shrink: 0;
 }
@@ -392,6 +394,7 @@ header {
     font-family: inherit;
     font-size: 13px;
     outline: none;
+    box-sizing: border-box;
 }
 .modal-field input:focus, .modal-field textarea:focus { border-color: #00ffcc; }
 
@@ -433,4 +436,5 @@ header {
     .shiny-text-big { font-size: 2.2rem; }
     .sys-info { font-size: 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
     .stats-bar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 12px; padding: 10px; }
+    .modal-box { max-height: 92vh; padding: 16px; }
 }
