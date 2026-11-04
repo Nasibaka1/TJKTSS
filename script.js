@@ -12,7 +12,10 @@ import {
     collection, 
     doc, 
     setDoc, 
-    onSnapshot, 
+    onSnapshot,
+    getMessaging,
+    getToken,
+    onMessage,
     deleteDoc,
     updateDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -34,6 +37,24 @@ const googleProvider = new GoogleAuthProvider();
 
 const ADMIN_EMAIL = 'muhammadfadhilrandaputra@gmail.com';
 const CUSTOMER_CANCEL_WINDOW_MINUTES = 15;
+
+const messaging = getMessaging(app);
+
+async function requestNotificationPermission() {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      const token = await getToken(messaging, { 
+        vapidKey: 'BBZHddGLfVNKrg5mww_IDnIq6RHikz7g7cyocGrHKHqautDk_2w19U0vgW-JKRNB6ZDDocA92iMmAHmevdP59O4' 
+      });
+      console.log('FCM Device Token:', token);
+    } else {
+      console.log('Notification permission denied.');
+    }
+  } catch (error) {
+    console.error('An error occurred while retrieving token. ', error);
+  }
+}
 
 window.currentUser = null;
 window.currentUserEmail = null;
