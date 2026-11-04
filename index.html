@@ -3,320 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TJKTSS</title>
-    <link rel="icon" type="image/x-icon" href="cropped_circle_image.png">
-    <meta property="og:title" content="TJKTSS - Layanan Joki & Tugas">
-    <meta property="og:description" content="dikejar deadline???!!! just call TJKTSS">
-    <meta property="og:image" content="https://i.imgur.com/YSnAvL6.png">
-    <meta property="og:url" content="https://tjktss.vercel.app">
-    <meta property="og:type" content="website">
-
+    <title>TJKTSS - Layanan Joki & Tugas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
 
-<canvas id="bg-canvas"></canvas>
+    <div class="terminal">
+        <header>
+            <div class="header-left">
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+                    <span>[ MENU ]</span>
+                </button>
+                <div class="title-container">
+                    <h1 class="shiny-text-big">TJKTSS</h1>
+                </div>
+            </div>
+            <div class="sys-info">
+                <span>USER:</span> <span id="current-user-display" class="user-badge" onclick="openProfileModal()">GUEST</span>
+                <span>ROLE:</span> <span id="current-role-display" class="role-badge" onclick="toggleRoleModal()">CUSTOMER</span>
+                <button onclick="handleLogout()" id="logout-btn" style="display:none; background:#111318; color:#ef4444; border:1px solid #ef4444; padding:2px 8px; font-size:11px; cursor:pointer;">[ KELUAR ]</button>
+            </div>
+        </header>
 
-<!-- Google Authentication Overlay -->
-<div class="modal-overlay" id="auth-modal" style="display: flex; justify-content: center; align-items: center;">
-    <div class="modal-box" style="text-align: center;">
-        <div class="modal-title" id="txt-auth-title">[ AUTENTIKASI DIPERLUKAN ]</div>
-        <p style="font-size: 12px; color: #d1d5db; margin-bottom: 20px;" id="txt-auth-desc">MASUK DENGAN GOOGLE UNTUK MENGAKSES TJKTSS</p>
-        <button onclick="loginWithGoogle()" style="border-color: #00ffcc; color: #00ffcc; padding: 12px 24px; font-size: 13px; width: 100%; cursor: pointer; background: #111318;">
-            [G] MASUK DENGAN GOOGLE
-        </button>
+        <div class="app-layout" id="app-layout">
+            <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+            <aside class="sidebar">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #374151; padding-bottom: 8px; margin-bottom: 6px; white-space: nowrap;">
+                    <span style="font-size: 11px; color: #00ffcc; font-weight: bold; letter-spacing: 1px;">[ MENU ]</span>
+                    <button onclick="toggleSidebar()" style="background:transparent; border:1px solid #4b5563; color:#f3f4f6; padding:3px 8px; font-size:11px; cursor:pointer; align-self: center; height: auto;">[X]</button>
+                </div>
+
+                <div class="sidebar-section-title" id="nav-title-nav">[ NAVIGASI ]</div>
+                <div class="sidebar-nav-group">
+                    <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
+                    <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUEST KUSTOM</button>
+                    <button id="tab-orders" onclick="switchTab('ORDERS')">[3] TRANSAKSI SAYA</button>
+                    <button id="tab-all-orders" onclick="switchTab('ALL_ORDERS')" style="display:none;" class="btn-accent">[4] SEMUA TRANSAKSI</button>
+                </div>
+
+                <div class="sidebar-section-title" id="nav-title-actions" style="margin-top: 10px;">[ AKSI / MENU ]</div>
+                <div class="sidebar-nav-group">
+                    <button id="btn-action-request" onclick="openCustomRequestModal()" class="btn-accent">+ AJUKAN KUSTOM</button>
+                    <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
+                    <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none;" class="btn-accent">+ KELOLA PEGAWAI</button>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="stats-bar">
+                    <div><span id="label-stat-active">LAYANAN AKTIF</span>: <span id="stat-active">0</span></div>
+                    <div><span id="label-stat-custom">PERMINTAAN KUSTOM</span>: <span id="stat-custom">0</span></div>
+                    <div><span id="label-stat-orders">TOTAL TRANSAKSI</span>: <span id="stat-orders">0</span></div>
+                    <div><span id="label-stat-role-title">ROLE</span>: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
+                </div>
+
+                <div class="sorting-bar">
+                    <div class="sorting-group">
+                        <span id="label-sort-title" style="color: #00ffcc; font-weight: bold;">[ SORT ]:</span>
+                        <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc; background:#111318; cursor: pointer;">[ TERBARU ]</button>
+                    </div>
+                    <div class="sorting-group" id="filter-container">
+                        <span id="label-filter-title" style="color: #00ffcc; font-weight: bold;">[ FILTER ]:</span>
+                        <select id="filter-status-select" onchange="window.renderGrid()">
+                            <option value="ALL" id="opt-filter-all">SEMUA STATUS</option>
+                            <option value="DP" id="opt-filter-dp">PENDING DP (BELUM LUNAS)</option>
+                            <option value="COMPLETED" id="opt-filter-completed">SELESAI</option>
+                            <option value="PENDING" id="opt-filter-pending">BELUM SELESAI</option>
+                        </select>
+                        <select id="filter-staff-select" onchange="window.renderGrid()">
+                            <option value="ALL" id="opt-filter-staff">SEMUA PEKERJA</option>
+                        </select>
+                        <input type="text" id="filter-customer-input" placeholder="Cari customer..." oninput="window.renderGrid()">
+                    </div>
+                </div>
+
+                <div id="feed-grid" class="grid-container"></div>
+            </main>
+        </div>
     </div>
-</div>
 
-<div class="terminal">
-    <header>
-        <div class="header-left">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" id="sidebar-toggle-btn" title="Buka/Tutup Sidebar">
-                <span>☰</span> <span id="toggle-label">[SHOW MENU]</span>
+    <!-- Google Authentication Overlay -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-box" style="text-align: center;">
+            <div class="modal-title" id="txt-auth-title">[ AUTENTIKASI DIPERLUKAN ]</div>
+            <p style="font-size: 12px; color: #d1d5db; margin-bottom: 20px;" id="txt-auth-desc">MASUK DENGAN GOOGLE UNTUK MENGAKSES TJKTSS</p>
+            <button onclick="loginWithGoogle()" style="border-color: #00ffcc; color: #00ffcc; padding: 12px 24px; font-size: 13px; width: 100%; cursor: pointer; background: #111318;">
+                [G] MASUK DENGAN GOOGLE
             </button>
-            <div class="title-container">
-                <h1 class="shiny-text-big">TJKTSS</h1>
-            </div>
-        </div>
-        <div class="sys-info">
-            <div>USER: <span id="sys-user" class="user-badge" onclick="openUsernameModal()" title="Klik untuk ubah nama">guest@tjkt</span> | ROLE: <span id="sys-role" class="role-badge" onclick="toggleRole()">CUSTOMER</span></div>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <button onclick="toggleLanguage()" id="lang-btn" style="font-size: 10px; padding: 6px 10px; border-color: #00ffcc; color: #00ffcc; background:#111318; cursor: pointer;">[EN]</button>
-                <button onclick="logoutSession()" id="logout-btn" style="font-size: 10px; padding: 6px 10px; background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;">[X] KELUAR</button>
-            </div>
-        </div>
-    </header>
-
-    <div class="app-layout" id="app-layout">
-        <!-- Backdrop Overlay to click outside and close sidebar -->
-        <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
-
-        <!-- Sidebar Navigation & Actions Overlay Drawer -->
-        <aside class="sidebar">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #374151; padding-bottom: 8px; margin-bottom: 6px; white-space: nowrap;">
-                <span style="font-size: 11px; color: #00ffcc; font-weight: bold; letter-spacing: 1px;">[ MENU ]</span>
-                <button onclick="toggleSidebar()" style="background:transparent; border:1px solid #4b5563; color:#f3f4f6; padding:3px 8px; font-size:11px; cursor:pointer; align-self: center; height: auto;">[X]</button>
-            </div>
-
-            <div class="sidebar-section-title" id="nav-title-nav">[ NAVIGASI ]</div>
-            <div class="sidebar-nav-group">
-                <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
-                <button id="tab-custom" onclick="switchTab('CUSTOM')">[2] REQUEST KUSTOM</button>
-                <button id="tab-orders" onclick="switchTab('ORDERS')">[3] TRANSAKSI SAYA</button>
-                <button id="tab-all-orders" onclick="switchTab('ALL_ORDERS')" style="display:none;" class="btn-accent">[4] SEMUA TRANSAKSI</button>
-            </div>
-
-            <div class="sidebar-section-title" id="nav-title-actions" style="margin-top: 10px;">[ AKSI / MENU ]</div>
-            <div class="sidebar-nav-group">
-                <button id="btn-action-request" onclick="openCustomRequestModal()" class="btn-accent">+ AJUKAN KUSTOM</button>
-                <button id="btn-action-post" onclick="openPostModal()" style="display:none;">+ POST JOKI</button>
-                <button id="btn-action-manage-emp" onclick="openEmployeeManageModal()" style="display:none;" class="btn-accent">+ KELOLA PEGAWAI</button>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <div class="stats-bar">
-                <div><span id="label-stat-active">LAYANAN AKTIF</span>: <span id="stat-active">0</span></div>
-                <div><span id="label-stat-custom">PERMINTAAN KUSTOM</span>: <span id="stat-custom">0</span></div>
-                <div><span id="label-stat-orders">TOTAL TRANSAKSI</span>: <span id="stat-orders">0</span></div>
-                <div><span id="label-stat-role-title">ROLE</span>: <span id="stat-role-text" style="color: #00ffcc;">CUSTOMER</span></div>
-            </div>
-
-            <!-- Advanced Sorting & Filtering Bar -->
-            <div class="sorting-bar">
-                <div class="sorting-group">
-                    <span id="label-sort-title" style="color: #00ffcc; font-weight: bold;">[ SORT ]:</span>
-                    <button onclick="toggleSortingOrder()" id="sort-toggle-btn" style="padding: 4px 10px; font-size: 11px; border-color: #00ffcc; color: #00ffcc; background:#111318; cursor: pointer;">[ TERBARU ]</button>
-                </div>
-                <div class="sorting-group" id="filter-container">
-                    <span id="label-filter-title" style="color: #00ffcc; font-weight: bold;">[ FILTER ]:</span>
-                    <select id="filter-status-select" onchange="window.renderGrid()">
-                        <option value="ALL" id="opt-filter-all">SEMUA STATUS</option>
-                        <option value="DP" id="opt-filter-dp">PENDING DP (BELUM LUNAS)</option>
-                        <option value="COMPLETED" id="opt-filter-completed">SELESAI</option>
-                        <option value="PENDING" id="opt-filter-pending">BELUM SELESAI</option>
-                    </select>
-                    <select id="filter-staff-select" onchange="window.renderGrid()">
-                        <option value="ALL" id="opt-filter-staff">SEMUA PEKERJA</option>
-                    </select>
-                    <input type="text" id="filter-customer-input" placeholder="Cari customer..." oninput="window.renderGrid()">
-                </div>
-            </div>
-
-            <div id="feed-grid" class="grid-container"></div>
-        </main>
-    </div>
-</div>
-
-<!-- Modal: Edit Username -->
-<div class="modal-overlay" id="username-modal">
-    <div class="modal-box">
-        <div class="modal-title" id="m-title-user">UBAH NAMA TAMPILAN PENGGUNA</div>
-        <div class="modal-field">
-            <label id="m-label-user">MASUKKAN USERNAME BARU</label>
-            <input type="text" id="new-username-input" placeholder="cth., Turner">
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('username-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-user-cancel">BATAL</button>
-            <button onclick="saveCustomUsername()" style="background:#111318; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-user-save">SIMPAN</button>
         </div>
     </div>
-</div>
 
-<!-- Modal: Admin Manage Employees -->
-<div class="modal-overlay" id="employee-modal">
-    <div class="modal-box">
-        <div class="modal-title" id="m-title-emp">[ ADMIN ] OTORISASI AKUN GOOGLE PEGAWAI</div>
-        <div class="modal-field">
-            <label id="m-label-emp">TAMBAHKAN ALAMAT EMAIL GOOGLE</label>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <input type="email" id="new-employee-email" placeholder="cth., pegawai@gmail.com" style="flex: 1; min-width: 200px;">
-                <button onclick="addEmployeeEmail()" style="background:#111318; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-emp-auth">OTORISASI</button>
-            </div>
-        </div>
-        <div style="margin-top: 15px;">
-            <label id="m-label-emp-list" style="font-size: 12px; color: #f3f4f6; display: block; margin-bottom: 6px; font-weight: bold;">DAFTAR STAFF TEROTORISASI:</label>
-            <div id="employee-list-container"></div>
-        </div>
-        <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-            <button onclick="closeModal('employee-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-emp-close">TUTUP</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Post Joki -->
-<div class="modal-overlay" id="post-modal">
-    <div class="modal-box">
-        <div class="modal-title" id="m-title-post">BUAT LAYANAN JOKI</div>
-        <div class="modal-field">
-            <label id="m-label-title">JUDUL</label>
-            <input type="text" id="post-title" placeholder="cth., Packet Tracer Inter-VLAN Routing">
-        </div>
-        <div class="modal-field">
-            <label id="m-label-price">HARGA (cth: 15000, 15rb, 15k)</label>
-            <input type="text" id="post-price" placeholder="15rb atau 15,000">
-        </div>
-        <div class="modal-field">
-            <label id="m-label-desc">DESKRIPSI & CAKUPAN</label>
-            <textarea id="post-desc" rows="3" placeholder="Termasuk file PKT + laporan screenshot..."></textarea>
-        </div>
-        <div class="modal-field">
-            <label id="m-label-img">LAMPIRKAN GAMBAR / PREVIEW</label>
-            <input type="file" id="post-img" accept="image/*">
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button onclick="closeModal('post-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-post-cancel">BATAL</button>
-            <button onclick="submitPost()" style="background:#111318; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-post-submit">PUBLIKASIKAN</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Custom Request -->
-<div class="modal-overlay" id="custom-modal">
-    <div class="modal-box">
-        <div class="modal-title" id="m-title-cust">AJUKAN PERMINTAAN TUGAS KUSTOM</div>
-        <div class="modal-field">
-            <label id="m-label-cust-title">JUDUL TUGAS</label>
-            <input type="text" id="custom-title" placeholder="cth., Konfigurasi Debian 12 BIND9 DNS">
-        </div>
-        <div class="modal-field">
-            <label id="m-label-cust-budget">TAWARAN BUDGET / HARGA</label>
-            <input type="text" id="custom-budget" placeholder="20rb atau 20,000">
-        </div>
-        <div class="modal-field">
-            <label id="m-label-cust-deadline">TENGGAK WAKTU (DEADLINE)</label>
-            <input type="text" id="custom-deadline" placeholder="Besok, 17:00 WITA">
-        </div>
-        <div class="modal-field">
-            <label id="m-label-cust-desc">DETAIL / INSTRUKSI TUGAS</label>
-            <textarea id="custom-desc" rows="2" placeholder="Konfigurasi domain..."></textarea>
-        </div>
-        <div class="modal-field">
-            <label id="m-label-cust-phone">NOMOR TELEPON / WHATSAPP</label>
-            <input type="text" id="custom-phone" placeholder="cth., 081234567890">
-        </div>
-        <div class="modal-field">
-            <label id="m-label-cust-link">LINK / FILE TUGAS (Opsional)</label>
-            <input type="text" id="custom-file-link" placeholder="https://drive.google.com/...">
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('custom-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-cust-cancel">BATAL</button>
-            <button onclick="submitCustomRequestOnly()" style="background:#111318; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-cust-submit">AJUKAN TUGAS</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Order From Feed -->
-<div class="modal-overlay" id="feed-order-modal">
-    <div class="modal-box">
-        <div class="modal-title" id="m-title-feed-order">[ PESAN LAYANAN JOKI ]</div>
-        <p id="feed-order-title" style="font-weight: bold; margin-bottom: 4px; color: #f3f4f6;"></p>
-        <p id="feed-order-price" style="color: #00ffcc; font-size: 14px; margin-bottom: 14px; font-weight: bold;"></p>
-
-        <div class="modal-field">
-            <label id="m-label-feed-phone">NOMOR TELEPON / WHATSAPP</label>
-            <input type="text" id="feed-order-phone" placeholder="cth., 081234567890">
-        </div>
-        <div class="modal-field">
-            <label id="m-label-feed-link">LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
-            <input type="text" id="feed-order-link" placeholder="cth., Link Google Drive / Catatan">
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('feed-order-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-feed-cancel">BATAL</button>
-            <button onclick="submitOrderFromFeed()" style="border-color: #00ffcc; color: #00ffcc; background: #132223; cursor: pointer;" id="btn-feed-submit">KIRIM PESANAN</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Image Full-Size Viewer -->
-<div class="modal-overlay" id="img-viewer-modal" onclick="closeModal('img-viewer-modal')">
-    <div class="modal-box" style="max-width: 700px; text-align: center; background: #181c24;" onclick="event.stopPropagation()">
-        <div class="modal-title" id="m-title-img-viewer">[ PREVIEW LAMPIRAN ]</div>
-        <img id="img-viewer-src" src="" alt="Full Preview" style="max-width: 100%; max-height: 70vh; border: 1px solid #4b5563; margin: 10px 0;">
-        <div style="text-align: right;">
-            <button onclick="closeModal('img-viewer-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-img-close">TUTUP</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Checkout / Order Payment -->
-<div class="modal-overlay" id="checkout-modal">
-    <div class="modal-box">
-        <div class="modal-title" id="checkout-modal-title">PEMBAYARAN PESANAN</div>
-        <p id="checkout-item-title" style="font-weight: bold; margin-bottom: 4px; color: #f3f4f6;"></p>
-        <p id="checkout-item-price" style="color: #00ffcc; font-size: 15px; margin-bottom: 14px; font-weight: bold;"></p>
-
-        <div class="modal-field">
-            <label id="m-label-pay-phone">NOMOR TELEPON / WHATSAPP</label>
-            <input type="text" id="order-phone" placeholder="cth., 081234567890">
-        </div>
-
-        <div class="modal-field">
-            <label id="m-label-pay-link">LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
-            <input type="text" id="order-task-link" placeholder="cth., Link Google Drive">
-        </div>
-
-        <div id="payment-details-wrapper">
-            <div class="modal-field" id="pay-type-wrapper">
-                <label id="m-label-pay-type">PILIH METODE PEMBAYARAN / DP</label>
-                <select id="pay-type" onchange="updatePaymentAmounts()">
-                    <option value="DP50" id="opt-pay-dp50">Down Payment (DP) 50%</option>
-                    <option value="CUSTOM" id="opt-pay-custom">Custom DP (Nominal Bebas)</option>
-                    <option value="FULL" id="opt-pay-full">Bayar Penuh (Full Payment)</option>
-                </select>
-            </div>
-
-            <div class="modal-field" id="custom-dp-field" style="display: none;">
-                <label id="m-label-pay-custom-amt">MASUKKAN NOMINAL CUSTOM DP</label>
-                <input type="text" id="custom-dp-amount" placeholder="cth., 5000" oninput="updatePaymentAmounts()">
-            </div>
-
+    <!-- Custom Request Modal -->
+    <div class="modal-overlay" id="custom-modal">
+        <div class="modal-box">
+            <div class="modal-title" id="m-title-custom">[ BUAT PERMINTAAN KUSTOM ]</div>
             <div class="modal-field">
-                <label id="m-label-pay-method">METODE PEMBAYARAN</label>
-                <select id="pay-method" onchange="togglePaymentInstructions()">
-                    <option value="QRIS">QRIS (GoPay / DANA / ShopeePay / Bank)</option>
-                    <option value="EWALLET" id="opt-pay-ewallet">Transfer Langsung E-Wallet</option>
-                </select>
+                <label id="m-label-cust-title">JUDUL TUGAS / JOKI</label>
+                <input type="text" id="cust-title" placeholder="cth., Pembuatan Website React">
             </div>
-
-            <div id="qris-display" class="qris-box">
-                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-qris-scan">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
-                <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="qris-amount">0 Rp</p>
-                <img src="qris.jpg" class="qris-img-render" alt="QRIS">
-                <p style="font-size: 11px; color: #fff; font-weight: bold;">Kienziee Store</p>
-                <p style="font-size: 10px; color: #ccc;">NMID: ID1026546274972</p>
+            <div class="modal-field">
+                <label id="m-label-cust-desc">DESKRIPSI TUGAS & KEBUTUHAN</label>
+                <textarea id="cust-desc" rows="4" placeholder="Jelaskan detail tugas atau joki..."></textarea>
             </div>
-
-            <div id="ewallet-display" class="qris-box" style="display: none; border-color: #00ffcc;">
-                <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-ewallet-title">[ TRANSFER LANGSUNG GOPAY / DANA ]</p>
-                <p style="font-size: 16px; font-weight: bold; margin: 6px 0;" id="ewallet-amount">0 Rp</p>
-                <div style="background: #111318; border: 1px solid #4b5563; padding: 10px; margin: 10px 0; text-align: left;">
-                    <p style="font-size: 11px; color: #9ca3af;">NOMOR: <span style="color: #f3f4f6; font-weight: bold; font-size: 13px;">08977246853</span></p>
-                    <p style="font-size: 11px; color: #9ca3af; margin-top: 4px;">ATAS NAMA: <span style="color: #00ffcc;">Muhammad Fadhil Randa Putra</span></p>
-                </div>
-                <button onclick="copyNumber('08977246853')" style="font-size: 10px; padding: 3px 8px; background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-copy-num">[SALIN NOMOR]</button>
+            <div class="modal-field">
+                <label id="m-label-cust-phone">NOMOR TELEPON / WHATSAPP</label>
+                <input type="text" id="cust-phone" placeholder="cth., 081234567890">
             </div>
-
-            <div class="modal-field" style="margin-top: 12px;">
-                <label id="m-label-pay-proof">LAMPIRKAN BUKTI SCREENSHOT PEMBAYARAN</label>
-                <input type="file" id="pay-proof-img" accept="image/*">
+            <div class="modal-field">
+                <label id="m-label-cust-link">LINK ATAU CATATAN FILE TUGAS (OPSIONAL)</label>
+                <input type="text" id="cust-link" placeholder="cth., Link Google Drive">
             </div>
-        </div>
-
-        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
-            <button onclick="closeModal('checkout-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-pay-cancel">BATAL</button>
-            <button onclick="confirmOrderPayment()" style="background:#111318; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-pay-confirm">KONFIRMASI</button>
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+                <button onclick="closeModal('custom-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-cust-cancel">BATAL</button>
+                <button onclick="submitCustomRequestOnly()" style="background:#111318; color:#00ffcc; border:1px solid #00ffcc; cursor: pointer;" id="btn-cust-submit">AJUKAN TUGAS</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="auth-watermark">made by @Turner</div>
-
-<!-- External Modular JavaScript File -->
-<script type="module" src="script.js"></script>
-
+    <script type="module" src="script.js"></script>
 </body>
 </html>
