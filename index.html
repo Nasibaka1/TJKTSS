@@ -32,16 +32,6 @@
             pointer-events: none; z-index: 0; opacity: 0.3;
         }
 
-        #game-bg-layer {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            display: none;
-            opacity: 0.15;
-        }
-
         .terminal {
             max-width: 1300px;
             margin: 0 auto;
@@ -231,6 +221,7 @@
             gap: 16px;
             min-width: 0;
             transition: all 0.4s ease;
+            flex-grow: 1;
         }
 
         .stats-bar {
@@ -439,25 +430,6 @@
             padding: 4px;
         }
 
-        .cli-section {
-            border: 1px solid #374151;
-            padding: 12px;
-            margin-top: 10px;
-            background-color: #181c24;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
-
-        .cli-prompt-line { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-        .cli-prompt-line input {
-            flex-grow: 1; background: transparent; border: none; color: #f3f4f6;
-            font-family: inherit; font-size: 13px; outline: none;
-        }
-
-        .log-box {
-            margin-top: 10px; padding-top: 8px; border-top: 1px dashed #4b5563;
-            max-height: 80px; overflow-y: auto; font-size: 12px; color: #9ca3af;
-        }
-
         .auth-watermark {
             position: fixed; bottom: 10px; right: 15px;
             font-size: 11px; color: #6b7280; pointer-events: none;
@@ -470,15 +442,12 @@
             .sidebar { position: static; white-space: normal; }
             .sys-info { font-size: 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
             .stats-bar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 12px; padding: 10px; }
-            .cli-prompt-line { flex-direction: column; align-items: stretch; }
-            .cli-prompt-line button { width: 100%; padding: 8px; }
         }
     </style>
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
-<canvas id="game-bg-layer"></canvas>
 
 <!-- Google Authentication Overlay -->
 <div class="modal-overlay" id="auth-modal" style="display: flex;">
@@ -561,17 +530,6 @@
 
             <div id="feed-grid" class="grid-container"></div>
         </main>
-    </div>
-
-    <div class="cli-section">
-        <div class="cli-prompt-line">
-            <span id="cli-user-prompt">guest@tjkt:~#</span>
-            <input type="text" id="cli-input" placeholder="Ketik perintah (cth: '/tetris', '/snake', '/bg off', 'help')" onkeydown="handleCliKeyDown(event)">
-            <button onclick="executeCliCommand()" id="exec-btn" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;">EKSEKUSI</button>
-        </div>
-        <div class="log-box" id="log-box">
-            <div class="log-entry" id="log-init-msg">[SYS] TJKTSS Initialized with Collapsed Sidebar.</div>
-        </div>
     </div>
 </div>
 
@@ -831,9 +789,6 @@
     window.authorizedEmployees = [];
     window.collapsedProofs = {};
 
-    let bgGameAnimId = null;
-    window.activeBgGame = null;
-
     const translations = {
         id: {
             authTitle: "[ AUTENTIKASI DIPERLUKAN ]",
@@ -862,9 +817,6 @@
             manageEmp: "+ KELOLA PEGAWAI",
             postJoki: "+ POST JOKI",
             reqCustom: "+ AJUKAN KUSTOM",
-            cliPlaceholder: "Ketik perintah (cth: '/tetris', '/snake', '/bg off', 'help')",
-            cliExec: "EKSEKUSI",
-            logInit: "[SYS] TJKTSS Initialized with Collapsed Sidebar.",
             noTrans: "[ TIDAK ADA TRANSAKSI DITEMUKAN ]",
             noFeed: "[ TIDAK ADA LISTING FEED DITEMUKAN ]",
             noCustom: "[ TIDAK ADA LISTING KUSTOM DITEMUKAN ]",
@@ -940,12 +892,9 @@
             manageEmp: "+ MANAGE EMPLOYEES",
             postJoki: "+ POST A JOKI",
             reqCustom: "+ SUBMIT CUSTOM",
-            cliPlaceholder: "Type command (e.g., '/tetris', '/snake', '/bg off', 'help')",
-            cliExec: "EXEC",
-            logInit: "[SYS] TJKTSS Initialized with Collapsed Sidebar.",
             noTrans: "[ NO TRANSACTIONS FOUND ]",
             noFeed: "[ NO FEED LISTINGS FOUND ]",
-            noCustom: "[ NO CUSTOM LISTINGS FOUND ]",
+            noCustom: "[ NO CUSTOM REQUESTS FOUND ]",
             mUserTitle: "EDIT DISPLAY USERNAME",
             mUserLabel: "ENTER NEW USERNAME",
             btnBatal: "CANCEL",
@@ -1037,9 +986,6 @@
         document.getElementById('btn-action-manage-emp').innerText = t.manageEmp;
         document.getElementById('btn-action-post').innerText = t.postJoki;
         document.getElementById('btn-action-request').innerText = t.reqCustom;
-        document.getElementById('cli-input').placeholder = t.cliPlaceholder;
-        document.getElementById('exec-btn').innerText = t.cliExec;
-        document.getElementById('log-init-msg').innerText = t.logInit;
 
         document.getElementById('m-title-user').innerText = t.mUserTitle;
         document.getElementById('m-label-user').innerText = t.mUserLabel;
@@ -1102,7 +1048,6 @@
         const t = translations[window.currentLang];
         document.getElementById('sort-toggle-btn').innerText = window.sortNewest ? t.sortNewest : t.sortOldest;
         window.renderGrid();
-        addLog(`[SORT] Order changed to ${window.sortNewest ? 'Newest' : 'Oldest'}.`);
     };
 
     onSnapshot(collection(db, "joki"), (snapshot) => {
@@ -1133,7 +1078,6 @@
             determineUserRole();
             window.updateUserInterface();
             window.renderGrid();
-            addLog(`[AUTH] Logged in as '${window.currentUser}' (${window.currentUserEmail}).`);
         } else {
             document.getElementById('auth-modal').style.display = 'flex';
             window.currentUser = null;
@@ -1165,7 +1109,6 @@
         if (window.currentUserEmail) { localStorage.setItem('custom_username_' + window.currentUserEmail, input); }
         window.updateUserInterface();
         window.closeModal('username-modal');
-        addLog(`[PROFILE] Display name updated to '${window.currentUser}'.`);
     };
 
     window.parseAmountToNumber = function(amountStr) {
@@ -1185,7 +1128,6 @@
 
     window.updateUserInterface = function() {
         document.getElementById('sys-user').innerText = `${window.currentUser || 'guest'}@tjkt`;
-        document.getElementById('cli-user-prompt').innerText = `${window.currentUser || 'guest'}@tjkt:~#`;
         document.getElementById('sys-role').innerText = window.userRole;
         document.getElementById('stat-role-text').innerText = window.userRole;
 
@@ -1234,7 +1176,6 @@
         else if (window.userRole === 'EMPLOYEE') window.userRole = 'CUSTOMER';
         else determineUserRole();
         window.updateUserInterface();
-        addLog(`[ROLE] Switched active view mode to ${window.userRole}.`);
         window.renderGrid();
     };
 
@@ -1267,7 +1208,6 @@
             await setDoc(doc(db, "settings", "employees"), { list: window.authorizedEmployees });
             window.renderEmployeeList();
             input.value = '';
-            addLog(`[ADMIN] Authorized employee account: '${email}'.`);
         }
     };
 
@@ -1275,7 +1215,6 @@
         window.authorizedEmployees = window.authorizedEmployees.filter(e => e !== email);
         await setDoc(doc(db, "settings", "employees"), { list: window.authorizedEmployees });
         window.renderEmployeeList();
-        addLog(`[ADMIN] Revoked employee access for: '${email}'.`);
     };
 
     window.switchTab = function(tab) {
@@ -1292,14 +1231,12 @@
     window.deleteJoki = async function(jobId) {
         if (confirm('Are you sure you want to delete this listing?')) {
             await deleteDoc(doc(db, "joki", jobId));
-            addLog(`[DELETE] Deleted listing '${jobId}'.`);
         }
     };
 
     window.deleteTransaction = async function(txId) {
         if (confirm('Are you sure you want to delete this transaction?')) {
             await deleteDoc(doc(db, "transactions", txId));
-            addLog(`[DELETE] Transaction '${txId}' deleted.`);
         }
     };
 
@@ -1308,7 +1245,6 @@
             status: 'ACCEPTED_WAITING_PAYMENT',
             acceptedBy: window.currentUser 
         });
-        addLog(`[STAFF] Transaction ${txId} accepted by ${window.currentUser}. Waiting for customer payment.`);
     };
 
     window.toggleTaskCompletion = async function(txId, isChecked) {
@@ -1318,7 +1254,6 @@
             completedBy: isChecked ? staffName : null,
             completedAt: isChecked ? window.getCurrentFormattedTimestamp() : null
         });
-        addLog(`[TASK] Transaction ${txId} marked as ${isChecked ? 'COMPLETED by ' + staffName : 'INCOMPLETE'}.`);
     };
 
     window.cancelTransactionCustomer = async function(txId) {
@@ -1330,7 +1265,6 @@
         }
         if (confirm('Cancel this transaction?')) {
             await deleteDoc(doc(db, "transactions", txId));
-            addLog(`[CANCEL] Transaction '${txId}' cancelled.`);
         }
     };
 
@@ -1620,7 +1554,6 @@
 
         window.closeModal('custom-modal');
         window.switchTab('ORDERS');
-        addLog(`[CUSTOM] Custom task requested. Waiting for worker to accept.`);
     };
 
     window.submitPost = function() {
@@ -1638,7 +1571,6 @@
                 authorName: window.currentUser, createdAt: Date.now(), requestedAt: window.getCurrentFormattedTimestamp() 
             });
             window.closeModal('post-modal');
-            addLog(`[MARKETPLACE] Published service '${title}'.`);
         };
 
         if (fileInput.files[0]) {
@@ -1699,7 +1631,6 @@
 
         window.closeModal('feed-order-modal');
         window.switchTab('ORDERS');
-        addLog(`[ORDER] Order created successfully. Waiting for worker to accept.`);
     };
 
     let activeCheckoutTx = null;
@@ -1834,149 +1765,6 @@
 
         window.closeModal('checkout-modal');
         window.switchTab('ORDERS');
-        addLog(`[PAYMENT] Payment for order ${activeCheckoutTx.id} submitted successfully.`);
-    }
-
-    window.handleCliKeyDown = function(e) { if (e.key === 'Enter') window.executeCliCommand(); };
-    window.executeCliCommand = function() {
-        const input = document.getElementById('cli-input');
-        const cmd = input.value.trim().toLowerCase();
-        if (!cmd) return;
-        addLog(`${window.currentUser || 'guest'}@tjkt:~# ${cmd}`);
-        input.value = '';
-
-        if (cmd === '/tetris') {
-            startBgAnimation('tetris');
-            addLog(`[BG] Tetris background animation activated.`);
-        } else if (cmd === '/snake') {
-            startBgAnimation('snake');
-            addLog(`[BG] Snake background animation activated.`);
-        } else if (cmd === '/bg off' || cmd === '/bgstop') {
-            stopBgAnimation();
-            addLog(`[BG] Background animation disabled.`);
-        } else if (cmd === 'help') {
-            addLog(`[HELP] Commands: /tetris, /snake, /bg off, role, clear`);
-        } else if (cmd === 'role') {
-            window.toggleRole();
-        } else if (cmd === 'clear') {
-            document.getElementById('log-box').innerHTML = '';
-        } else {
-            addLog(`[ERROR] Command not recognized.`);
-        }
-    };
-
-    function startBgAnimation(type) {
-        window.activeBgGame = type;
-        const canvas = document.getElementById('game-bg-layer');
-        canvas.style.display = 'block';
-        const ctx = canvas.getContext('2d');
-
-        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-
-        if (type === 'tetris') {
-            runBgTetrisLoop(ctx, canvas);
-        } else {
-            runBgSnakeLoop(ctx, canvas);
-        }
-    }
-
-    window.stopBgAnimation = function() {
-        window.activeBgGame = null;
-        const canvas = document.getElementById('game-bg-layer');
-        canvas.style.display = 'none';
-        if (bgGameAnimId) cancelAnimationFrame(bgGameAnimId);
-        bgGameAnimId = null;
-    };
-
-    function runBgTetrisLoop(ctx, canvas) {
-        let blocks = Array.from({length: 25}, () => ({
-            x: Math.floor(Math.random() * (canvas.width / 30)) * 30,
-            y: Math.random() * -canvas.height,
-            size: 28,
-            speed: Math.random() * 1.5 + 0.8,
-            color: '#00ffcc'
-        }));
-
-        function loop() {
-            if (window.activeBgGame !== 'tetris') return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            blocks.forEach(b => {
-                b.y += b.speed;
-                if (b.y > canvas.height) {
-                    b.y = -30;
-                    b.x = Math.floor(Math.random() * (canvas.width / 30)) * 30;
-                }
-                ctx.fillStyle = b.color;
-                ctx.fillRect(b.x, b.y, b.size, b.size);
-            });
-            bgGameAnimId = requestAnimationFrame(loop);
-        }
-        loop();
-    }
-
-    function runBgSnakeLoop(ctx, canvas) {
-        let snakes = [
-            { snake: [{x:100, y:100}, {x:90, y:100}, {x:80, y:100}], dx: 10, dy: 0, food: {x: 300, y: 300}, color: '#00ffcc' },
-            { snake: [{x:400, y:200}, {x:390, y:200}, {x:380, y:200}], dx: 0, dy: 10, food: {x: 200, y: 400}, color: '#00aa88' },
-            { snake: [{x:200, y:500}, {x:200, y:510}, {x:200, y:520}], dx: -10, dy: 0, food: {x: 500, y: 100}, color: '#55ffcc' }
-        ];
-        let frame = 0;
-
-        function loop() {
-            if (window.activeBgGame !== 'snake') return;
-            frame++;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            snakes.forEach(s => {
-                ctx.fillStyle = '#ff5555';
-                ctx.fillRect(s.food.x, s.food.y, 8, 8);
-
-                if (frame % 12 === 0) {
-                    let head = {x: s.snake[0].x + s.dx, y: s.snake[0].y + s.dy};
-                    if (head.x >= canvas.width) head.x = 0;
-                    if (head.x < 0) head.x = canvas.width - 10;
-                    if (head.y >= canvas.height) head.y = 0;
-                    if (head.y < 0) head.y = canvas.height - 10;
-
-                    s.snake.unshift(head);
-
-                    if (Math.abs(head.x - s.food.x) < 8 && Math.abs(head.y - s.food.y) < 8) {
-                        s.food = { x: Math.floor(Math.random()*(canvas.width/20))*20, y: Math.floor(Math.random()*(canvas.height/20))*20 };
-                    } else {
-                        s.snake.pop();
-                    }
-
-                    if (Math.random() < 0.15) {
-                        let dirs = [{dx:10,dy:0}, {dx:-10,dy:0}, {dx:0,dy:10}, {dx:0,dy:-10}];
-                        let d = dirs[Math.floor(Math.random()*dirs.length)];
-                        s.dx = d.dx; s.dy = d.dy;
-                    }
-                }
-
-                s.snake.forEach((p, idx) => {
-                    ctx.fillStyle = idx === 0 ? s.color : '#006655';
-                    ctx.fillRect(p.x, p.y, 8, 8);
-                });
-            });
-
-            bgGameAnimId = requestAnimationFrame(loop);
-        }
-        loop();
-    }
-
-    function addLog(msg) {
-        const logBox = document.getElementById('log-box');
-        const dt = document.createElement('div');
-        dt.className = 'log-entry'; dt.innerText = msg;
-        logBox.appendChild(dt);
-        logBox.scrollTop = logBox.scrollHeight;
     }
 
     function formatRupiah(num) { return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(num) + " Rp"; }
