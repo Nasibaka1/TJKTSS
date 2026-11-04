@@ -3,12 +3,12 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSy...your-actual-api-key...",
+    apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
     authDomain: "tjktssv2.firebaseapp.com",
     projectId: "tjktssv2",
     storageBucket: "tjktssv2.appspot.com",
     messagingSenderId: "842333117452",
-    appId: "1:842333117452:web:..."
+    appId: "1:842333117452:web:ea45034d64f0e03895e229"
 };
 
 const app = initializeApp(firebaseConfig);
