@@ -4,6 +4,7 @@ import {
     GoogleAuthProvider, 
     signInWithPopup,
     signInWithRedirect,
+    getRedirectResult,
     signOut, 
     onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -42,16 +43,22 @@ const CUSTOMER_CANCEL_WINDOW_MINUTES = 15;
 
 const messaging = getMessaging(app);
 
+// Handle mobile redirect login results automatically on page load
+getRedirectResult(auth).catch((error) => {
+    console.error("Redirect sign-in error:", error);
+    alert("Google Sign-In Error: " + error.message);
+});
+
 window.requestNotificationPermission = async function() {
   try {
-    // Explicitly register the service worker first
+    // Explicitly register the service worker first to prevent default loader errors
     const registration = await navigator.serviceWorker.register('/firebase-cloud-messaging-sw.js');
     
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
       const token = await getToken(messaging, { 
         vapidKey: 'BBZHddGLfVNKrg5mww_IDnIq6RHikz7g7cyocGrHKHqautDk_2w19U0vgW-JKRNB6ZDDocA92iMmAHmevdP59O4',
-        serviceWorkerRegistration: registration // Pass the manual registration here
+        serviceWorkerRegistration: registration
       });
       console.log('FCM Device Token:', token);
     } else {
@@ -369,6 +376,7 @@ onAuthStateChanged(auth, (user) => {
         window.currentUserEmail = null;
     }
 });
+
 window.loginWithGoogle = async function() {
     try {
         if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
