@@ -535,6 +535,20 @@ window.toggleProofCollapse = function(txId) {
     window.renderGrid();
 };
 
+function formatShortLink(urlStr) {
+    if (!urlStr) return '';
+    let clean = urlStr.trim();
+    if (!clean.startsWith('http://') && !clean.startsWith('https://')) {
+        clean = 'https://' + clean;
+    }
+    try {
+        const u = new URL(clean);
+        return `<a href="${u.href}" target="_blank" style="color: #00ffcc; text-decoration: underline;" title="${escapeHtml(urlStr)}">[🔗 Lihat File]</a>`;
+    } catch {
+        return `<a href="${escapeHtml(clean)}" target="_blank" style="color: #00ffcc; text-decoration: underline;" title="${escapeHtml(urlStr)}">[🔗 Lihat File]</a>`;
+    }
+}
+
 function renderProofsHtml(tx) {
     let proofs = tx.proofs || [];
     if (proofs.length === 0 && tx.proofImage) {
@@ -665,7 +679,7 @@ window.renderGrid = function() {
                     <div class="card-meta">
                         <span><span class="meta-label">BUYER:</span> ${escapeHtml(tx.customerName)}</span>
                         <span><span class="meta-label">PHONE/WA:</span> <b style="color:#00ffcc;">${escapeHtml(tx.phone || 'N/A')}</b></span>
-                        ${tx.taskLink ? '<span><span class="meta-label">FILE/LINK:</span> ' + escapeHtml(tx.taskLink) + '</span>' : ''}
+                        ${tx.taskLink ? '<span><span class="meta-label">FILE/LINK:</span> ' + formatShortLink(tx.taskLink) + '</span>' : ''}
                         <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                         <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
                     </div>
@@ -730,6 +744,7 @@ window.renderGrid = function() {
                         <span><span class="meta-label">BUYER:</span> ${escapeHtml(tx.customerName)}</span>
                         <span><span class="meta-label">PHONE/WA:</span> ${escapeHtml(tx.phone || 'N/A')}</span>
                         ${tx.acceptedBy ? '<span><span class="meta-label">WORKER:</span> <b style="color:#00ffcc;">' + escapeHtml(tx.acceptedBy) + '</b></span>' : ''}
+                        ${tx.taskLink ? '<span><span class="meta-label">FILE/LINK:</span> ' + formatShortLink(tx.taskLink) + '</span>' : ''}
                         <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(tx.requestedAt || 'N/A')}</span>
                         <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
                     </div>
@@ -767,6 +782,7 @@ window.renderGrid = function() {
                 <div class="card-meta">
                     <span><span class="meta-label">BY:</span> ${escapeHtml(job.authorName)}</span>
                     ${job.phone ? '<span><span class="meta-label">PHONE/WA:</span> <b style="color: #00ffcc;">' + escapeHtml(job.phone) + '</b></span>' : ''}
+                    ${job.taskLink ? '<span><span class="meta-label">FILE/LINK:</span> ' + formatShortLink(job.taskLink) + '</span>' : ''}
                     <span><span class="meta-label">STATUS:</span> <b style="color: #00ffcc;">AVAILABLE</b></span>
                     <span><span class="meta-label">REQUESTED:</span> ${escapeHtml(job.requestedAt || 'N/A')}</span>
                 </div>
