@@ -48,13 +48,16 @@
     </header>
 
     <div class="app-layout" id="app-layout">
-        <!-- Sidebar Navigation & Actions (Collapsed by Default) -->
+        <!-- Backdrop Overlay to click outside and close sidebar -->
+        <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar Navigation & Actions Overlay Drawer -->
         <aside class="sidebar">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #374151; padding-bottom: 6px;">
-            <span class="sidebar-section-title" style="border:none; padding:0; margin:0;">[ MENU ]</span>
-            <button onclick="toggleSidebar()" style="background:transparent; border:1px solid #4b5563; color:#f3f4f6; padding:2px 6px; font-size:10px; cursor:pointer;">[X]</button>
-        </div>
-        <aside class="sidebar">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #374151; padding-bottom: 6px;">
+                <span class="sidebar-section-title" style="border:none; padding:0; margin:0;">[ MENU ]</span>
+                <button onclick="toggleSidebar()" style="background:transparent; border:1px solid #4b5563; color:#f3f4f6; padding:2px 6px; font-size:10px; cursor:pointer;">[X]</button>
+            </div>
+
             <div class="sidebar-section-title" id="nav-title-nav">[ NAVIGASI ]</div>
             <div class="sidebar-nav-group">
                 <button id="tab-feed" class="active" onclick="switchTab('FEED')">[1] FEED LAYANAN</button>
