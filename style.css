@@ -41,25 +41,30 @@ header {
     gap: 15px;
 }
 
-/* Android-specific mobile navigation override */
-body.android-device .sidebar {
-    position: relative !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    max-height: 0 !important;
-    overflow: hidden !important;
-    padding: 0 16px !important;
-    border: none !important;
-    box-shadow: none !important;
-    transition: max-height 0.3s ease, padding 0.3s ease !important;
-}
+/* Mobile / Android Dropdown Navigation Drawer */
+@media screen and (max-width: 900px) {
+    .sidebar {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
+        padding: 0 16px !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #181c24 !important;
+        transition: max-height 0.3s ease, padding 0.3s ease !important;
+        margin-bottom: 0 !important;
+    }
 
-body.android-device .app-layout.sidebar-open .sidebar {
-    max-height: 400px !important;
-    padding: 16px !important;
-    border: 1px solid #00ffcc !important;
-    margin-bottom: 15px !important;
+    .app-layout.sidebar-open .sidebar {
+        max-height: 500px !important;
+        padding: 16px !important;
+        border: 1px solid #00ffcc !important;
+        margin-bottom: 15px !important;
+    }
 }
 
 .header-left {
