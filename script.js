@@ -379,16 +379,10 @@ onAuthStateChanged(auth, (user) => {
 
 window.loginWithGoogle = async function() {
     try {
-        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            await signInWithRedirect(auth, googleProvider);
-        } else {
-            await signInWithPopup(auth, googleProvider);
-        }
+        await signInWithPopup(auth, googleProvider);
     } catch (error) {
-        console.warn("Popup failed, falling back to redirect:", error);
-        await signInWithRedirect(auth, googleProvider).catch((err) => {
-            alert("Google Sign-In Error: " + err.message);
-        });
+        console.error("Google Sign-In Popup Error:", error);
+        alert("Google Sign-In Error: " + error.message);
     }
 };
 
