@@ -114,13 +114,24 @@ header {
 
 .user-badge:hover { background-color: #00ffcc; color: #111318; }
 
-/* Backdrop Overlay for Sidebar */
+/* App Layout & Sidebar Overlay */
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
 .sidebar-backdrop {
     position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(11, 13, 17, 0.7);
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh;
+    background: rgba(11, 13, 17, 0.75);
     backdrop-filter: blur(2px);
-    z-index: 90;
+    z-index: 990;
     display: none;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -129,14 +140,6 @@ header {
 .app-layout.sidebar-open .sidebar-backdrop {
     display: block;
     opacity: 1;
-}
-
-/* App Layout with Overlay Floating Sidebar */
-.app-layout {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin-bottom: 20px;
 }
 
 .sidebar {
@@ -151,7 +154,7 @@ header {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    z-index: 95;
+    z-index: 1000;
     overflow-y: auto;
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 5px 0 20px rgba(0,0,0,0.8);
@@ -356,7 +359,7 @@ header {
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: 1100;
     padding: 15px;
 }
 
