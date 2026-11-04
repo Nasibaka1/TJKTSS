@@ -17,7 +17,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
+    apiKey: "AIzaSyBQkMZYwL-ZrMndY8KibCEnMmVcboC699o",
     authDomain: "tjktssv2.firebaseapp.com",
     projectId: "tjktssv2",
     storageBucket: "tjktssv2.firebasestorage.app",
@@ -1067,3 +1067,8 @@ function initParticles() {
     animate();
 }
 initParticles();
+
+// Android Device Detection for Modal Sizing
+if (/Android/i.test(navigator.userAgent)) {
+    document.body.classList.add('android-device');
+}
