@@ -17,7 +17,19 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title || 'Joki Fadhil';
   const notificationOptions = {
     body: payload.notification.body || 'New order or request update received!',
-    icon: 'https://i.imgur.com/BpmjWkZ.png'
+    icon: 'cropped_circle_image.png'
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      for (const client of clientList) {
+        if ('focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow('/');
+    })
+  );
 });
