@@ -61,12 +61,38 @@ window.requestNotificationPermission = async function() {
         serviceWorkerRegistration: registration
       });
       console.log('FCM Device Token:', token);
+      alert('Notifications enabled successfully! You will now receive alerts for new orders.');
     } else {
       console.log('Notification permission denied.');
     }
   } catch (error) {
     console.error('An error occurred while retrieving token. ', error);
   }
+}
+
+// Handle FCM messages when the app is in the foreground
+onMessage(messaging, (payload) => {
+  console.log('FCM foreground message received:', payload);
+  const n = payload.notification || {};
+  showLocalNotification(n.title || 'New Order', n.body || 'A new order has been received.');
+});
+
+function showLocalNotification(title, body) {
+  if (Notification.permission === 'granted') {
+    new Notification(title, {
+      body: body,
+      icon: 'cropped_circle_image.png',
+      badge: 'cropped_circle_image.png'
+    });
+  }
+}
+
+function showNewOrderNotification(tx) {
+  const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
+  if (!isStaff) return;
+  const title = tx.type === 'custom_request' ? 'New Custom Request!' : 'New Order Received!';
+  const body = tx.title ? tx.title : 'A new task or order has been placed.';
+  showLocalNotification(title, body);
 }
 
 window.currentUser = null;
@@ -347,10 +373,29 @@ onSnapshot(collection(db, "joki"), (snapshot) => {
     window.renderGrid();
 });
 
+let knownTransactionIds = new Set();
+let isFirstTransactionSnapshot = true;
+
 onSnapshot(collection(db, "transactions"), (snapshot) => {
+    const newDocs = snapshot.docChanges().filter(change => change.type === 'added');
+    const newTxs = newDocs.map(change => ({ id: change.doc.id, ...change.doc.data() }));
+
     window.transactionsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     window.updateStaffFilterDropdown();
     window.renderGrid();
+
+    if (isFirstTransactionSnapshot) {
+        snapshot.docs.forEach(doc => knownTransactionIds.add(doc.id));
+        isFirstTransactionSnapshot = false;
+        return;
+    }
+
+    newTxs.forEach(tx => {
+        if (!knownTransactionIds.has(tx.id)) {
+            knownTransactionIds.add(tx.id);
+            showNewOrderNotification(tx);
+        }
+    });
 });
 
 onSnapshot(collection(db, "settings"), (snapshot) => {
