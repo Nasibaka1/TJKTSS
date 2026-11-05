@@ -49,6 +49,13 @@ getRedirectResult(auth).catch((error) => {
     alert("Google Sign-In Error: " + error.message);
 });
 
+// Auto-register service worker on load so notifications work on mobile
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/firebase-cloud-messaging-sw.js').catch(err => {
+    console.error('Service worker registration failed:', err);
+  });
+}
+
 window.requestNotificationPermission = async function() {
   try {
     // Explicitly register the service worker first to prevent default loader errors
@@ -78,12 +85,17 @@ onMessage(messaging, (payload) => {
 });
 
 function showLocalNotification(title, body) {
-  if (Notification.permission === 'granted') {
-    new Notification(title, {
-      body: body,
-      icon: 'cropped_circle_image.png',
-      badge: 'cropped_circle_image.png'
-    });
+  if (Notification.permission !== 'granted') return;
+  const icon = 'cropped_circle_image.png';
+  const options = { body, icon, badge: icon, tag: 'tjktss-order', renotify: true };
+
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) reg.showNotification(title, options);
+      else new Notification(title, options);
+    }).catch(() => new Notification(title, options));
+  } else {
+    new Notification(title, options);
   }
 }
 
