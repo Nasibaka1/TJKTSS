@@ -17,11 +17,6 @@ import {
     deleteDoc,
     updateDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { 
-    getMessaging,
-    getToken,
-    onMessage
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBQkMZywL-ZrMndY8KibCEnMmVcboC699o",
@@ -41,7 +36,12 @@ const googleProvider = new GoogleAuthProvider();
 const ADMIN_EMAIL = 'muhammadfadhilrandaputra@gmail.com';
 const CUSTOMER_CANCEL_WINDOW_MINUTES = 15;
 
-const messaging = getMessaging(app);
+// Drop previously installed push-notification workers.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations()
+    .then(registrations => registrations.forEach(registration => registration.unregister()))
+    .catch(() => {});
+}
 
 // Handle mobile redirect login results automatically on page load
 getRedirectResult(auth).catch((error) => {
@@ -49,62 +49,29 @@ getRedirectResult(auth).catch((error) => {
     alert("Google Sign-In Error: " + error.message);
 });
 
-// Auto-register service worker on load so notifications work on mobile
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/firebase-cloud-messaging-sw.js').catch(err => {
-    console.error('Service worker registration failed:', err);
-  });
-}
-
-window.requestNotificationPermission = async function() {
+async function sendOrderEmail(order) {
+  const recipients = [ADMIN_EMAIL, ...(window.authorizedEmployees || [])];
   try {
-    // Explicitly register the service worker first to prevent default loader errors
-    const registration = await navigator.serviceWorker.register('/firebase-cloud-messaging-sw.js');
-    
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      const token = await getToken(messaging, { 
-        vapidKey: 'BBZHddGLfVNKrg5mww_IDnIq6RHikz7g7cyocGrHKHqautDk_2w19U0vgW-JKRNB6ZDDocA92iMmAHmevdP59O4',
-        serviceWorkerRegistration: registration
-      });
-      console.log('FCM Device Token:', token);
-      alert('Notifications enabled successfully! You will now receive alerts for new orders.');
-    } else {
-      console.log('Notification permission denied.');
-    }
+    const response = await fetch('/api/notify-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        txId: order.id,
+        jobTitle: order.jobTitle,
+        customerName: order.customerName,
+        customerEmail: window.currentUserEmail,
+        phone: order.phone,
+        taskLink: order.taskLink,
+        totalPrice: order.totalPrice,
+        kind: order.kind,
+        recipients
+      })
+    });
+    return response.ok;
   } catch (error) {
-    console.error('An error occurred while retrieving token. ', error);
+    console.error('Order email failed:', error);
+    return false;
   }
-}
-
-// Handle FCM messages when the app is in the foreground
-onMessage(messaging, (payload) => {
-  console.log('FCM foreground message received:', payload);
-  const n = payload.notification || {};
-  showLocalNotification(n.title || 'New Order', n.body || 'A new order has been received.');
-});
-
-function showLocalNotification(title, body) {
-  if (Notification.permission !== 'granted') return;
-  const icon = 'cropped_circle_image.png';
-  const options = { body, icon, badge: icon, tag: 'tjktss-order', renotify: true };
-
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.getRegistration().then(reg => {
-      if (reg) reg.showNotification(title, options);
-      else new Notification(title, options);
-    }).catch(() => new Notification(title, options));
-  } else {
-    new Notification(title, options);
-  }
-}
-
-function showNewOrderNotification(tx) {
-  const isStaff = window.userRole === 'ADMIN' || window.userRole === 'EMPLOYEE';
-  if (!isStaff) return;
-  const title = tx.type === 'custom_request' ? 'New Custom Request!' : 'New Order Received!';
-  const body = tx.title ? tx.title : 'A new task or order has been placed.';
-  showLocalNotification(title, body);
 }
 
 window.currentUser = null;
@@ -385,29 +352,10 @@ onSnapshot(collection(db, "joki"), (snapshot) => {
     window.renderGrid();
 });
 
-let knownTransactionIds = new Set();
-let isFirstTransactionSnapshot = true;
-
 onSnapshot(collection(db, "transactions"), (snapshot) => {
-    const newDocs = snapshot.docChanges().filter(change => change.type === 'added');
-    const newTxs = newDocs.map(change => ({ id: change.doc.id, ...change.doc.data() }));
-
     window.transactionsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     window.updateStaffFilterDropdown();
     window.renderGrid();
-
-    if (isFirstTransactionSnapshot) {
-        snapshot.docs.forEach(doc => knownTransactionIds.add(doc.id));
-        isFirstTransactionSnapshot = false;
-        return;
-    }
-
-    newTxs.forEach(tx => {
-        if (!knownTransactionIds.has(tx.id)) {
-            knownTransactionIds.add(tx.id);
-            showNewOrderNotification(tx);
-        }
-    });
 });
 
 onSnapshot(collection(db, "settings"), (snapshot) => {
@@ -918,12 +866,24 @@ window.submitCustomRequestOnly = async function() {
         status: 'ORDERED_WAITING_WORKER',
         isCompleted: false,
         completedBy: null,
+        customerEmail: window.currentUserEmail,
         createdAt: Date.now(),
         requestedAt: window.getCurrentFormattedTimestamp()
     });
 
+    const emailed = await sendOrderEmail({
+        id: txId,
+        jobTitle: title,
+        customerName: window.currentUser,
+        phone,
+        taskLink: document.getElementById('custom-file-link').value.trim(),
+        totalPrice: budget,
+        kind: 'custom'
+    });
+
     window.closeModal('custom-modal');
     window.switchTab('ORDERS');
+    if (!emailed) alert('Pesanan tersimpan, tetapi email notifikasi gagal dikirim.');
 };
 
 window.submitPost = function() {
@@ -995,12 +955,24 @@ window.submitOrderFromFeed = async function() {
         status: 'ORDERED_WAITING_WORKER',
         isCompleted: false,
         completedBy: null,
+        customerEmail: window.currentUserEmail,
         createdAt: Date.now(),
         requestedAt: window.getCurrentFormattedTimestamp()
     });
 
+    const emailed = await sendOrderEmail({
+        id: txId,
+        jobTitle: selectedFeedJob.title,
+        customerName: window.currentUser,
+        phone,
+        taskLink,
+        totalPrice: selectedFeedJob.price,
+        kind: 'service'
+    });
+
     window.closeModal('feed-order-modal');
     window.switchTab('ORDERS');
+    if (!emailed) alert('Pesanan tersimpan, tetapi email notifikasi gagal dikirim.');
 };
 
 let activeCheckoutTx = null;
