@@ -558,42 +558,72 @@ window.toggleTaskCompletion = async function(txId, isChecked) {
     });
 };
 
-// --- Staff Edit / Add Payment Proof Feature ---
+
+let activeStaffEditTxId = null;
+
 window.openStaffEditModal = function(txId) {
     const tx = window.transactionsList.find(t => t.id === txId);
     if (!tx) return;
-    
-    const newStatus = prompt("Update transaction status:", tx.status);
-    if (newStatus === null) return;
-    
-    const addAmountStr = prompt("Add payment amount (leave 0 or empty to skip):", "0");
-    const amountToAdd = window.parseAmountToNumber(addAmountStr);
-    
-    const proofInputUrl = prompt("Paste payment proof image URL or leave blank:", "");
+    activeStaffEditTxId = txId;
 
-    const updateData = { status: newStatus.trim() };
-    
-    if (amountToAdd > 0) {
-        let existingProofs = tx.proofs || [];
-        existingProofs.push({
-            title: 'Staff Added Payment',
-            image: proofInputUrl || 'https://via.placeholder.com/400?text=Manual+Payment',
-            amount: amountToAdd,
-            time: window.getCurrentFormattedTimestamp()
-        });
-        
-        let newTotalPaid = (tx.amountPaid || 0) + amountToAdd;
-        updateData.amountPaid = newTotalPaid;
-        updateData.proofs = existingProofs;
-        if (newTotalPaid >= tx.totalPrice) {
-            updateData.status = 'PAID_FULL';
-        }
-    }
-
-    updateDoc(doc(db, "transactions", txId), updateData)
-        .then(() => alert("Transaction updated successfully!"))
-        .catch(err => alert("Failed to update: " + err.message));
+    document.getElementById('staff-edit-status').value = tx.status || '';
+    document.getElementById('staff-edit-amount').value = '';
+    document.getElementById('staff-edit-proof-file').value = '';
+    document.getElementById('staff-edit-modal').style.display = 'flex';
 };
+
+window.submitStaffEdit = async function() {
+    const tx = window.transactionsList.find(t => t.id === activeStaffEditTxId);
+    if (!tx) return;
+
+    const newStatus = document.getElementById('staff-edit-status').value.trim();
+    const amountToAdd = window.parseAmountToNumber(document.getElementById('staff-edit-amount').value);
+    const fileInput = document.getElementById('staff-edit-proof-file');
+
+    const updateData = { status: newStatus };
+
+    const processUpdate = async (proofData) => {
+        if (amountToAdd > 0 && proofData) {
+            let existingProofs = tx.proofs || [];
+            existingProofs.push({
+                title: 'Staff Added Payment',
+                image: proofData,
+                amount: amountToAdd,
+                time: window.getCurrentFormattedTimestamp()
+            });
+            
+            let newTotalPaid = (tx.amountPaid || 0) + amountToAdd;
+            updateData.amountPaid = newTotalPaid;
+            updateData.proofs = existingProofs;
+            if (newTotalPaid >= tx.totalPrice) {
+                updateData.status = 'PAID_FULL';
+            }
+        }
+
+        await updateDoc(doc(db, "transactions", activeStaffEditTxId), updateData);
+        window.closeModal('staff-edit-modal');
+        alert('Transaction updated successfully!');
+    };
+
+    if (fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 800; 
+                canvas.height = 800 * (img.height / img.width);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                processUpdate(canvas.toDataURL('image/jpeg', 0.7));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    } else {
+        await processUpdate(null);
+    }
+};
+
 
 window.cancelTransactionCustomer = async function(txId) {
     const tx = window.transactionsList.find(t => t.id === txId);
