@@ -558,7 +558,7 @@ window.toggleTaskCompletion = async function(txId, isChecked) {
     });
 };
 
-
+// --- Staff HTML Modal Edit & File Upload Functions ---
 let activeStaffEditTxId = null;
 
 window.openStaffEditModal = function(txId) {
@@ -585,6 +585,9 @@ window.submitStaffEdit = async function() {
     const processUpdate = async (proofData) => {
         if (amountToAdd > 0 && proofData) {
             let existingProofs = tx.proofs || [];
+            if (existingProofs.length === 0 && tx.proofImage) {
+                existingProofs.push({ title: tx.paymentMethod || 'Payment', image: tx.proofImage, amount: tx.amountPaid || 0, time: tx.requestedAt || '' });
+            }
             existingProofs.push({
                 title: 'Staff Added Payment',
                 image: proofData,
@@ -623,7 +626,6 @@ window.submitStaffEdit = async function() {
         await processUpdate(null);
     }
 };
-
 
 window.cancelTransactionCustomer = async function(txId) {
     const tx = window.transactionsList.find(t => t.id === txId);
