@@ -281,30 +281,6 @@
                     <option value="EWALLET" id="opt-pay-ewallet">Transfer Langsung E-Wallet</option>
                 </select>
             </div>
-
-
-            <!-- Staff Edit Transaction Modal -->
-<div id="staff-edit-modal" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-title">[ EDIT TRANSACTION / ADD PAYMENT ]</div>
-        <div class="modal-field">
-            <label>TRANSACTION STATUS</label>
-            <input type="text" id="staff-edit-status">
-        </div>
-        <div class="modal-field">
-            <label>ADD PAYMENT AMOUNT (RP)</label>
-            <input type="text" id="staff-edit-amount" placeholder="e.g. 15000, 15k">
-        </div>
-        <div class="modal-field">
-            <label>UPLOAD PAYMENT PROOF IMAGE (Optional)</label>
-            <input type="file" id="staff-edit-proof-file" accept="image/*" style="background:#111318; border:1px solid #4b5563; padding:8px; color:#f3f4f6; width:100%; font-family:inherit; font-size:13px; cursor:pointer;">
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <button onclick="closeModal('staff-edit-modal')" style="background:#111318; border:1px solid #4b5563; color:#f3f4f6; padding:8px 14px; cursor:pointer; font-family:inherit;">CANCEL</button>
-            <button onclick="submitStaffEdit()" style="background:#132223; border:1px solid #00ffcc; color:#00ffcc; padding:8px 14px; cursor:pointer; font-family:inherit; font-weight:bold;">[SAVE CHANGES]</button>
-        </div>
-    </div>
-</div>
             
             <div id="qris-display" class="qris-box">
                 <p style="font-size: 11px; color: #00ffcc; font-weight: bold;" id="txt-qris-scan">[ SCAN QRIS UNTUK MEMBAYAR ]</p>
@@ -329,6 +305,28 @@
                 <input type="file" id="pay-proof-img" accept="image/*">
             </div>
         </div>
+
+        <div id="staff-edit-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title">[ EDIT TRANSACTION / ADD PAYMENT ]</div>
+        <div class="modal-field">
+            <label>TRANSACTION STATUS</label>
+            <input type="text" id="staff-edit-status">
+        </div>
+        <div class="modal-field">
+            <label>ADD PAYMENT AMOUNT (RP)</label>
+            <input type="text" id="staff-edit-amount" placeholder="e.g. 15000, 15k">
+        </div>
+        <div class="modal-field">
+            <label>UPLOAD PAYMENT PROOF IMAGE (Optional)</label>
+            <input type="file" id="staff-edit-proof-file" accept="image/*" style="background:#111318; border:1px solid #4b5563; padding:8px; color:#f3f4f6; width:100%; font-family:inherit; font-size:13px; cursor:pointer;">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button onclick="closeModal('staff-edit-modal')" style="background:#111318; border:1px solid #4b5563; color:#f3f4f6; padding:8px 14px; cursor:pointer; font-family:inherit;">CANCEL</button>
+            <button onclick="submitStaffEdit()" style="background:#132223; border:1px solid #00ffcc; color:#00ffcc; padding:8px 14px; cursor:pointer; font-family:inherit; font-weight:bold;">[SAVE CHANGES]</button>
+        </div>
+    </div>
+</div>
 
         <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
             <button onclick="closeModal('checkout-modal')" style="background:#111318; color:#f3f4f6; border:1px solid #4b5563; cursor: pointer;" id="btn-pay-cancel">BATAL</button>
