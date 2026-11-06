@@ -558,6 +558,43 @@ window.toggleTaskCompletion = async function(txId, isChecked) {
     });
 };
 
+// --- Staff Edit / Add Payment Proof Feature ---
+window.openStaffEditModal = function(txId) {
+    const tx = window.transactionsList.find(t => t.id === txId);
+    if (!tx) return;
+    
+    const newStatus = prompt("Update transaction status:", tx.status);
+    if (newStatus === null) return;
+    
+    const addAmountStr = prompt("Add payment amount (leave 0 or empty to skip):", "0");
+    const amountToAdd = window.parseAmountToNumber(addAmountStr);
+    
+    const proofInputUrl = prompt("Paste payment proof image URL or leave blank:", "");
+
+    const updateData = { status: newStatus.trim() };
+    
+    if (amountToAdd > 0) {
+        let existingProofs = tx.proofs || [];
+        existingProofs.push({
+            title: 'Staff Added Payment',
+            image: proofInputUrl || 'https://via.placeholder.com/400?text=Manual+Payment',
+            amount: amountToAdd,
+            time: window.getCurrentFormattedTimestamp()
+        });
+        
+        let newTotalPaid = (tx.amountPaid || 0) + amountToAdd;
+        updateData.amountPaid = newTotalPaid;
+        updateData.proofs = existingProofs;
+        if (newTotalPaid >= tx.totalPrice) {
+            updateData.status = 'PAID_FULL';
+        }
+    }
+
+    updateDoc(doc(db, "transactions", txId), updateData)
+        .then(() => alert("Transaction updated successfully!"))
+        .catch(err => alert("Failed to update: " + err.message));
+};
+
 window.cancelTransactionCustomer = async function(txId) {
     const tx = window.transactionsList.find(t => t.id === txId);
     if (!tx) return;
@@ -688,7 +725,8 @@ window.renderGrid = function() {
         }
         filteredTrans.forEach(tx => {
             const card = document.createElement('div');
-            card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
+            const isFullyPaid = tx.amountPaid >= tx.totalPrice || tx.status === 'PAID_FULL';
+            card.className = `card ${isFullyPaid ? 'fully-paid-card' : ''}`;
             
             let proofsHtml = renderProofsHtml(tx);
             
@@ -709,6 +747,7 @@ window.renderGrid = function() {
                 actionStaffBtn = `<span style="color: #00ffcc; font-size: 12px; font-weight: bold;">✓ Accepted by ${escapeHtml(tx.acceptedBy || 'Staff')}</span>`;
             }
 
+            const staffEditBtn = `<button onclick="openStaffEditModal('${tx.id}')" style="border-color: #00ffcc; color: #00ffcc; background: #132223; cursor: pointer; padding: 6px 10px; font-size:11px; margin-right: 6px;">[EDIT / ADD PROOF]</button>`;
             const priceDisplay = tx.amountPaid > 0 ? `<div class="card-price">${formatRupiah(tx.amountPaid)} Paid (Total: ${formatRupiah(tx.totalPrice)})</div>` : `<div style="color: #fbbf24; font-size: 13px; font-weight: bold;">Total: ${formatRupiah(tx.totalPrice || 0)}</div>`;
 
             card.innerHTML = `
@@ -729,6 +768,7 @@ window.renderGrid = function() {
                         <span><span class="meta-label">TX ID:</span> ${escapeHtml(tx.id)}</span>
                     </div>
                     <div style="margin-top: 12px; text-align: right; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+                        ${staffEditBtn}
                         <button class="btn-del" onclick="deleteTransaction('${tx.id}')" style="cursor: pointer;">DEL TX</button>
                     </div>
                 </div>
@@ -749,7 +789,8 @@ window.renderGrid = function() {
         }
         filteredUserTrans.forEach(tx => {
             const card = document.createElement('div');
-            card.className = `card ${tx.isCompleted ? 'completed-card' : ''}`;
+            const isFullyPaid = tx.amountPaid >= tx.totalPrice || tx.status === 'PAID_FULL';
+            card.className = `card ${isFullyPaid ? 'fully-paid-card' : ''}`;
             
             let proofsHtml = renderProofsHtml(tx);
             let cancelBtn = Math.ceil(CUSTOMER_CANCEL_WINDOW_MINUTES - (Date.now() - (tx.createdAt || 0)) / (1000 * 60)) > 0 ? `<button class="btn-del" onclick="cancelTransactionCustomer('${tx.id}')" style="cursor: pointer;">CANCEL</button>` : '';
