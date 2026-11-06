@@ -580,11 +580,16 @@ window.submitStaffEdit = async function() {
     const amountToAdd = window.parseAmountToNumber(document.getElementById('staff-edit-amount').value);
     const fileInput = document.getElementById('staff-edit-proof-file');
 
+    if (amountToAdd > 0 && !fileInput.files[0]) {
+        alert('Please attach a payment proof image to add a payment amount.');
+        return;
+    }
+
     const updateData = { status: newStatus };
 
     const processUpdate = async (proofData) => {
         if (amountToAdd > 0 && proofData) {
-            let existingProofs = tx.proofs || [];
+            let existingProofs = [...(tx.proofs || [])];
             if (existingProofs.length === 0 && tx.proofImage) {
                 existingProofs.push({ title: tx.paymentMethod || 'Payment', image: tx.proofImage, amount: tx.amountPaid || 0, time: tx.requestedAt || '' });
             }
@@ -603,9 +608,14 @@ window.submitStaffEdit = async function() {
             }
         }
 
-        await updateDoc(doc(db, "transactions", activeStaffEditTxId), updateData);
-        window.closeModal('staff-edit-modal');
-        alert('Transaction updated successfully!');
+        try {
+            await updateDoc(doc(db, "transactions", activeStaffEditTxId), updateData);
+            window.closeModal('staff-edit-modal');
+            alert('Transaction updated successfully!');
+        } catch (err) {
+            console.error('Staff edit failed:', err);
+            alert('Failed to update transaction: ' + err.message);
+        }
     };
 
     if (fileInput.files[0]) {
@@ -619,6 +629,7 @@ window.submitStaffEdit = async function() {
                 canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
                 processUpdate(canvas.toDataURL('image/jpeg', 0.7));
             };
+            img.onerror = () => alert('Could not read that image file.');
             img.src = e.target.result;
         };
         reader.readAsDataURL(fileInput.files[0]);
