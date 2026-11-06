@@ -318,10 +318,12 @@ header {
     transition: border-color 0.2s;
 }
 
-.card.completed-card {
+.card.fully-paid-card {
     border-color: #00ffcc;
     background: #132223;
 }
+
+.card:hover { border-color: #00ffcc; }
 
 .card:hover { border-color: #00ffcc; }
 
